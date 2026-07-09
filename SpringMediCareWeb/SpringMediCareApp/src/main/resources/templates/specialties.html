@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+    <head>
+        <title>Chuyên khoa</title>
+    </head>
+    <body>
+
+        <section layout:fragment="content" class="main-content">
+            <div class="container">
+                <section class="section-box">
+                    <h2>Danh sách chuyên khoa</h2>
+
+                    <p style="color:#3f8fc2;font-weight:bold;margin-bottom:16px;">
+                        Số lượng chuyên khoa:
+                        <span th:text="${#lists.size(specialties)}">0</span>
+                    </p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card" th:each="s : ${specialties}">
+                            <img th:src="${s.image}" th:alt="${s.name}" class="specialty-img">
+
+                            <h3 th:text="${s.name}">Tên chuyên khoa</h3>
+                            <p th:text="${s.description}">Mô tả chuyên khoa</p>
+
+<!--                            <div style="margin-top:14px;">
+                                <a th:href="@{/doctors}" class="btn-outline">Xem bác sĩ</a>
+                            </div>-->
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+    </body>
+</html>

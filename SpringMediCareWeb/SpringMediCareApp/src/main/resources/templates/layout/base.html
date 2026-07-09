@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head>
+        <meta charset="UTF-8">
+        <title layout:title-pattern="$CONTENT_TITLE - MediCare">MediCare</title>
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+    </head>
+    <body>
+
+        <header class="topbar">
+            <div class="container topbar-inner">
+                <div class="logo-area">
+                    <div class="logo-circle">M</div>
+                    <div>
+                        <h2 class="brand-name">MediCare</h2>
+                        <p class="brand-sub">Phòng khám đa khoa trực tuyến</p>
+                    </div>
+                </div>
+
+                <nav class="main-nav">
+                    <a th:href="@{/}">Trang chủ</a>
+                    <a th:href="@{/doctors}">Bác sĩ</a>
+                    <a th:href="@{/specialties}">Chuyên khoa</a>
+
+                    <!-- Chưa đăng nhập -->
+                    <th:block th:if="${session.currentUser == null}">
+                        <a th:href="@{/login}">Đăng nhập</a>
+                        <a th:href="@{/register}" class="btn-nav">Đăng ký</a>
+                    </th:block>
+
+                    <!-- Đã đăng nhập -->
+                    <th:block th:if="${session.currentUser != null}">
+                        <a th:if="${session.currentUser.role == 'patient'}"
+                           th:href="@{/appointments}">Đặt lịch</a>
+
+                        <a th:if="${session.currentUser.role == 'patient'}"
+                           th:href="@{/medical-records}">Hồ sơ của tôi</a>
+
+                        <a th:if="${session.currentUser.role == 'doctor'}"
+                           th:href="@{/doctor/appointments}">Lịch khám</a>
+
+                        <a th:if="${session.currentUser.role == 'doctor'}"
+                           th:href="@{/prescriptions}">Kê đơn</a>
+
+                        <a th:if="${session.currentUser.role == 'staff' or session.currentUser.role == 'admin'}"
+                           th:href="@{/drugs}">Quản lý thuốc</a>
+
+                        <a th:if="${session.currentUser.role == 'staff' or session.currentUser.role == 'admin'}"
+                           th:href="@{/categories}">Danh mục thuốc</a>
+
+                        <a th:if="${session.currentUser.role == 'admin'}"
+                           th:href="@{/reports}">Báo cáo</a>
+
+                        <span class="hello-user"
+                              th:text="'Xin chào, ' + ${session.currentUser.firstName}">
+                        </span>
+
+                        <a th:href="@{/logout}" class="btn-nav logout-btn">Đăng xuất</a>
+                    </th:block>
+                </nav>
+            </div>
+        </header>
+
+        <main layout:fragment="content"></main>
+
+        <div class="project-credit-bar">
+            <div class="container credit-inner">
+                <div>
+                    <strong>Đề tài:</strong> Phòng khám đa khoa trực tuyến
+                </div>
+                <div>
+                    <strong>Thành viên:</strong> Tuyết Trinh - Kim Phụng
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

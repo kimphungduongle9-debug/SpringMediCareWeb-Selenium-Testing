@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+    <head>
+        <title>Bác sĩ</title>
+    </head>
+    <body>
+
+        <section layout:fragment="content" class="main-content">
+            <div class="container">
+                <section class="section-box">
+                    <h2>Danh sách bác sĩ</h2>
+
+                    <p style="color:red; font-weight:bold; margin-bottom:14px;">
+                        So luong bac si: <span th:text="${#lists.size(doctors)}">0</span>
+                    </p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card" th:each="d : ${doctors}">
+                            <img th:src="${d.image}" th:alt="${d.fullName}" class="doctor-img">
+
+                            <h3 th:text="${d.fullName}">Tên bác sĩ</h3>
+
+                            <p>
+                                Chuyên khoa:
+                                <span th:text="${d.specialtyId.name}">Tên chuyên khoa</span>
+                            </p>
+
+                            <p>
+                                Kinh nghiệm:
+                                <span th:text="${d.experienceYears}">0</span> năm
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+    </body>
+</html>

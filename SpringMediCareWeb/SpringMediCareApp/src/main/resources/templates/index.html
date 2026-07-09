@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+    <head>
+        <title>Trang chủ</title>
+    </head>
+    <body>
+
+        <section layout:fragment="content">
+            <div class="container" th:if="${session.currentUser != null}">
+                <div class="welcome-banner">
+                    Xin chào,
+                    <strong th:text="${session.currentUser.lastName}">User</strong>
+                </div>
+            </div>
+            <!-- Khung nền xanh pastel -->
+            <section class="hero-wrapper">
+                <div class="container">
+                    <div class="hero-card">
+                        <div class="hero-left">
+                            <span class="tag">ĐỀ TÀI 6</span>
+                            <h1>PHÒNG KHÁM ĐA KHOA TRỰC TUYẾN</h1>
+                            <p>
+                                Hệ thống hỗ trợ bệnh nhân đăng ký khám bệnh trực tuyến, đặt lịch hẹn với bác sĩ,
+                                lưu trữ hồ sơ bệnh án điện tử, quản lý thuốc, thanh toán trực tuyến
+                                và thống kê báo cáo hoạt động phòng khám.
+                            </p>
+
+
+                        </div>
+
+                        <div class="hero-right">
+                            <div class="info-box">
+                                <h3>Mục tiêu hệ thống</h3>
+                                <ul>
+                                    <li>Đặt lịch khám nhanh chóng</li>
+                                    <li>Quản lý hồ sơ bệnh án điện tử</li>
+                                    <li>Kê đơn và quản lý thuốc</li>
+                                    <li>Thanh toán trực tuyến</li>
+                                    <li>Báo cáo thống kê phòng khám</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Nội dung chính -->
+            <main class="main-content">
+                <div class="container">
+
+                    <section class="section-box">
+                        <h2>Chức năng nổi bật</h2>
+                        <div class="feature-grid">
+                            <div class="feature-card">
+                                <h3>Đăng ký tài khoản</h3>
+                                <p>Tạo tài khoản bệnh nhân và quản lý thông tin cá nhân dễ dàng.</p>
+                            </div>
+
+                            <div class="feature-card">
+                                <h3>Đặt lịch bác sĩ</h3>
+                                <p>Đặt lịch hẹn khám theo bác sĩ và chuyên khoa phù hợp.</p>
+                            </div>
+
+                            <div class="feature-card">
+                                <h3>Hồ sơ bệnh án</h3>
+                                <p>Lưu trữ, tra cứu lịch sử khám và kết quả xét nghiệm.</p>
+                            </div>
+
+                            <div class="feature-card">
+                                <h3>Quản lý thuốc</h3>
+                                <p>Theo dõi tồn kho, cảnh báo thuốc sắp hết hoặc gần hết hạn.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="section-box">
+                        <h2>Đối tượng sử dụng</h2>
+                        <div class="role-grid">
+                            <div class="role-card">
+                                <h3>Bệnh nhân</h3>
+                                <p>Đăng ký, đặt lịch, thanh toán, xem đơn thuốc và lịch sử khám.</p>
+                            </div>
+
+                            <div class="role-card">
+                                <h3>Bác sĩ</h3>
+                                <p>Quản lý lịch làm việc, cập nhật hồ sơ bệnh án, kê đơn thuốc.</p>
+                            </div>
+
+                            <div class="role-card">
+                                <h3>Nhân viên y tế</h3>
+                                <p>Hỗ trợ quản lý khám bệnh, thanh toán và quy trình vận hành.</p>
+                            </div>
+
+                            <div class="role-card">
+                                <h3>Quản trị viên</h3>
+                                <p>Quản lý hệ thống, báo cáo thống kê và giám sát hoạt động chung.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+
+        </section>
+
+    </body>
+</html>

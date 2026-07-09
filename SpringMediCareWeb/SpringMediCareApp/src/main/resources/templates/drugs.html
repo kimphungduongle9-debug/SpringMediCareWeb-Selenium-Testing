@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+    <head>
+        <title>Quản lý thuốc</title>
+    </head>
+    <body>
+        <main layout:fragment="content">
+            <section class="container">
+                <h1>Quản lý thuốc</h1>
+
+                <table border="1" cellpadding="10" cellspacing="0" style="width:100%; background:#fff;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên thuốc</th>
+                            <th>Danh mục</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Hạn sử dụng</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="d : ${drugs}">
+                            <td th:text="${d.drugId}"></td>
+                            <td th:text="${d.name}"></td>
+                            <td th:text="${d.categoryId.categoryName}"></td>
+                            <td th:text="${d.price}"></td>
+                            <td th:text="${d.quantity}"></td>
+                            <td th:text="${#dates.format(d.expiryDate, 'dd/MM/yyyy')}"></td>
+                            <td>
+                                <span th:if="${d.status == 'expired'}" style="color:red; font-weight:bold;">
+                                    Hết hạn
+                                </span>
+
+                                <span th:if="${d.status == 'low_stock'}" style="color:orange; font-weight:bold;">
+                                    Sắp hết
+                                </span>
+
+                                <span th:if="${d.status == 'available'}" style="color:green; font-weight:bold;">
+                                    Còn hàng
+                                </span>
+
+                                <span th:if="${d.status == 'inactive'}" style="color:gray; font-weight:bold;">
+                                    Ngừng sử dụng
+                                </span>
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </body>
+</html>
