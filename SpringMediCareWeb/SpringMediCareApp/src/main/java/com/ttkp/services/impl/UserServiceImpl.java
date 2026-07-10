@@ -32,7 +32,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String username, String password) {
-        User u = this.userRepository.getUserByUsername(username);
+        if (username == null || password == null) {
+            return null;
+        }
+
+        User u = this.userRepository.getUserByUsernameOrEmail(username.trim());
 
         if (u == null) {
             return null;

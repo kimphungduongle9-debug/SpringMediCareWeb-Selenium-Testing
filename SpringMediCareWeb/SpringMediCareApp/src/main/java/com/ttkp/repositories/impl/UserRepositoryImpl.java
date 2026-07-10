@@ -31,6 +31,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User getUserByUsernameOrEmail(String keyword) {
+        Session session = this.factory.getObject().getCurrentSession();
+
+        Query<User> q = session.createNamedQuery("User.findByUsernameOrEmail", User.class);
+        q.setParameter("keyword", keyword);
+
+        return q.uniqueResult();
+    }
+
+    @Override
     public User addUser(User u) {
         Session session = this.factory.getObject().getCurrentSession();
         session.persist(u);

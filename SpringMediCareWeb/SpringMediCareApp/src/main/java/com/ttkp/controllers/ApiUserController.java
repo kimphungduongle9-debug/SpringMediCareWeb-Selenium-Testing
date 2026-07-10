@@ -36,9 +36,11 @@ public class ApiUserController {
     @PostMapping(value = "/login", consumes = "application/json")
     public ResponseEntity<?> login(@RequestBody User u) {
 
-        if (this.userService.authenticate(u.getUsername(), u.getPassword())) {
+        User user = this.userService.login(u.getUsername(), u.getPassword());
+
+        if (user != null) {
             try {
-                String token = JwtUtils.generateToken(u.getUsername());
+                String token = JwtUtils.generateToken(user.getUsername());
                 return ResponseEntity.ok().body(Collections.singletonMap("token", token));
             } catch (Exception e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

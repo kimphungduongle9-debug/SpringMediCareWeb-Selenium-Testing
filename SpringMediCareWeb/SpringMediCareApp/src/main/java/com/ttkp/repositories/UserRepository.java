@@ -6,6 +6,8 @@ public interface UserRepository {
     
     User getUserByUsername(String username);
     
+    User getUserByUsernameOrEmail(String keyword);
+    
     User addUser(User u);
 
     boolean existsUsername(String username);
