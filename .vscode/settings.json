@@ -1,0 +1,15 @@
+
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/Selenium_WebDriver/venv/Scripts/python.exe",
+
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+
+    "python.testing.cwd": "${workspaceFolder}/Selenium_WebDriver",
+
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+
+    "testing.gutterEnabled": true
+}
