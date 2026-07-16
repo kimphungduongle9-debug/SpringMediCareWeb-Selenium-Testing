@@ -54,18 +54,20 @@ public class UserRepositoryImpl implements UserRepository {
 
         Query<User> q = session.createNamedQuery("User.findByUsername", User.class);
         q.setParameter("username", username);
+        q.setMaxResults(1);
 
-        return q.uniqueResult() != null;
+        return !q.getResultList().isEmpty();
     }
 
     @Override
     public boolean existsEmail(String email) {
         Session session = this.factory.getObject().getCurrentSession();
 
-        Query<User> q = session.createNamedQuery("User.findByEmail", User.class);
+        Query<User> q = session.createNamedQuery("User.findByEmail",User.class);
         q.setParameter("email", email);
+        q.setMaxResults(1);
 
-        return q.uniqueResult() != null;
+        return !q.getResultList().isEmpty();
     }
 
     @Override

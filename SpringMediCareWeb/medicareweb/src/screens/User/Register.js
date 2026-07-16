@@ -86,7 +86,14 @@ const Register = () => {
       nav("/login");
     } catch (ex) {
       console.error(ex);
-      setErr("Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.");
+
+      const message = ex.response?.data?.message;
+
+      if (message) {
+        setErr(message);
+      } else {
+        setErr("Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.");
+      }
     }
   };
 

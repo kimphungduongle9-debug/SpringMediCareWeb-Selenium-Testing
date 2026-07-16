@@ -27,9 +27,30 @@ public class ApiUserController {
     private UserService userService;
 
     @PostMapping("/users")
-    public ResponseEntity<User> create(@RequestParam Map<String, String> info,
+    public ResponseEntity<?> create(
+            @RequestParam Map<String, String> info,
             @RequestParam(value = "avatar") MultipartFile avatar) {
+
+        String email = info.get("email");
+        String username = info.get("username");
+
+        if (email != null && this.userService.existsEmail(email.trim())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap(
+                            "message", "Email đã tồn tại."
+                    ));
+        }
+
+        if (username != null
+                && this.userService.existsUsername(username.trim())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap(
+                            "message", "Tên đăng nhập đã tồn tại."
+                    ));
+        }
+
         User u = this.userService.addUser(info, avatar);
+
         return new ResponseEntity<>(u, HttpStatus.CREATED);
     }
 
