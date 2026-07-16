@@ -31,6 +31,30 @@ const Register = () => {
       return;
     }
 
+    if (user.password.length < 7) {
+      setErr("Mật khẩu phải có ít nhất 7 ký tự");
+      return;
+    }
+
+    if (!/[A-Z]/.test(user.password)) {
+      setErr("Mật khẩu phải chứa ít nhất 1 chữ in hoa");
+      return;
+    }
+
+    if (!/[a-z]/.test(user.password)) {
+      setErr("Mật khẩu phải chứa ít nhất 1 chữ thường");
+      return;
+    }
+
+    if (!/[0-9]/.test(user.password)) {
+      setErr("Mật khẩu phải chứa ít nhất 1 chữ số");
+      return;
+    }
+
+    if (!/[^A-Za-z0-9\s]/.test(user.password)) {
+      setErr("Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt");
+      return;
+    }
     if (user.password !== user.confirmPassword) {
       setErr("Mật khẩu xác nhận không khớp");
       return;
