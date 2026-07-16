@@ -26,6 +26,11 @@ const Register = () => {
   const register = async (e) => {
     e.preventDefault();
 
+    if (!/^\d{10}$/.test(user.phone)) {
+      setErr("Số điện thoại phải gồm đúng 10 chữ số");
+      return;
+    }
+
     if (user.password !== user.confirmPassword) {
       setErr("Mật khẩu xác nhận không khớp");
       return;
