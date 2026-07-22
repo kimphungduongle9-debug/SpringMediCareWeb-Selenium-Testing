@@ -13,6 +13,7 @@ const Booking = () => {
   const doctorId = q.get("doctorId");
 
   const [doctor, setDoctor] = useState(null);
+  const [schedules, setSchedules] = useState([]);
   const [workDate, setWorkDate] = useState("");
   const [appointmentTime, setAppointmentTime] = useState("");
   const [notes, setNotes] = useState("");
@@ -25,11 +26,17 @@ const Booking = () => {
       setDoctor(res.data);
     }
   };
+  const loadSchedules = async () => {
+    if (doctorId !== null) {
+      let res = await Apis.get(endpoints.doctorSchedulesByDoctor(doctorId));
 
+      setSchedules(res.data);
+    }
+  };
   useEffect(() => {
-    loadDoctor().catch((err) => {
+    Promise.all([loadDoctor(), loadSchedules()]).catch((err) => {
       console.error(err);
-      setMsg("Không tải được thông tin bác sĩ.");
+      setMsg("Không tải được thông tin hoặc lịch làm việc của bác sĩ.");
     });
   }, [doctorId]);
 
@@ -85,7 +92,10 @@ const Booking = () => {
       <div className="container">
         <div className="section-box">
           <h2>Đặt lịch hẹn khám</h2>
-          <p>Chọn ngày khám và nhập giờ khám phù hợp với lịch làm việc của bác sĩ.</p>
+          <p>
+            Chọn ngày khám và nhập giờ khám phù hợp với lịch làm việc của bác
+            sĩ.
+          </p>
         </div>
 
         {msg && <Alert variant="info">{msg}</Alert>}
@@ -100,7 +110,24 @@ const Booking = () => {
               </p>
             </div>
           )}
+          <div style={{ marginBottom: "20px" }}>
+            <h4>Lịch làm việc của bác sĩ</h4>
 
+            {schedules.length === 0 ? (
+              <Alert variant="warning">
+                Bác sĩ hiện chưa có lịch làm việc.
+              </Alert>
+            ) : (
+              schedules.map((s) => (
+                <div key={s.scheduleId}>
+                  {new Date(s.workDate).toLocaleDateString("vi-VN")} -{" "}
+                  {s.startTime.substring(0, 5)} đến {s.endTime.substring(0, 5)}{" "}
+                  -{" "}
+                  {s.status === "available" ? "Có làm việc" : "Không làm việc"}
+                </div>
+              ))
+            )}
+          </div>
           <Form onSubmit={bookAppointment}>
             <Form.Group className="mb-3">
               <Form.Label>Ngày khám</Form.Label>
