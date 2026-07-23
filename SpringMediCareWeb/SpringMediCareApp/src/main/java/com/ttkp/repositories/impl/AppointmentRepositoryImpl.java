@@ -91,20 +91,48 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
     public boolean isAppointmentTimeBooked(int doctorId, Date appointmentDate) {
         Session session = this.factory.getObject().getCurrentSession();
 
+        // Mỗi lượt khám kéo dài 30 phút
+        long appointmentDuration = 30 * 60 * 1000L;
+
+        Date startTime = new Date(
+                appointmentDate.getTime() - appointmentDuration
+        );
+
+        Date endTime = new Date(
+                appointmentDate.getTime() + appointmentDuration
+        );
+
         CriteriaBuilder b = session.getCriteriaBuilder();
         CriteriaQuery<Appointment> q = b.createQuery(Appointment.class);
-        Root root = q.from(Appointment.class);
+        Root<Appointment> root = q.from(Appointment.class);
 
         q.select(root);
+
         q.where(
                 b.and(
-                        b.equal(root.get("doctorId").get("doctorId"), doctorId),
-                        b.equal(root.get("appointmentDate"), appointmentDate),
-                        b.notEqual(root.get("status"), "cancelled")
+                        b.equal(
+                                root.get("doctorId").get("doctorId"),
+                                doctorId
+                        ),
+                        // Tìm lịch hẹn cách giờ mới ít hơn 30 phút
+                        b.greaterThan(
+                                root.<Date>get("appointmentDate"),
+                                startTime
+                        ),
+                        b.lessThan(
+                                root.<Date>get("appointmentDate"),
+                                endTime
+                        ),
+                        // Lịch đã hủy không được tính là chiếm chỗ
+                        b.notEqual(
+                                root.get("status"),
+                                "cancelled"
+                        )
                 )
         );
 
-        Query query = session.createQuery(q);
+        Query<Appointment> query = session.createQuery(q);
+        query.setMaxResults(1);
 
         return !query.getResultList().isEmpty();
     }

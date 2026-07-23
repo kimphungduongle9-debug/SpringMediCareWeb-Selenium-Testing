@@ -37,7 +37,10 @@ public class ApiAppointmentController {
             return new ResponseEntity<>("Đặt lịch thành công", HttpStatus.CREATED);
         }
 
-        return new ResponseEntity<>("Đặt lịch thất bại", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(
+                "Khung giờ này không khả dụng. Các lịch hẹn phải cách nhau ít nhất 30 phút.",
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     @GetMapping("/appointments")

@@ -116,9 +116,12 @@ const Booking = () => {
     } catch (err) {
       console.error(err);
 
-      setMsg(
-        "Đặt lịch thất bại. Bác sĩ có thể không làm giờ này hoặc giờ đã có người đặt.",
-      );
+      const errorMessage =
+        typeof err.response?.data === "string"
+          ? err.response.data
+          : err.response?.data?.message;
+
+      setMsg(errorMessage || "Đặt lịch thất bại. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
