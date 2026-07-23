@@ -4,6 +4,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Apis, { endpoints } from "../../configs/Apis";
 import MySpinner from "../../components/MySpinner";
 import { MyUserContext } from "../../configs/Contexts";
+import DoctorBookedSlots from "../../components/DoctorBookedSlots";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Booking = () => {
   const [user] = useContext(MyUserContext);
@@ -14,11 +17,13 @@ const Booking = () => {
 
   const [doctor, setDoctor] = useState(null);
   const [schedules, setSchedules] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [workDate, setWorkDate] = useState("");
   const [appointmentTime, setAppointmentTime] = useState("");
   const [notes, setNotes] = useState("");
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const loadDoctor = async () => {
     if (doctorId !== null) {
@@ -26,6 +31,7 @@ const Booking = () => {
       setDoctor(res.data);
     }
   };
+
   const loadSchedules = async () => {
     if (doctorId !== null) {
       let res = await Apis.get(endpoints.doctorSchedulesByDoctor(doctorId));
@@ -33,12 +39,45 @@ const Booking = () => {
       setSchedules(res.data);
     }
   };
+
+  const loadAppointments = async () => {
+    if (doctorId !== null) {
+      let res = await Apis.get(endpoints.appointmentsByDoctor(doctorId));
+
+      setAppointments(res.data);
+    }
+  };
+
   useEffect(() => {
-    Promise.all([loadDoctor(), loadSchedules()]).catch((err) => {
-      console.error(err);
-      setMsg("Không tải được thông tin hoặc lịch làm việc của bác sĩ.");
-    });
+    Promise.all([loadDoctor(), loadSchedules(), loadAppointments()]).catch(
+      (err) => {
+        console.error(err);
+        setMsg("Không tải được thông tin của bác sĩ.");
+      },
+    );
   }, [doctorId]);
+
+  const formatDateValue = (dateValue) => {
+    if (!dateValue) {
+      return "";
+    }
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+      return "";
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const selectedSchedules = schedules.filter(
+    (schedule) => formatDateValue(schedule.workDate) === workDate,
+  );
 
   const bookAppointment = async (e) => {
     e.preventDefault();
@@ -53,9 +92,9 @@ const Booking = () => {
       return;
     }
 
-    let patientId = user.patientId || user.id || user.userId;
+    const patientId = user.patientId || user.id || user.userId;
 
-    let data = {
+    const data = {
       patientId: patientId.toString(),
       doctorId: doctorId.toString(),
       appointmentDate: `${workDate}T${appointmentTime}:00`,
@@ -63,12 +102,20 @@ const Booking = () => {
     };
 
     setLoading(true);
+    setMsg("");
 
     try {
       let res = await Apis.post(endpoints.appointments, data);
+
       setMsg(res.data || "Đặt lịch thành công. Vui lòng chờ xác nhận.");
+
+      setAppointmentTime("");
+      setNotes("");
+
+      await loadAppointments();
     } catch (err) {
       console.error(err);
+
       setMsg(
         "Đặt lịch thất bại. Bác sĩ có thể không làm giờ này hoặc giờ đã có người đặt.",
       );
@@ -90,71 +137,127 @@ const Booking = () => {
   return (
     <div className="main-content">
       <div className="container">
-        <div className="section-box">
+        <div className="booking-heading">
           <h2>Đặt lịch hẹn khám</h2>
-          <p>
-            Chọn ngày khám và nhập giờ khám phù hợp với lịch làm việc của bác
-            sĩ.
-          </p>
+
+          <p>Chọn ngày và giờ khám phù hợp với lịch làm việc của bác sĩ.</p>
         </div>
 
         {msg && <Alert variant="info">{msg}</Alert>}
 
-        <div className="feature-card">
+        <div className="booking-card">
           {doctor && (
-            <div style={{ marginBottom: "20px" }}>
+            <div className="mb-4">
               <h3>{doctor.fullName}</h3>
-              <p>
+
+              <p className="mb-0">
                 <strong>Chuyên khoa:</strong>{" "}
                 {doctor.specialtyId?.name || "Chưa rõ"}
               </p>
             </div>
           )}
-          <div style={{ marginBottom: "20px" }}>
-            <h4>Lịch làm việc của bác sĩ</h4>
 
-            {schedules.length === 0 ? (
-              <Alert variant="warning">
-                Bác sĩ hiện chưa có lịch làm việc.
-              </Alert>
-            ) : (
-              schedules.map((s) => (
-                <div key={s.scheduleId}>
-                  {new Date(s.workDate).toLocaleDateString("vi-VN")} -{" "}
-                  {s.startTime.substring(0, 5)} đến {s.endTime.substring(0, 5)}{" "}
-                  -{" "}
-                  {s.status === "available" ? "Có làm việc" : "Không làm việc"}
-                </div>
-              ))
-            )}
-          </div>
           <Form onSubmit={bookAppointment}>
             <Form.Group className="mb-3">
               <Form.Label>Ngày khám</Form.Label>
-              <Form.Control
-                type="date"
-                value={workDate}
-                onChange={(e) => setWorkDate(e.target.value)}
+
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date) => {
+                  setSelectedDate(date);
+                  setAppointmentTime("");
+
+                  if (date === null) {
+                    setWorkDate("");
+                    return;
+                  }
+
+                  const year = date.getFullYear();
+                  const month = String(date.getMonth() + 1).padStart(2, "0");
+                  const day = String(date.getDate()).padStart(2, "0");
+
+                  setWorkDate(`${year}-${month}-${day}`);
+                }}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Chọn ngày khám"
+                className="form-control"
+                wrapperClassName="w-100"
+                showPopperArrow={false}
                 required
               />
             </Form.Group>
 
+            <div className="row g-2 mb-3">
+              <div className="col-md-6">
+                <div className="booking-info-box">
+                  <h7 className="mb-2 fw-normal">Lịch làm việc trong ngày</h7>
+
+                  {!workDate ? (
+                    <p className="text-muted mb-0">
+                      Chọn ngày khám để xem lịch làm việc.
+                    </p>
+                  ) : selectedSchedules.length === 0 ? (
+                    <p className="text-warning mb-0">
+                      Bác sĩ không có lịch làm việc trong ngày này.
+                    </p>
+                  ) : (
+                    selectedSchedules.map((schedule) => (
+                      <div
+                        key={schedule.scheduleId}
+                        className="d-flex justify-content-between align-items-center border-bottom py-1"
+                      >
+                        <span>
+                          {schedule.startTime.substring(0, 5)} -{" "}
+                          {schedule.endTime.substring(0, 5)}
+                        </span>
+
+                        <span
+                          className={
+                            schedule.status === "available"
+                              ? "text-success"
+                              : "text-danger"
+                          }
+                        >
+                          {schedule.status === "available"
+                            ? "Có làm việc"
+                            : "Không làm việc"}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className="col-md-6">
+                <div className="booking-info-box">
+                  <DoctorBookedSlots
+                    appointments={appointments}
+                    workDate={workDate}
+                  />
+                </div>
+              </div>
+            </div>
+
             <Form.Group className="mb-3">
               <Form.Label>Giờ khám</Form.Label>
+
               <Form.Control
                 type="time"
                 value={appointmentTime}
                 onChange={(e) => setAppointmentTime(e.target.value)}
+                disabled={!workDate}
                 required
               />
+
               <Form.Text>
-                Vui lòng nhập giờ nằm trong lịch làm việc của bác sĩ. Ca sáng:
-                07:00 - 11:30, ca chiều: 13:00 - 17:00, ca tối: 17:30 - 21:00.
+                Chọn giờ nằm trong lịch làm việc của bác sĩ và tránh các giờ đã
+                có người đặt.
               </Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Ghi chú</Form.Label>
+
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -164,8 +267,12 @@ const Booking = () => {
               />
             </Form.Group>
 
-            <Button type="submit" variant="primary">
-              Đặt lịch
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={loading || !workDate}
+            >
+              {loading ? "Đang đặt lịch..." : "Đặt lịch"}
             </Button>
 
             <Button
@@ -173,6 +280,7 @@ const Booking = () => {
               variant="secondary"
               className="ms-2"
               onClick={() => nav("/doctor")}
+              disabled={loading}
             >
               Quay lại
             </Button>
