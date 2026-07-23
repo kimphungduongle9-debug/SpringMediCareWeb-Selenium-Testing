@@ -15,7 +15,7 @@ const DoctorBookedSlots = ({ appointments, workDate }) => {
       (appointment.status === "pending" || appointment.status === "confirmed")
     );
   });
-
+  
   return (
     <div>
       <h6 className="booking-info-title">Giờ đã được đặt</h6>

@@ -266,11 +266,22 @@ const Booking = () => {
                 placeholder="Nhập triệu chứng hoặc yêu cầu nếu có..."
               />
             </Form.Group>
+            {!workDate && (
+              <Alert variant="warning" className="py-2">
+                Vui lòng chọn ngày khám để tiếp tục.
+              </Alert>
+            )}
+
+            {workDate && !appointmentTime && (
+              <Alert variant="warning" className="py-2">
+                Vui lòng chọn giờ khám để tiếp tục.
+              </Alert>
+            )}
 
             <Button
               type="submit"
               variant="primary"
-              disabled={loading || !workDate}
+              disabled={loading || !workDate || !appointmentTime}
             >
               {loading ? "Đang đặt lịch..." : "Đặt lịch"}
             </Button>
