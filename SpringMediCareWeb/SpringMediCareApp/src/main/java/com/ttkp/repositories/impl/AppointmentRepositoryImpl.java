@@ -88,10 +88,56 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
     }
 
     @Override
-    public boolean isAppointmentTimeBooked(int doctorId, Date appointmentDate) {
-        Session session = this.factory.getObject().getCurrentSession();
+    public boolean isExactAppointmentTimeBooked(
+            int doctorId,
+            Date appointmentDate) {
 
-        // Mỗi lượt khám kéo dài 30 phút
+        Session session = this.factory
+                .getObject()
+                .getCurrentSession();
+
+        CriteriaBuilder b = session.getCriteriaBuilder();
+
+        CriteriaQuery<Appointment> q
+                = b.createQuery(Appointment.class);
+
+        Root<Appointment> root = q.from(Appointment.class);
+
+        q.select(root);
+
+        q.where(
+                b.and(
+                        b.equal(
+                                root.get("doctorId").get("doctorId"),
+                                doctorId
+                        ),
+                        b.equal(
+                                root.get("appointmentDate"),
+                                appointmentDate
+                        ),
+                        b.notEqual(
+                                root.get("status"),
+                                "cancelled"
+                        )
+                )
+        );
+
+        Query<Appointment> query = session.createQuery(q);
+
+        query.setMaxResults(1);
+
+        return !query.getResultList().isEmpty();
+    }
+
+    @Override
+    public boolean isAppointmentWithinThirtyMinutes(
+            int doctorId,
+            Date appointmentDate) {
+
+        Session session = this.factory
+                .getObject()
+                .getCurrentSession();
+
         long appointmentDuration = 30 * 60 * 1000L;
 
         Date startTime = new Date(
@@ -103,7 +149,10 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
         );
 
         CriteriaBuilder b = session.getCriteriaBuilder();
-        CriteriaQuery<Appointment> q = b.createQuery(Appointment.class);
+
+        CriteriaQuery<Appointment> q
+                = b.createQuery(Appointment.class);
+
         Root<Appointment> root = q.from(Appointment.class);
 
         q.select(root);
@@ -114,7 +163,6 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
                                 root.get("doctorId").get("doctorId"),
                                 doctorId
                         ),
-                        // Tìm lịch hẹn cách giờ mới ít hơn 30 phút
                         b.greaterThan(
                                 root.<Date>get("appointmentDate"),
                                 startTime
@@ -123,7 +171,10 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
                                 root.<Date>get("appointmentDate"),
                                 endTime
                         ),
-                        // Lịch đã hủy không được tính là chiếm chỗ
+                        b.notEqual(
+                                root.get("appointmentDate"),
+                                appointmentDate
+                        ),
                         b.notEqual(
                                 root.get("status"),
                                 "cancelled"
@@ -132,6 +183,7 @@ public class AppointmentRepositoryImpl implements AppointmentRepository {
         );
 
         Query<Appointment> query = session.createQuery(q);
+
         query.setMaxResults(1);
 
         return !query.getResultList().isEmpty();

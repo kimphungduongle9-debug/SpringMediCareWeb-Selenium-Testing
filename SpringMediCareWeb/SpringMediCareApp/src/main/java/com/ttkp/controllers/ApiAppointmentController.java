@@ -25,22 +25,59 @@ public class ApiAppointmentController {
     private AppointmentService appointmentService;
 
     @PostMapping("/appointments")
-    public ResponseEntity<?> create(@RequestBody Map<String, String> params) {
-        boolean result = this.appointmentService.addAppointment(
+    public ResponseEntity<?> create(
+            @RequestBody Map<String, String> params) {
+
+        String result = this.appointmentService.addAppointment(
                 Integer.parseInt(params.get("patientId")),
                 Integer.parseInt(params.get("doctorId")),
                 params.get("appointmentDate"),
                 params.get("notes")
         );
 
-        if (result) {
-            return new ResponseEntity<>("Đặt lịch thành công", HttpStatus.CREATED);
-        }
+        switch (result) {
+            case "SUCCESS":
+                return new ResponseEntity<>(
+                        "Đặt lịch thành công",
+                        HttpStatus.CREATED
+                );
 
-        return new ResponseEntity<>(
-                "Khung giờ này không khả dụng. Các lịch hẹn phải cách nhau ít nhất 30 phút.",
-                HttpStatus.BAD_REQUEST
-        );
+            case "OUTSIDE_WORKING_HOURS":
+                return new ResponseEntity<>(
+                        "Giờ khám không nằm trong lịch làm việc của bác sĩ.",
+                        HttpStatus.BAD_REQUEST
+                );
+
+            case "DUPLICATE_TIME":
+                return new ResponseEntity<>(
+                        "Khung giờ này đã có người đặt.",
+                        HttpStatus.CONFLICT
+                );
+
+            case "WITHIN_THIRTY_MINUTES":
+                return new ResponseEntity<>(
+                        "Lịch hẹn phải cách lịch đã đặt ít nhất 30 phút.",
+                        HttpStatus.CONFLICT
+                );
+
+            case "PATIENT_NOT_FOUND":
+                return new ResponseEntity<>(
+                        "Không tìm thấy thông tin bệnh nhân.",
+                        HttpStatus.NOT_FOUND
+                );
+
+            case "DOCTOR_NOT_FOUND":
+                return new ResponseEntity<>(
+                        "Không tìm thấy thông tin bác sĩ.",
+                        HttpStatus.NOT_FOUND
+                );
+
+            default:
+                return new ResponseEntity<>(
+                        "Đặt lịch thất bại. Vui lòng thử lại.",
+                        HttpStatus.BAD_REQUEST
+                );
+        }
     }
 
     @GetMapping("/appointments")

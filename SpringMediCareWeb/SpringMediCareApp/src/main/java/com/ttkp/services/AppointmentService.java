@@ -5,15 +5,14 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    boolean addAppointment(int patientId, int doctorId,
-            String appointmentDate, String notes);
+    String addAppointment(int patientId,int doctorId,String appointmentDate,String notes);
 
     List<Appointment> getAppointmentsByPatientId(int patientId);
-    
+
     List<Appointment> getAppointmentsByDoctorId(int doctorId);
 
     List<Appointment> getAppointments();
-    
+
     Appointment getAppointmentById(int id);
 
     boolean cancelAppointment(int id);

@@ -34,28 +34,53 @@ public class AppointmentServiceImpl implements AppointmentService {
     private DoctorScheduleService doctorScheduleService;
 
     @Override
-    public boolean addAppointment(int patientId, int doctorId,
-            String appointmentDate, String notes) {
+    public String addAppointment(
+            int patientId,
+            int doctorId,
+            String appointmentDate,
+            String notes) {
 
-        Patient patient = this.patientService.getPatientById(patientId);
-        Doctor doctor = this.doctorRepo.getDoctorById(doctorId);
+        Patient patient
+                = this.patientService.getPatientById(patientId);
 
-        if (patient == null || doctor == null) {
-            return false;
+        Doctor doctor
+                = this.doctorRepo.getDoctorById(doctorId);
+
+        if (patient == null) {
+            return "PATIENT_NOT_FOUND";
         }
 
-        LocalDateTime ldt = LocalDateTime.parse(appointmentDate);
-        Date date = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
-
-        if (!this.doctorScheduleService.isDoctorAvailable(doctorId, date)) {
-            return false;
+        if (doctor == null) {
+            return "DOCTOR_NOT_FOUND";
         }
 
-        if (this.appointmentRepo.isAppointmentTimeBooked(doctorId, date)) {
-            return false;
+        LocalDateTime ldt
+                = LocalDateTime.parse(appointmentDate);
+
+        Date date = Date.from(
+                ldt.atZone(ZoneId.systemDefault()).toInstant()
+        );
+
+        if (!this.doctorScheduleService
+                .isDoctorAvailable(doctorId, date)) {
+
+            return "OUTSIDE_WORKING_HOURS";
+        }
+
+        if (this.appointmentRepo
+                .isExactAppointmentTimeBooked(doctorId, date)) {
+
+            return "DUPLICATE_TIME";
+        }
+
+        if (this.appointmentRepo
+                .isAppointmentWithinThirtyMinutes(doctorId, date)) {
+
+            return "WITHIN_THIRTY_MINUTES";
         }
 
         Appointment a = new Appointment();
+
         a.setPatientId(patient);
         a.setDoctorId(doctor);
         a.setAppointmentDate(date);
@@ -63,7 +88,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         a.setStatus("pending");
         a.setCreatedDate(new Date());
 
-        return this.appointmentRepo.addAppointment(a);
+        boolean result
+                = this.appointmentRepo.addAppointment(a);
+
+        if (result) {
+            return "SUCCESS";
+        }
+
+        return "FAILED";
     }
 
     @Override
