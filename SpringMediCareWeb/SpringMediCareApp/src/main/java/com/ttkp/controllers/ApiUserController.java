@@ -55,7 +55,14 @@ public class ApiUserController {
                             "message", "Email đã tồn tại."
                     ));
         }
+        String phone = info.get("phone");
 
+        if (phone == null || !phone.matches("^\\d{10}$")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap(
+                            "message", "Số điện thoại phải gồm đúng 10 chữ số."
+                    ));
+        }
         if (username != null
                 && this.userService.existsUsername(username.trim())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
