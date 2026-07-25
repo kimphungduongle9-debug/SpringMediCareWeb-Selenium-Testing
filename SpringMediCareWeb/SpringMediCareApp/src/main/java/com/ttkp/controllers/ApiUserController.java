@@ -33,8 +33,23 @@ public class ApiUserController {
 
         String email = info.get("email");
         String username = info.get("username");
+        if (email == null || email.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap(
+                            "message", "Email không được để trống."
+                    ));
+        }
 
-        if (email != null && this.userService.existsEmail(email.trim())) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+
+        if (!email.trim().matches(emailRegex)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap(
+                            "message", "Email không đúng định dạng."
+                    ));
+        }
+
+        if (this.userService.existsEmail(email.trim())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap(
                             "message", "Email đã tồn tại."
