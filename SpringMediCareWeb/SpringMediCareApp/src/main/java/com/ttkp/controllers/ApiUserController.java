@@ -63,6 +63,23 @@ public class ApiUserController {
                             "message", "Số điện thoại phải gồm đúng 10 chữ số."
                     ));
         }
+        String password = info.get("password");
+        if (password == null || password.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap(
+                            "message", "Mật khẩu không được để trống."
+                    ));
+        }
+
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{7,}$";
+
+        if (!password.matches(passwordRegex)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap(
+                            "message",
+                            "Mật khẩu phải có ít nhất 7 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+                    ));
+        }
         if (username != null
                 && this.userService.existsUsername(username.trim())) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
