@@ -3,7 +3,7 @@ from pages.BookingPage import BookingPage
 from pages.DoctorPage import DoctorPage
 from selenium.webdriver.common.by import By
 import time
-
+from datetime import datetime, timedelta
 
 VALID_USERNAME = "patient_an"
 VALID_PASSWORD = "Abc@123"
@@ -43,6 +43,10 @@ def login_second_patient(driver):
         SECOND_USERNAME,
         SECOND_PASSWORD
     )
+def get_test_date(days_after=30):
+    test_date = datetime.now() + timedelta(days=days_after)
+
+    return test_date.strftime("%d/%m/%Y")
 
 def open_tran_binh_booking_page(driver):
     doctor_page = DoctorPage(driver)
