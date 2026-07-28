@@ -96,7 +96,7 @@ def test_open_booking_page(driver):
     ).is_displayed()
 
 
-def test_booking_success(driver):
+def test_booking_success(driver, booking_test_data):
     """
     TC-BOOKING-001:
     Đặt lịch thành công.
@@ -159,7 +159,7 @@ def test_booking_without_time(driver):
     assert booking_page.is_booking_button_disabled()
 
 
-def test_booking_without_notes(driver):
+def test_booking_without_notes(driver, booking_test_data):
     """
     TC-BOOKING-004:
     Đặt lịch không nhập ghi chú.
@@ -224,25 +224,32 @@ def test_booking_outside_working_hours(driver):
         in message
     )
 
-def test_booking_duplicate_time(driver):
+def test_booking_duplicate_time(driver, booking_test_data):
     """
     TC-BOOKING-007:
     Đặt lịch trùng đúng giờ đã có người đặt.
     """
 
-    login_patient(driver)
+    # Chuẩn bị dữ liệu:
+    # patient_an đã đặt lịch bác sĩ Trần Bình lúc 14:00
+    booking_test_data.create_appointment(
+        patient_id=1,
+        doctor_id=1,
+        booking_date="11/04/2026",
+        booking_time="14:00",
+        notes="Dữ liệu chuẩn bị cho TC-BOOKING-007"
+    )
+
+    # patient_chi thử đặt trùng giờ
+    login_second_patient(driver)
 
     booking_page = open_tran_binh_booking_page(driver)
 
     booking_page.enter_date("11/04/2026")
 
-    time.sleep(2)
+    booking_page.enter_time("14:00")
 
-    booked_time = booking_page.get_first_booked_time()
-
-    booking_page.enter_time(booked_time)
-
-    assert booking_page.get_time_value() == booked_time
+    assert booking_page.get_time_value() == "14:00"
 
     booking_page.click_booking_button()
 
@@ -250,33 +257,25 @@ def test_booking_duplicate_time(driver):
 
     assert "Khung giờ này đã có người đặt" in message
 
-def test_booking_within_thirty_minutes(driver):
+def test_booking_within_thirty_minutes(
+        driver,
+        booking_test_data):
     """
     TC-BOOKING-008:
     Đặt lịch cách lịch đã có dưới 30 phút.
     """
 
-    # patient_an đặt lịch lúc 15:30
-    login_patient(driver)
+    # Chuẩn bị dữ liệu:
+    # patient_an đã đặt lịch lúc 15:30
+    booking_test_data.create_appointment(
+        patient_id=1,
+        doctor_id=1,
+        booking_date="11/04/2026",
+        booking_time="15:30",
+        notes="Dữ liệu chuẩn bị cho TC-BOOKING-008"
+    )
 
-    booking_page = open_tran_binh_booking_page(driver)
-
-    booking_page.enter_date("11/04/2026")
-
-    booking_page.enter_time("15:30")
-
-    assert booking_page.get_time_value() == "15:30"
-
-    booking_page.click_booking_button()
-
-    message = booking_page.get_message()
-
-    assert "Đặt lịch thành công" in message
-
-    # Đăng xuất patient_an
-    logout_patient(driver)
-
-    # patient_chi đăng nhập và đặt lúc 15:31
+    # patient_chi thử đặt lúc 15:31
     login_second_patient(driver)
 
     booking_page = open_tran_binh_booking_page(driver)
