@@ -34,7 +34,9 @@ const DoctorExamination = () => {
   };
 
   const loadAppointment = async () => {
-    let res = await authApis().get(endpoints.appointmentDetail(appointmentId));
+    const res = await authApis().get(
+      endpoints.appointmentForExamination(appointmentId),
+    );
 
     setAppointment(res.data);
   };
@@ -72,11 +74,26 @@ const DoctorExamination = () => {
   useEffect(() => {
     if (appointmentId) {
       setLoading(true);
+      setMsg("");
+      setAppointment(null);
 
       loadAppointment()
         .catch((err) => {
           console.error(err);
-          setMsg("Không tải được thông tin lịch hẹn.");
+
+          const status = err.response?.status;
+
+          if (status === 401) {
+            setMsg("Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.");
+          } else if (status === 403) {
+            setMsg("Bạn không có quyền khám lịch hẹn này.");
+          } else if (status === 404) {
+            setMsg("Không tìm thấy lịch hẹn.");
+          } else if (status === 409) {
+            setMsg("Lịch hẹn chưa được xác nhận hoặc đã bị hủy.");
+          } else {
+            setMsg("Không tải được thông tin lịch hẹn.");
+          }
         })
         .finally(() => setLoading(false));
     }

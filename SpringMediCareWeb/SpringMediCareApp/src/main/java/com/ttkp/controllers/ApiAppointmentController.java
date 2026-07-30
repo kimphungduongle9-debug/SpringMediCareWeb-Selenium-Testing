@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.ttkp.pojo.Doctor;
+import com.ttkp.pojo.User;
+import com.ttkp.services.DoctorService;
+import com.ttkp.services.UserService;
+import com.ttkp.utils.JwtUtils;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +29,12 @@ public class ApiAppointmentController {
 
     @Autowired
     private AppointmentService appointmentService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private DoctorService doctorService;
 
     @PostMapping("/appointments")
     public ResponseEntity<?> create(
@@ -110,6 +122,97 @@ public class ApiAppointmentController {
         }
 
         return new ResponseEntity<>(a, HttpStatus.OK);
+    }
+
+    @GetMapping("/appointments/{id}/examination")
+    public ResponseEntity<?> retrieveForExamination(
+            @PathVariable("id") int id,
+            @RequestHeader(value = "Authorization", required = false) String authorization) {
+
+        try {
+            // 1. Kiểm tra token
+            if (authorization == null
+                    || !authorization.startsWith("Bearer ")) {
+
+                return new ResponseEntity<>(
+                        "Bạn chưa đăng nhập.",
+                        HttpStatus.UNAUTHORIZED
+                );
+            }
+
+            String token = authorization.substring(7);
+
+            String username
+                    = JwtUtils.validateTokenAndGetUsername(token);
+
+            if (username == null) {
+                return new ResponseEntity<>(
+                        "Token không hợp lệ.",
+                        HttpStatus.UNAUTHORIZED
+                );
+            }
+
+            // 2. Lấy người dùng đang đăng nhập
+            User user = this.userService.getUserByUsername(username);
+
+            if (user == null) {
+                return new ResponseEntity<>(
+                        "Không tìm thấy người dùng.",
+                        HttpStatus.UNAUTHORIZED
+                );
+            }
+
+            // 3. Kiểm tra người dùng có phải bác sĩ
+            Doctor currentDoctor
+                    = this.doctorService.getDoctorByUserId(user.getId());
+
+            if (currentDoctor == null) {
+                return new ResponseEntity<>(
+                        "Bạn không có quyền thực hiện khám bệnh.",
+                        HttpStatus.FORBIDDEN
+                );
+            }
+
+            // 4. Lấy lịch hẹn
+            Appointment appointment
+                    = this.appointmentService.getAppointmentById(id);
+
+            if (appointment == null) {
+                return new ResponseEntity<>(
+                        "Không tìm thấy lịch hẹn.",
+                        HttpStatus.NOT_FOUND
+                );
+            }
+
+            // 5. Kiểm tra lịch có thuộc bác sĩ đang đăng nhập
+            if (!appointment.getDoctorId().getDoctorId()
+                    .equals(currentDoctor.getDoctorId())) {
+
+                return new ResponseEntity<>(
+                        "Lịch hẹn không thuộc bác sĩ đang đăng nhập.",
+                        HttpStatus.FORBIDDEN
+                );
+            }
+
+            // 6. Chỉ lịch đã xác nhận mới được khám
+            if (!"confirmed".equals(appointment.getStatus())) {
+                return new ResponseEntity<>(
+                        "Chỉ được khám lịch hẹn đã được xác nhận.",
+                        HttpStatus.CONFLICT
+                );
+            }
+
+            return new ResponseEntity<>(
+                    appointment,
+                    HttpStatus.OK
+            );
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    "Token không hợp lệ.",
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
     }
 
     @PutMapping("/appointments/{id}/cancel")
