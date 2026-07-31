@@ -181,7 +181,26 @@ const DoctorMedicalRecord = () => {
       setMsg("Cập nhật hồ sơ bệnh án thành công.");
     } catch (err) {
       console.error(err);
-      setMsg("Cập nhật hồ sơ bệnh án thất bại.");
+
+      const status = err.response?.status;
+      const responseMessage =
+        typeof err.response?.data === "string" ? err.response.data : "";
+
+      if (status === 401) {
+        setMsg(
+          responseMessage ||
+            "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.",
+        );
+      } else if (status === 403) {
+        setEditing(false);
+        setMsg(
+          responseMessage || "Bạn không có quyền cập nhật hồ sơ bệnh án này.",
+        );
+      } else if (status === 400) {
+        setMsg(responseMessage || "Dữ liệu cập nhật không hợp lệ.");
+      } else {
+        setMsg("Cập nhật hồ sơ bệnh án thất bại.");
+      }
     } finally {
       setSaving(false);
     }
@@ -195,8 +214,23 @@ const DoctorMedicalRecord = () => {
         .catch((err) => {
           console.error(err);
 
-          if (err.response?.status === 404) {
-            setMedicalRecord(null);
+          setMedicalRecord(null);
+          setEditing(false);
+
+          const status = err.response?.status;
+          const responseMessage =
+            typeof err.response?.data === "string" ? err.response.data : "";
+
+          if (status === 401) {
+            setMsg(
+              responseMessage ||
+                "Phiên đăng nhập không hợp lệ. Vui lòng đăng nhập lại.",
+            );
+          } else if (status === 403) {
+            setMsg(
+              responseMessage || "Bạn không có quyền xem hồ sơ bệnh án này.",
+            );
+          } else if (status === 404) {
             setMsg("Lịch hẹn này chưa có hồ sơ bệnh án.");
           } else {
             setMsg("Không tải được hồ sơ bệnh án.");
