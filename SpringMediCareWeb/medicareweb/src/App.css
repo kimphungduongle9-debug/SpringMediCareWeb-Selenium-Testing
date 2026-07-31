@@ -1115,3 +1115,10 @@ a {
 .booking-info-box .badge.bg-danger {
   background: #e84c5b !important;
 }
+
+/* Thu nhỏ giao diện desktop nhưng vẫn giữ đúng tâm */
+@media (min-width: 993px) {
+  html {
+    zoom: 0.9;
+  }
+}
