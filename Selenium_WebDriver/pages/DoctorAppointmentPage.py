@@ -134,3 +134,27 @@ class DoctorAppointmentPage(BasePage):
         )
 
         return len(buttons) > 0
+
+    def is_appointment_present_by_note(
+            self,
+            note):
+        rows = self.finds(
+            By.XPATH,
+            f"//tbody/tr[td[normalize-space()='{note}']]"
+        )
+
+        return len(rows) > 0
+
+    def is_patient_profile_button_present(
+            self,
+            appointment_id):
+        buttons = self.finds(
+            By.XPATH,
+            "//tbody/tr"
+            f"[td[normalize-space()='{appointment_id}']]"
+            "//*[self::a or self::button]"
+            "[contains(normalize-space(.), 'Xem hồ sơ') "
+            "or contains(normalize-space(.), 'Lịch sử khám')]"
+        )
+
+        return len(buttons) > 0

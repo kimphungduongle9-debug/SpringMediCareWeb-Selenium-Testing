@@ -48,6 +48,18 @@ class AppointmentApi:
             "Không tạo được dữ liệu lịch hẹn ban đầu. "
             f"HTTP {response.status_code}: {response.text}"
         )
+        appointments = self.get_appointments_by_doctor(
+            doctor_id
+        )
+
+        for appointment in appointments:
+            if appointment.get("notes") == notes:
+                return appointment
+
+        raise AssertionError(
+            "Đã tạo lịch nhưng không tìm thấy "
+            "lịch vừa tạo theo ghi chú."
+        )
 
     def cancel_appointment(self, appointment_id):
         response = requests.put(
@@ -150,3 +162,26 @@ class AppointmentApi:
             )
 
         return result
+
+    def find_appointment_by_note(
+            self,
+            doctor_id,
+            note):
+        """
+        Tìm lịch hẹn theo ghi chú nhận diện.
+        """
+
+        appointments = (
+            self.get_appointments_by_doctor(
+                doctor_id
+            )
+        )
+
+        for appointment in appointments:
+            if appointment.get("notes") == note:
+                return appointment
+
+        raise AssertionError(
+            "Không tìm thấy lịch hẹn có ghi chú: "
+            + note
+        )

@@ -53,6 +53,30 @@ class DoctorExaminationPage(BasePage):
         "and contains(normalize-space(.), "
         "'Lịch hẹn chưa được xác nhận hoặc đã bị hủy.')]"
     )
+
+    PATIENT_NAME = (
+        By.XPATH,
+        "//p[normalize-space()='Bệnh nhân']"
+        "/preceding-sibling::h5"
+    )
+
+    APPOINTMENT_NOTE = (
+        By.XPATH,
+        "//strong[normalize-space()='Lý do khám:']"
+        "/parent::p"
+    )
+
+    APPOINTMENT_STATUS = (
+        By.XPATH,
+        "//strong[normalize-space()='Trạng thái:']"
+        "/parent::p"
+    )
+    ACCESS_DENIED_MESSAGE = (
+        By.XPATH,
+        "//div[contains(@class, 'alert') "
+        "and contains(normalize-space(.), "
+        "'Bạn không có quyền khám lịch hẹn này.')]"
+    )
     def get_page_title(self):
         return self.find(
             *self.PAGE_TITLE
@@ -167,4 +191,24 @@ class DoctorExaminationPage(BasePage):
     def get_invalid_appointment_message(self):
         return self.find(
             *self.INVALID_APPOINTMENT_MESSAGE
+        ).text
+
+    def get_patient_name(self):
+        return self.find(
+            *self.PATIENT_NAME
+        ).text
+
+    def get_appointment_note(self):
+        return self.find(
+            *self.APPOINTMENT_NOTE
+        ).text
+
+    def get_appointment_status(self):
+        return self.find(
+            *self.APPOINTMENT_STATUS
+        ).text
+
+    def get_access_denied_message(self):
+        return self.find(
+            *self.ACCESS_DENIED_MESSAGE
         ).text
