@@ -5,7 +5,29 @@ import MySpinner from "../../components/MySpinner";
 import { MyUserContext } from "../../configs/Contexts";
 import DoctorScheduleForm from "../../components/DoctorScheduleForm";
 import DoctorScheduleTable from "../../components/DoctorScheduleTable";
+import DoctorScheduleFilter from "../../components/DoctorScheduleFilter";
+import DoctorScheduleWeekView from "../../components/DoctorScheduleWeekView";
+import { formatScheduleDateKey } from "../../utils/doctorScheduleDate";
 
+const formatLocalDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const getStartOfWeek = (date) => {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+
+  const day = result.getDay();
+  const distanceToMonday = day === 0 ? -6 : 1 - day;
+
+  result.setDate(result.getDate() + distanceToMonday);
+
+  return result;
+};
 const DoctorSchedule = () => {
   const [user] = useContext(MyUserContext);
   const isAdminOrStaff =
@@ -14,6 +36,11 @@ const DoctorSchedule = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+
+  const [filterDoctorId, setFilterDoctorId] = useState("");
+  const [filterWeekStart, setFilterWeekStart] = useState(() =>
+    formatLocalDate(getStartOfWeek(new Date())),
+  );
 
   const [scheduleId, setScheduleId] = useState(null);
   const [doctorId, setDoctorId] = useState("");
@@ -32,6 +59,12 @@ const DoctorSchedule = () => {
 
   const loadSchedules = async () => {
     let res = await Apis.get(endpoints.doctorSchedules);
+
+    console.log("DANH SÁCH LỊCH:", res.data);
+    console.log("LỊCH ĐẦU TIÊN:", res.data[0]);
+    console.log("WORK DATE:", res.data[0]?.workDate);
+    console.log("DOCTOR ID:", res.data[0]?.doctorId?.doctorId);
+
     setSchedules(res.data);
   };
 
@@ -101,9 +134,7 @@ const DoctorSchedule = () => {
   const editSchedule = (s) => {
     setScheduleId(s.scheduleId);
     setDoctorId(s.doctorId?.doctorId || "");
-    setWorkDate(
-      s.workDate ? new Date(s.workDate).toISOString().slice(0, 10) : "",
-    );
+    setWorkDate(formatScheduleDateKey(s.workDate));
     setShift(s.shift || "morning");
     setStartTime(
       s.startTime ? new Date(s.startTime).toTimeString().slice(0, 5) : "07:00",
@@ -144,6 +175,28 @@ const DoctorSchedule = () => {
       })
       .finally(() => setLoading(false));
   }, []);
+  const weekEndDate = new Date(`${filterWeekStart}T00:00:00`);
+  weekEndDate.setDate(weekEndDate.getDate() + 6);
+
+  const filterWeekEnd = formatLocalDate(weekEndDate);
+
+  const filteredSchedules = schedules.filter((schedule) => {
+    
+    const scheduleDoctorId = schedule.doctorId?.doctorId ?? schedule.doctorId;
+
+    const matchesDoctor =
+      filterDoctorId === "" ||
+      String(scheduleDoctorId) === String(filterDoctorId);
+
+    const scheduleDate = formatScheduleDateKey(schedule.workDate);
+
+    const matchesWeek =
+      scheduleDate !== "" &&
+      scheduleDate >= filterWeekStart &&
+      scheduleDate <= filterWeekEnd;
+
+    return matchesDoctor && matchesWeek;
+  });
   if (user === null) {
     return (
       <div className="main-content">
@@ -193,12 +246,31 @@ const DoctorSchedule = () => {
           saveSchedule={saveSchedule}
           resetForm={resetForm}
         />
+        <DoctorScheduleFilter
+          doctors={doctors}
+          filterDoctorId={filterDoctorId}
+          setFilterDoctorId={setFilterDoctorId}
+          filterWeekStart={filterWeekStart}
+          setFilterWeekStart={setFilterWeekStart}
+        />
+
+        <DoctorScheduleWeekView
+          schedules={filteredSchedules}
+          filterWeekStart={filterWeekStart}
+        />
 
         <DoctorScheduleTable
-          schedules={schedules}
+          schedules={filteredSchedules}
           editSchedule={editSchedule}
           deleteSchedule={deleteSchedule}
         />
+        {filteredSchedules.length === 0 && !loading && (
+          <Alert variant="info" className="mt-3">
+            {filterDoctorId === ""
+              ? "Không có lịch làm việc trong tuần này."
+              : "Bác sĩ đã chọn không có lịch làm việc trong tuần này."}
+          </Alert>
+        )}
 
         {loading && <MySpinner />}
       </div>
