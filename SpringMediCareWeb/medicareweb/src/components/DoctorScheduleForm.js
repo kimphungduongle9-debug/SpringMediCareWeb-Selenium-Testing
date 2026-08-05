@@ -58,10 +58,18 @@ const DoctorScheduleForm = ({
 
         <Form.Group className="mb-3">
           <Form.Label>Ngày làm việc</Form.Label>
-          <Form.Control
-            type="date"
-            value={workDate}
-            onChange={(e) => setWorkDate(e.target.value)}
+
+          <DatePicker
+            selected={parseLocalDate(workDate)}
+            onChange={(date) => setWorkDate(formatLocalDate(date))}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="dd/mm/yyyy"
+            className="form-control"
+            wrapperClassName="w-100"
+            showPopperArrow={false}
+            showIcon
+            toggleCalendarOnIconClick
+            calendarIconClassName="schedule-calendar-icon"
             required
           />
         </Form.Group>
@@ -92,15 +100,12 @@ const DoctorScheduleForm = ({
 
         <Form.Group className="mb-3">
           <Form.Label>Ghi chú</Form.Label>
-          <DatePicker
-            selected={parseLocalDate(workDate)}
-            onChange={(date) => setWorkDate(formatLocalDate(date))}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="dd/mm/yyyy"
-            className="form-control"
-            wrapperClassName="w-100"
-            showPopperArrow={false}
-            required
+
+          <Form.Control
+            type="text"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Ví dụ: Ca sáng, ca chiều, nghỉ phép..."
           />
         </Form.Group>
 
