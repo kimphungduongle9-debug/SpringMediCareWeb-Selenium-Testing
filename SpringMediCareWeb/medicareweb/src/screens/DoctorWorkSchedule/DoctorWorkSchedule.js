@@ -4,27 +4,57 @@ import { MyUserContext } from "../../configs/Contexts";
 import { authApis, endpoints } from "../../configs/Apis";
 import MySpinner from "../../components/MySpinner";
 import DoctorScheduleTable from "../../components/DoctorScheduleTable";
+import DoctorScheduleWeekView from "../../components/DoctorScheduleWeekView";
+import DoctorScheduleWeekNavigation from "../../components/DoctorScheduleWeekNavigation";
+import { formatScheduleDateKey } from "../../utils/doctorScheduleDate";
+
+const formatLocalDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const getStartOfWeek = (date) => {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+
+  const day = result.getDay();
+  const distanceToMonday = day === 0 ? -6 : 1 - day;
+
+  result.setDate(result.getDate() + distanceToMonday);
+
+  return result;
+};
 
 const DoctorWorkSchedule = () => {
   const [user] = useContext(MyUserContext);
+
   const [doctor, setDoctor] = useState(null);
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
+  const [filterWeekStart, setFilterWeekStart] = useState(() =>
+    formatLocalDate(getStartOfWeek(new Date())),
+  );
+
   const isDoctor = user !== null && user.role === "doctor";
 
   const loadDoctor = async () => {
-    let res = await authApis().get(endpoints.doctorByUser(user.id));
+    const res = await authApis().get(endpoints.doctorByUser(user.id));
+
     setDoctor(res.data);
+
     return res.data;
   };
 
   const loadSchedules = async () => {
-    let d = await loadDoctor();
+    const currentDoctor = await loadDoctor();
 
-    let res = await authApis().get(
-      endpoints.doctorSchedulesByDoctor(d.doctorId),
+    const res = await authApis().get(
+      endpoints.doctorSchedulesByDoctor(currentDoctor.doctorId),
     );
 
     setSchedules(res.data);
@@ -42,6 +72,21 @@ const DoctorWorkSchedule = () => {
         .finally(() => setLoading(false));
     }
   }, [user]);
+
+  const weekEndDate = new Date(`${filterWeekStart}T00:00:00`);
+  weekEndDate.setDate(weekEndDate.getDate() + 6);
+
+  const filterWeekEnd = formatLocalDate(weekEndDate);
+
+  const filteredSchedules = schedules.filter((schedule) => {
+    const scheduleDate = formatScheduleDateKey(schedule.workDate);
+
+    return (
+      scheduleDate !== "" &&
+      scheduleDate >= filterWeekStart &&
+      scheduleDate <= filterWeekEnd
+    );
+  });
 
   if (user === null) {
     return (
@@ -83,13 +128,30 @@ const DoctorWorkSchedule = () => {
 
         {msg && <Alert variant="info">{msg}</Alert>}
 
-        <div className="feature-card">
-          <DoctorScheduleTable schedules={schedules} showActions={false} />
+        <div className="feature-card" style={{ marginBottom: "30px" }}>
+          <h3>Chọn tuần làm việc</h3>
 
-          {schedules.length === 0 && !loading && (
-            <Alert variant="info">Chưa có lịch làm việc.</Alert>
-          )}
+          <DoctorScheduleWeekNavigation
+            filterWeekStart={filterWeekStart}
+            setFilterWeekStart={setFilterWeekStart}
+          />
         </div>
+
+        <DoctorScheduleWeekView
+          schedules={filteredSchedules}
+          filterWeekStart={filterWeekStart}
+        />
+
+        <DoctorScheduleTable
+          schedules={filteredSchedules}
+          showActions={false}
+        />
+
+        {filteredSchedules.length === 0 && !loading && (
+          <Alert variant="info" className="mt-3">
+            Không có lịch làm việc trong tuần này.
+          </Alert>
+        )}
 
         {loading && <MySpinner />}
       </div>
