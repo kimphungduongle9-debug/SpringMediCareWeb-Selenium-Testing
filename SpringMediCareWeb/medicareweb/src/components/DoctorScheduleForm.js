@@ -1,5 +1,22 @@
 import { Button, Form } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+const parseLocalDate = (value) => {
+  if (!value) return null;
 
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const formatLocalDate = (date) => {
+  if (!date) return "";
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
 const DoctorScheduleForm = ({
   scheduleId,
   doctors,
@@ -75,11 +92,15 @@ const DoctorScheduleForm = ({
 
         <Form.Group className="mb-3">
           <Form.Label>Ghi chú</Form.Label>
-          <Form.Control
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Ví dụ: Ca sáng, ca chiều, nghỉ phép..."
+          <DatePicker
+            selected={parseLocalDate(workDate)}
+            onChange={(date) => setWorkDate(formatLocalDate(date))}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="dd/mm/yyyy"
+            className="form-control"
+            wrapperClassName="w-100"
+            showPopperArrow={false}
+            required
           />
         </Form.Group>
 
