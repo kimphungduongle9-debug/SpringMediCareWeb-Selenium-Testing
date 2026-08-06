@@ -8,7 +8,19 @@ const DoctorScheduleTable = ({
 }) => {
   const formatDate = (value) => {
     if (!value) return "";
-    return new Date(value).toLocaleDateString("vi-VN");
+
+    if (typeof value === "string") {
+      const datePart = value.split("T")[0];
+      const [year, month, day] = datePart.split("-");
+
+      if (year && month && day) {
+        return `${day}/${month}/${year}`;
+      }
+    }
+
+    return new Date(value).toLocaleDateString("vi-VN", {
+      timeZone: "Asia/Ho_Chi_Minh",
+    });
   };
 
   const formatTime = (value) => {

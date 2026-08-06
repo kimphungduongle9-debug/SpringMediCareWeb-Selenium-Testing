@@ -61,15 +61,24 @@ const DoctorScheduleForm = ({
 
           <DatePicker
             selected={parseLocalDate(workDate)}
-            onChange={(date) => setWorkDate(formatLocalDate(date))}
+            onChange={(date) => {
+              if (!date) {
+                setWorkDate("");
+                return;
+              }
+
+              setWorkDate(formatLocalDate(date));
+            }}
             dateFormat="dd/MM/yyyy"
             placeholderText="dd/mm/yyyy"
             className="form-control"
             wrapperClassName="w-100"
             showPopperArrow={false}
             showIcon
-            toggleCalendarOnIconClick
             calendarIconClassName="schedule-calendar-icon"
+            toggleCalendarOnIconClick
+            onKeyDown={(e) => e.preventDefault()}
+            onPaste={(e) => e.preventDefault()}
             required
           />
         </Form.Group>

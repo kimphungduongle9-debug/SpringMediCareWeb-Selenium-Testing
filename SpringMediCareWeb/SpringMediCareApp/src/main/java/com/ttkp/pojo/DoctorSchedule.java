@@ -9,10 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import java.sql.Date;
+import java.sql.Time;
 import java.io.Serializable;
-import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -32,27 +31,27 @@ public class DoctorSchedule implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "work_date")
-    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "yyyy-MM-dd",
+            timezone = "Asia/Ho_Chi_Minh"
+    )
     private Date workDate;
-
     @Basic(optional = false)
     @Column(name = "shift")
     private String shift;
 
     @Basic(optional = false)
     @Column(name = "start_time")
-    @Temporal(TemporalType.TIME)
     @DateTimeFormat(pattern = "HH:mm")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private Date startTime;
+    private Time startTime;
     @Basic(optional = false)
     @Column(name = "end_time")
-    @Temporal(TemporalType.TIME)
     @DateTimeFormat(pattern = "HH:mm")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private Date endTime;
+    private Time endTime;
 
     @Basic(optional = false)
     @Column(name = "status")
@@ -100,19 +99,19 @@ public class DoctorSchedule implements Serializable {
         this.shift = shift;
     }
 
-    public Date getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public Time getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Time endTime) {
         this.endTime = endTime;
     }
 

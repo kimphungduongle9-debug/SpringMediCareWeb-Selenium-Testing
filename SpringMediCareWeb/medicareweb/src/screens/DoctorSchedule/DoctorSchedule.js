@@ -256,15 +256,13 @@ const DoctorSchedule = () => {
         />
 
         <DoctorScheduleTable
-          schedules={filteredSchedules}
+          schedules={schedules}
           editSchedule={editSchedule}
           deleteSchedule={deleteSchedule}
         />
-        {filteredSchedules.length === 0 && !loading && (
+        {schedules.length === 0 && !loading && (
           <Alert variant="info" className="mt-3">
-            {filterDoctorId === ""
-              ? "Không có lịch làm việc trong tuần này."
-              : "Bác sĩ đã chọn không có lịch làm việc trong tuần này."}
+            Chưa có lịch làm việc.
           </Alert>
         )}
 
