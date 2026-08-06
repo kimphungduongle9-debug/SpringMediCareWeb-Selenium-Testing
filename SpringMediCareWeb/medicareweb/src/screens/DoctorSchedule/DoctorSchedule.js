@@ -96,9 +96,7 @@ const DoctorSchedule = () => {
     e.preventDefault();
 
     let data = {
-      doctorId: {
-        doctorId: parseInt(doctorId),
-      },
+      doctorId: parseInt(doctorId, 10),
       workDate: workDate,
       shift: shift,
       startTime: `${startTime}:00`,
@@ -106,7 +104,6 @@ const DoctorSchedule = () => {
       status: status,
       note: note,
     };
-
     setLoading(true);
 
     try {
@@ -181,7 +178,6 @@ const DoctorSchedule = () => {
   const filterWeekEnd = formatLocalDate(weekEndDate);
 
   const filteredSchedules = schedules.filter((schedule) => {
-    
     const scheduleDoctorId = schedule.doctorId?.doctorId ?? schedule.doctorId;
 
     const matchesDoctor =

@@ -14,6 +14,7 @@ import jakarta.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "doctor_schedule")
@@ -33,6 +34,7 @@ public class DoctorSchedule implements Serializable {
     @Column(name = "work_date")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date workDate;
 
     @Basic(optional = false)
@@ -43,12 +45,13 @@ public class DoctorSchedule implements Serializable {
     @Column(name = "start_time")
     @Temporal(TemporalType.TIME)
     @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private Date startTime;
-
     @Basic(optional = false)
     @Column(name = "end_time")
     @Temporal(TemporalType.TIME)
     @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private Date endTime;
 
     @Basic(optional = false)
