@@ -88,6 +88,28 @@ public class DoctorScheduleRepositoryImpl implements DoctorScheduleRepository {
     }
 
     @Override
+    public boolean existsByDoctorDateAndShift(int doctorId, java.sql.Date workDate, String shift) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Long> q = b.createQuery(Long.class);
+        Root<DoctorSchedule> root = q.from(DoctorSchedule.class);
+
+        q.select(b.count(root));
+        q.where(
+                b.and(
+                        b.equal(root.get("doctorId").get("doctorId"), doctorId),
+                        b.equal(root.get("workDate"), workDate),
+                        b.equal(root.get("shift"), shift)
+                )
+        );
+
+        Long count = s.createQuery(q).getSingleResult();
+
+        return count > 0;
+    }
+
+    @Override
     public void addOrUpdateSchedule(DoctorSchedule schedule) {
         Session s = this.factory.getObject().getCurrentSession();
 

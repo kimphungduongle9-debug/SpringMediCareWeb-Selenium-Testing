@@ -122,7 +122,12 @@ const DoctorSchedule = () => {
       await loadSchedules();
     } catch (err) {
       console.error(err);
-      setMsg("Có lỗi xảy ra. Kiểm tra lại đăng nhập hoặc dữ liệu nhập.");
+
+      const errorMessage =
+        err.response?.data ||
+        "Có lỗi xảy ra. Kiểm tra lại đăng nhập hoặc dữ liệu nhập.";
+
+      setMsg(errorMessage);
     } finally {
       setLoading(false);
     }

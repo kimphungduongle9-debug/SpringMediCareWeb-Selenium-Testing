@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
+
 @Service
 public class DoctorScheduleServiceImpl implements DoctorScheduleService {
 
@@ -30,6 +31,22 @@ public class DoctorScheduleServiceImpl implements DoctorScheduleService {
 
     @Override
     public void addOrUpdateSchedule(DoctorSchedule schedule) {
+        if (schedule.getScheduleId() == null) {
+            int doctorId = schedule.getDoctorId().getDoctorId();
+
+            boolean exists = this.doctorScheduleRepo.existsByDoctorDateAndShift(
+                    doctorId,
+                    schedule.getWorkDate(),
+                    schedule.getShift()
+            );
+
+            if (exists) {
+                throw new IllegalArgumentException(
+                        "Lịch làm việc của bác sĩ trong ngày và ca này đã tồn tại."
+                );
+            }
+        }
+
         this.doctorScheduleRepo.addOrUpdateSchedule(schedule);
     }
 

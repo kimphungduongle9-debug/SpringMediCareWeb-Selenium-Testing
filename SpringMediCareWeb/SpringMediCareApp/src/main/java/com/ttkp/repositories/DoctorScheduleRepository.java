@@ -10,12 +10,13 @@ public interface DoctorScheduleRepository {
     List<DoctorSchedule> getSchedulesByDoctorId(int doctorId);
 
     DoctorSchedule getScheduleById(int id);
-    
+
     boolean isDoctorAvailable(int doctorId, java.util.Date appointmentDate);
+
+    boolean existsByDoctorDateAndShift(int doctorId, java.sql.Date workDate, String shift);
 
     void addOrUpdateSchedule(DoctorSchedule schedule);
 
     void deleteSchedule(int id);
-    
-    
+
 }

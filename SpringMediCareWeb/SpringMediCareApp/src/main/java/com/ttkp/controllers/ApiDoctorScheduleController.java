@@ -44,9 +44,20 @@ public class ApiDoctorScheduleController {
     }
 
     @PostMapping("/secure/doctor-schedules")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody DoctorSchedule schedule) {
-        this.doctorScheduleService.addOrUpdateSchedule(schedule);
+    public ResponseEntity<String> create(@RequestBody DoctorSchedule schedule) {
+        try {
+            this.doctorScheduleService.addOrUpdateSchedule(schedule);
+
+            return new ResponseEntity<>(
+                    "Thêm lịch làm việc thành công!",
+                    HttpStatus.CREATED
+            );
+        } catch (IllegalArgumentException ex) {
+            return new ResponseEntity<>(
+                    ex.getMessage(),
+                    HttpStatus.CONFLICT
+            );
+        }
     }
 
     @PutMapping("/secure/doctor-schedules/{scheduleId}")
