@@ -47,6 +47,17 @@ class DoctorScheduleAdminPage(BasePage):
         "div.alert.alert-info"
     )
 
+    WEEK_SCHEDULE_TABLE = (
+        By.XPATH,
+        "//h3[normalize-space()='Lịch làm việc theo tuần']"
+        "/following::table[1]"
+    )
+
+    SCHEDULE_LIST_TABLE = (
+        By.XPATH,
+        "//h3[normalize-space()='Danh sách lịch làm việc']"
+        "/following::table[1]"
+    )
     WORK_DATE_DAY_8 = (
         By.XPATH,
         "//div[contains(@class, 'react-datepicker__day') "
@@ -62,6 +73,12 @@ class DoctorScheduleAdminPage(BasePage):
     CANCEL_EDIT_BUTTON = (
         By.XPATH,
         "//button[normalize-space()='Hủy sửa']"
+    )
+    WORK_DATE_DAY_1 = (
+        By.XPATH,
+        "//div[contains(@class, 'react-datepicker__day') "
+        "and not(contains(@class, 'react-datepicker__day--outside-month')) "
+        "and normalize-space()='1']"
     )
     def open_page(self):
         self.open(self.URL)
@@ -328,3 +345,331 @@ class DoctorScheduleAdminPage(BasePage):
         return self.find(
             *self.SUCCESS_MESSAGE
         ).text
+
+    def is_schedule_present_in_list(
+            self,
+            doctor_name,
+            work_date,
+            shift_name,
+            status,
+            note):
+
+        schedule_table = self.find(
+            *self.SCHEDULE_LIST_TABLE
+        )
+
+        rows = schedule_table.find_elements(
+            By.CSS_SELECTOR,
+            "tbody tr"
+        )
+
+        for row in rows:
+            cells = row.find_elements(
+                By.TAG_NAME,
+                "td"
+            )
+
+            if len(cells) < 8:
+                continue
+
+            if (
+                    cells[1].text.strip() == doctor_name
+                    and cells[2].text.strip() == work_date
+                    and cells[3].text.strip() == shift_name
+                    and cells[6].text.strip() == status
+                    and cells[7].text.strip() == note
+            ):
+                return True
+
+        return False
+
+    def is_schedule_present_in_week_view(
+            self,
+            doctor_name,
+            work_date,
+            shift_name,
+            status,
+            note):
+
+        week_table = self.find(
+            *self.WEEK_SCHEDULE_TABLE
+        )
+
+        headers = week_table.find_elements(
+            By.CSS_SELECTOR,
+            "thead th"
+        )
+
+        day_index = -1
+
+        for index in range(1, len(headers)):
+            small = headers[index].find_element(
+                By.TAG_NAME,
+                "small"
+            )
+
+            if small.text.strip() == work_date:
+                day_index = index - 1
+                break
+
+        if day_index == -1:
+            return False
+
+        rows = week_table.find_elements(
+            By.CSS_SELECTOR,
+            "tbody tr"
+        )
+
+        for row in rows:
+            shift_header = row.find_element(
+                By.TAG_NAME,
+                "th"
+            )
+
+            shift_label = shift_header.find_element(
+                By.TAG_NAME,
+                "div"
+            ).text.strip()
+
+            if shift_label != shift_name:
+                continue
+
+            cells = row.find_elements(
+                By.TAG_NAME,
+                "td"
+            )
+
+            if day_index >= len(cells):
+                return False
+
+            target_cell = cells[day_index]
+
+            cell_text = target_cell.text
+
+            return (
+                    doctor_name in cell_text
+                    and status in cell_text
+                    and note in cell_text
+            )
+
+        return False
+
+    def scroll_to_success_message(self):
+        self.scroll_to_element(
+            *self.SUCCESS_MESSAGE
+        )
+
+        time.sleep(1)
+
+    def scroll_to_schedule_list(self):
+        self.scroll_to_element(
+            *self.SCHEDULE_LIST_TABLE
+        )
+
+        time.sleep(1)
+
+    def scroll_to_schedule_in_list(
+            self,
+            doctor_name,
+            work_date,
+            shift_name,
+            status,
+            note):
+
+        schedule_table = self.find(
+            *self.SCHEDULE_LIST_TABLE
+        )
+
+        rows = schedule_table.find_elements(
+            By.CSS_SELECTOR,
+            "tbody tr"
+        )
+
+        for row in rows:
+            cells = row.find_elements(
+                By.TAG_NAME,
+                "td"
+            )
+
+            if len(cells) < 8:
+                continue
+
+            if (
+                    cells[1].text.strip() == doctor_name
+                    and cells[2].text.strip() == work_date
+                    and cells[3].text.strip() == shift_name
+                    and cells[6].text.strip() == status
+                    and cells[7].text.strip() == note
+            ):
+                self.driver.execute_script(
+                    "arguments[0].scrollIntoView("
+                    "{block: 'center'});",
+                    row
+                )
+
+                time.sleep(2)
+
+                return True
+
+        return False
+
+    def scroll_to_schedule_in_week_view(
+            self,
+            doctor_name,
+            work_date,
+            shift_name,
+            status,
+            note):
+
+        week_table = self.find(
+            *self.WEEK_SCHEDULE_TABLE
+        )
+
+        headers = week_table.find_elements(
+            By.CSS_SELECTOR,
+            "thead th"
+        )
+
+        day_index = -1
+
+        for index in range(1, len(headers)):
+            date_text = headers[index].find_element(
+                By.TAG_NAME,
+                "small"
+            ).text.strip()
+
+            if date_text == work_date:
+                day_index = index - 1
+                break
+
+        if day_index == -1:
+            return False
+
+        rows = week_table.find_elements(
+            By.CSS_SELECTOR,
+            "tbody tr"
+        )
+
+        for row in rows:
+            shift_header = row.find_element(
+                By.TAG_NAME,
+                "th"
+            )
+
+            shift_label = shift_header.find_element(
+                By.TAG_NAME,
+                "div"
+            ).text.strip()
+
+            if shift_label != shift_name:
+                continue
+
+            cells = row.find_elements(
+                By.TAG_NAME,
+                "td"
+            )
+
+            if day_index >= len(cells):
+                return False
+
+            target_cell = cells[day_index]
+
+            schedules = target_cell.find_elements(
+                By.CSS_SELECTOR,
+                "div.border.rounded.p-2.mb-2"
+            )
+
+            for schedule in schedules:
+                schedule_text = schedule.text
+
+                if (
+                        doctor_name in schedule_text
+                        and status in schedule_text
+                        and note in schedule_text
+                ):
+                    self.driver.execute_script(
+                        "arguments[0].scrollIntoView("
+                        "{block: 'center'});",
+                        schedule
+                    )
+
+                    time.sleep(2)
+
+                    return True
+
+        return False
+
+    def is_doctor_value_missing(self):
+        doctor_select = self.find(
+            *self.DOCTOR_SELECT
+        )
+
+        return self.driver.execute_script(
+            "return arguments[0].validity.valueMissing;",
+            doctor_select
+        )
+
+    def scroll_to_doctor_select(self):
+        doctor_select = self.find(
+            *self.DOCTOR_SELECT
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView("
+            "{block: 'center'});",
+            doctor_select
+        )
+
+        time.sleep(2)
+
+    def is_work_date_value_missing(self):
+        work_date_input = self.find(
+            *self.WORK_DATE_INPUT
+        )
+
+        return self.driver.execute_script(
+            "return arguments[0].validity.valueMissing;",
+            work_date_input
+        )
+
+    def scroll_to_work_date_input(self):
+        work_date_input = self.find(
+            *self.WORK_DATE_INPUT
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView("
+            "{block: 'center'});",
+            work_date_input
+        )
+
+        time.sleep(2)
+
+    def select_work_date_day_1(self):
+        self.find(
+            *self.WORK_DATE_INPUT
+        ).click()
+
+        time.sleep(1)
+
+        self.find(
+            *self.WORK_DATE_DAY_1
+        ).click()
+
+        time.sleep(1)
+
+    def click_add_button_multiple_times(
+            self,
+            times=3):
+
+        add_button = self.find(
+            *self.ADD_BUTTON
+        )
+
+        for _ in range(times):
+            self.driver.execute_script(
+                "arguments[0].click();",
+                add_button
+            )
+
+        time.sleep(3)
