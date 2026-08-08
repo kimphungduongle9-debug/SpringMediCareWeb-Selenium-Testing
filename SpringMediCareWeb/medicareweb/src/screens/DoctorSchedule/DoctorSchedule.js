@@ -138,12 +138,9 @@ const DoctorSchedule = () => {
     setDoctorId(s.doctorId?.doctorId || "");
     setWorkDate(formatScheduleDateKey(s.workDate));
     setShift(s.shift || "morning");
-    setStartTime(
-      s.startTime ? new Date(s.startTime).toTimeString().slice(0, 5) : "07:00",
-    );
-    setEndTime(
-      s.endTime ? new Date(s.endTime).toTimeString().slice(0, 5) : "11:30",
-    );
+    setStartTime(s.startTime ? String(s.startTime).slice(0, 5) : "07:00");
+
+    setEndTime(s.endTime ? String(s.endTime).slice(0, 5) : "11:30");
     setStatus(s.status || "available");
     setNote(s.note || "");
     window.scrollTo(0, 0);
