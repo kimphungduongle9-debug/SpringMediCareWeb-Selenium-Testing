@@ -1,5 +1,6 @@
 import time
 import pytest
+from datetime import datetime, timedelta
 from pages.LoginPage import LoginPage
 from pages.DoctorScheduleAdminPage import DoctorScheduleAdminPage
 from doctor_schedule_data import (
@@ -13,6 +14,9 @@ from doctor_schedule_data import (
     doctor_schedule_tc11_data,
     doctor_schedule_tc12_data,
     doctor_schedule_tc13_data,
+    doctor_schedule_tc18_data,
+    doctor_schedule_tc19_data,
+    doctor_schedule_tc20_data
 )
 
 ADMIN_USERNAME = "admin_system"
@@ -1556,3 +1560,603 @@ def test_admin_form_resets_after_add_schedule_success(
             ]
         )
     )
+
+def test_admin_filters_schedule_by_doctor(
+        driver):
+    """
+    TC-DS-ADMIN-014:
+    Kiểm tra Admin có thể lọc lịch làm việc
+    theo một bác sĩ cụ thể.
+    """
+
+    login_admin(driver)
+
+    schedule_page = DoctorScheduleAdminPage(
+        driver
+    )
+
+    schedule_page.open_page()
+
+    time.sleep(2)
+
+    schedule_page.select_filter_doctor(
+        "Tran Binh"
+    )
+    schedule_page.scroll_to_week_view()
+    assert (
+        schedule_page
+        .get_selected_filter_doctor_text()
+        == "Tran Binh"
+    )
+
+    doctor_names = (
+        schedule_page
+        .get_week_view_doctor_names()
+    )
+
+    assert len(doctor_names) > 0
+
+    assert all(
+        doctor_name == "Tran Binh"
+        for doctor_name in doctor_names
+    )
+def test_admin_resets_doctor_schedule_filter(
+        driver):
+    """
+    TC-DS-ADMIN-015:
+    Kiểm tra hiển thị lại lịch của tất cả bác sĩ
+    sau khi bỏ điều kiện lọc.
+    """
+
+    login_admin(driver)
+
+    schedule_page = DoctorScheduleAdminPage(
+        driver
+    )
+
+    schedule_page.open_page()
+
+    time.sleep(2)
+
+    doctor_names_before = (
+        schedule_page.get_week_view_doctor_names()
+    )
+
+    assert len(doctor_names_before) > 0
+
+    assert any(
+        doctor_name != "Tran Binh"
+        for doctor_name in doctor_names_before
+    )
+
+    schedule_page.select_filter_doctor(
+        "Tran Binh"
+    )
+
+    assert (
+        schedule_page.get_selected_filter_doctor_text()
+        == "Tran Binh"
+    )
+
+    doctor_names_filtered = (
+        schedule_page.get_week_view_doctor_names()
+    )
+
+    assert len(doctor_names_filtered) > 0
+
+    assert all(
+        doctor_name == "Tran Binh"
+        for doctor_name in doctor_names_filtered
+    )
+
+    schedule_page.select_filter_doctor(
+        "Tất cả bác sĩ"
+    )
+
+    schedule_page.scroll_to_week_view()
+
+    assert (
+        schedule_page.get_selected_filter_doctor_text()
+        == "Tất cả bác sĩ"
+    )
+
+    doctor_names_after = (
+        schedule_page.get_week_view_doctor_names()
+    )
+
+    assert sorted(doctor_names_after) == sorted(
+        doctor_names_before
+    )
+def test_admin_views_previous_week_schedule(
+        driver):
+    """
+    TC-DS-ADMIN-016:
+    Kiểm tra Admin có thể chuyển sang tuần trước
+    để xem lịch làm việc.
+    """
+
+    login_admin(driver)
+
+    schedule_page = DoctorScheduleAdminPage(
+        driver
+    )
+
+    schedule_page.open_page()
+
+    time.sleep(2)
+
+    week_range_before = (
+        schedule_page.get_week_range_text()
+    )
+
+    dates_before = (
+        schedule_page.get_week_header_dates()
+    )
+
+    assert len(dates_before) == 7
+
+    schedule_page.click_previous_week()
+
+    week_range_after = (
+        schedule_page.get_week_range_text()
+    )
+
+    dates_after = (
+        schedule_page.get_week_header_dates()
+    )
+
+    assert week_range_after != week_range_before
+
+    assert len(dates_after) == 7
+
+    first_date_before = datetime.strptime(
+        dates_before[0],
+        "%d/%m/%Y"
+    )
+
+    first_date_after = datetime.strptime(
+        dates_after[0],
+        "%d/%m/%Y"
+    )
+
+    assert (
+        first_date_after
+        == first_date_before - timedelta(days=7)
+    )
+
+    schedule_page.scroll_to_week_view()
+
+    time.sleep(2)
+
+def test_admin_views_next_week_schedule(
+        driver):
+    """
+    TC-DS-ADMIN-017:
+    Kiểm tra Admin có thể chuyển sang tuần sau
+    để xem lịch làm việc.
+    """
+
+    login_admin(driver)
+
+    schedule_page = DoctorScheduleAdminPage(
+        driver
+    )
+
+    schedule_page.open_page()
+
+    time.sleep(2)
+
+    week_range_before = (
+        schedule_page.get_week_range_text()
+    )
+
+    dates_before = (
+        schedule_page.get_week_header_dates()
+    )
+
+    assert len(dates_before) == 7
+
+    schedule_page.click_next_week()
+
+    week_range_after = (
+        schedule_page.get_week_range_text()
+    )
+
+    dates_after = (
+        schedule_page.get_week_header_dates()
+    )
+
+    assert week_range_after != week_range_before
+
+    assert len(dates_after) == 7
+
+    first_date_before = datetime.strptime(
+        dates_before[0],
+        "%d/%m/%Y"
+    )
+
+    first_date_after = datetime.strptime(
+        dates_after[0],
+        "%d/%m/%Y"
+    )
+
+    assert (
+        first_date_after
+        == first_date_before + timedelta(days=7)
+    )
+
+    schedule_page.scroll_to_week_view()
+
+    time.sleep(2)
+
+def test_admin_updates_doctor_schedule(
+        driver,
+        doctor_schedule_tc18_data):
+    """
+    TC-DS-ADMIN-018:
+    Kiểm tra Admin cập nhật lịch làm việc
+    của bác sĩ thành công.
+    """
+
+    login_admin(driver)
+
+    schedule_page = DoctorScheduleAdminPage(
+        driver
+    )
+
+    schedule_page.open_page()
+
+    time.sleep(2)
+
+    assert (
+        schedule_page.click_edit_schedule_by_id(
+            doctor_schedule_tc18_data[
+                "schedule_id"
+            ]
+        )
+    )
+
+    assert (
+        schedule_page.get_update_form_title()
+        == "Cập nhật lịch làm việc"
+    )
+
+    assert (
+        schedule_page.get_selected_doctor_text()
+        == doctor_schedule_tc18_data[
+            "doctor_name"
+        ]
+    )
+
+    assert (
+        schedule_page.get_work_date_value()
+        == doctor_schedule_tc18_data[
+            "work_date_list"
+        ]
+    )
+
+    assert (
+        schedule_page.get_selected_shift_text()
+        == doctor_schedule_tc18_data[
+            "shift_form"
+        ]
+    )
+
+    assert (
+        schedule_page.get_selected_status_text()
+        == doctor_schedule_tc18_data[
+            "status_before_form"
+        ]
+    )
+
+    assert (
+        schedule_page.get_note_value()
+        == doctor_schedule_tc18_data[
+            "note_before"
+        ]
+    )
+
+    time.sleep(2)
+    schedule_page.select_status(
+        doctor_schedule_tc18_data[
+            "status_after_form"
+        ]
+    )
+
+    assert (
+        schedule_page.get_selected_status_text()
+        == doctor_schedule_tc18_data[
+            "status_after_form"
+        ]
+    )
+
+    schedule_page.enter_note(
+        doctor_schedule_tc18_data[
+            "note_after"
+        ]
+    )
+
+    assert (
+        schedule_page.get_note_value()
+        == doctor_schedule_tc18_data[
+            "note_after"
+        ]
+    )
+
+    schedule_page.click_update_button()
+
+    schedule_page.scroll_to_success_message()
+
+    assert (
+        schedule_page.get_success_message()
+        == "Cập nhật lịch làm việc thành công!"
+    )
+    assert (
+        schedule_page.scroll_to_schedule_in_list(
+            doctor_schedule_tc18_data[
+                "doctor_name"
+            ],
+            doctor_schedule_tc18_data[
+                "work_date_list"
+            ],
+            doctor_schedule_tc18_data[
+                "shift_name"
+            ],
+            doctor_schedule_tc18_data[
+                "status_after_display"
+            ],
+            doctor_schedule_tc18_data[
+                "note_after"
+            ]
+        )
+    )
+
+    time.sleep(2)
+
+def test_admin_cancels_edit_doctor_schedule(
+        driver,
+        doctor_schedule_tc19_data):
+    """
+    TC-DS-ADMIN-019:
+    Kiểm tra chức năng Hủy sửa
+    không làm thay đổi dữ liệu lịch.
+    """
+
+    login_admin(driver)
+
+    schedule_page = DoctorScheduleAdminPage(
+        driver
+    )
+
+    schedule_page.open_page()
+
+    time.sleep(2)
+
+    assert (
+        schedule_page.click_edit_schedule_by_id(
+            doctor_schedule_tc19_data[
+                "schedule_id"
+            ]
+        )
+    )
+
+    assert (
+        schedule_page.get_update_form_title()
+        == "Cập nhật lịch làm việc"
+    )
+
+    assert (
+        schedule_page.get_selected_status_text()
+        == doctor_schedule_tc19_data[
+            "status_before_form"
+        ]
+    )
+
+    assert (
+        schedule_page.get_note_value()
+        == doctor_schedule_tc19_data[
+            "note_before"
+        ]
+    )
+
+    schedule_page.select_status(
+        doctor_schedule_tc19_data[
+            "status_changed_form"
+        ]
+    )
+
+    schedule_page.enter_note(
+        doctor_schedule_tc19_data[
+            "note_changed"
+        ]
+    )
+
+    assert (
+        schedule_page.get_selected_status_text()
+        == doctor_schedule_tc19_data[
+            "status_changed_form"
+        ]
+    )
+
+    assert (
+        schedule_page.get_note_value()
+        == doctor_schedule_tc19_data[
+            "note_changed"
+        ]
+    )
+
+    schedule_page.click_cancel_edit_button()
+
+    assert (
+        schedule_page.get_form_title()
+        == "Thêm lịch làm việc"
+    )
+
+    assert (
+        schedule_page.scroll_to_schedule_in_list(
+            doctor_schedule_tc19_data[
+                "doctor_name"
+            ],
+            doctor_schedule_tc19_data[
+                "work_date_list"
+            ],
+            doctor_schedule_tc19_data[
+                "shift_name"
+            ],
+            doctor_schedule_tc19_data[
+                "status_before_display"
+            ],
+            doctor_schedule_tc19_data[
+                "note_before"
+            ]
+        )
+    )
+
+    assert (
+        schedule_page.is_schedule_present_in_list(
+            doctor_schedule_tc19_data[
+                "doctor_name"
+            ],
+            doctor_schedule_tc19_data[
+                "work_date_list"
+            ],
+            doctor_schedule_tc19_data[
+                "shift_name"
+            ],
+            doctor_schedule_tc19_data[
+                "status_before_display"
+            ],
+            doctor_schedule_tc19_data[
+                "note_before"
+            ]
+        )
+    )
+
+    time.sleep(2)
+
+def test_admin_deletes_doctor_schedule(
+        driver,
+        doctor_schedule_tc20_data):
+    """
+    TC-DS-ADMIN-020:
+    Kiểm tra Admin có thể xóa
+    một lịch làm việc đã tồn tại.
+    """
+
+    login_admin(driver)
+
+    schedule_page = DoctorScheduleAdminPage(
+        driver
+    )
+
+    schedule_page.open_page()
+
+    time.sleep(2)
+
+    assert (
+        schedule_page.scroll_to_schedule_in_list(
+            doctor_schedule_tc20_data[
+                "doctor_name"
+            ],
+            doctor_schedule_tc20_data[
+                "work_date_list"
+            ],
+            doctor_schedule_tc20_data[
+                "shift_name"
+            ],
+            doctor_schedule_tc20_data[
+                "status_display"
+            ],
+            doctor_schedule_tc20_data[
+                "note"
+            ]
+        )
+    )
+
+    assert (
+        schedule_page.is_schedule_present_in_list(
+            doctor_schedule_tc20_data[
+                "doctor_name"
+            ],
+            doctor_schedule_tc20_data[
+                "work_date_list"
+            ],
+            doctor_schedule_tc20_data[
+                "shift_name"
+            ],
+            doctor_schedule_tc20_data[
+                "status_display"
+            ],
+            doctor_schedule_tc20_data[
+                "note"
+            ]
+        )
+    )
+
+    assert (
+        schedule_page.click_delete_schedule_by_id(
+            doctor_schedule_tc20_data[
+                "schedule_id"
+            ]
+        )
+    )
+
+    alert = driver.switch_to.alert
+
+    assert (
+        alert.text
+        == "Bạn chắc chắn muốn xóa lịch này không?"
+    )
+
+    time.sleep(2)
+
+    alert.accept()
+
+    time.sleep(2)
+
+    schedule_page.scroll_to_success_message()
+
+    assert (
+            schedule_page.get_success_message()
+            == "Xóa lịch làm việc thành công!"
+    )
+
+    assert not (
+        schedule_page.is_schedule_present_in_list(
+            doctor_schedule_tc20_data[
+                "doctor_name"
+            ],
+            doctor_schedule_tc20_data[
+                "work_date_list"
+            ],
+            doctor_schedule_tc20_data[
+                "shift_name"
+            ],
+            doctor_schedule_tc20_data[
+                "status_display"
+            ],
+            doctor_schedule_tc20_data[
+                "note"
+            ]
+        )
+    )
+
+    deleted_schedule = (
+        doctor_schedule_tc20_data[
+            "schedule_api"
+        ].find_schedule(
+            doctor_schedule_tc20_data[
+                "doctor_name"
+            ],
+            doctor_schedule_tc20_data[
+                "work_date_api"
+            ],
+            doctor_schedule_tc20_data[
+                "shift_value"
+            ]
+        )
+    )
+
+    assert deleted_schedule is None
+
+    time.sleep(2)

@@ -80,6 +80,30 @@ class DoctorScheduleAdminPage(BasePage):
         "and not(contains(@class, 'react-datepicker__day--outside-month')) "
         "and normalize-space()='1']"
     )
+    FILTER_DOCTOR_SELECT = (
+        By.XPATH,
+        "//div[contains(@class, 'feature-card') "
+        "and contains(., 'Lọc lịch làm việc')]"
+        "//label[normalize-space()='Bác sĩ']"
+        "/following-sibling::select"
+    )
+    PREVIOUS_WEEK_BUTTON = (
+        By.XPATH,
+        "//button[normalize-space()='← Tuần trước']"
+    )
+    WEEK_RANGE = (
+        By.XPATH,
+        "//button[normalize-space()='← Tuần trước']"
+        "/following-sibling::div[1]"
+    )
+    NEXT_WEEK_BUTTON = (
+        By.XPATH,
+        "//button[normalize-space()='Tuần sau →']"
+    )
+    UPDATE_FORM_TITLE = (
+        By.XPATH,
+        "//h3[normalize-space()='Cập nhật lịch làm việc']"
+    )
     def open_page(self):
         self.open(self.URL)
 
@@ -673,3 +697,200 @@ class DoctorScheduleAdminPage(BasePage):
             )
 
         time.sleep(3)
+
+    def select_filter_doctor(self, doctor_name):
+        doctor_select = self.find(
+            *self.FILTER_DOCTOR_SELECT
+        )
+
+        options = doctor_select.find_elements(
+            By.TAG_NAME,
+            "option"
+        )
+
+        for option in options:
+            if option.text == doctor_name:
+                option.click()
+                time.sleep(2)
+                return
+
+    def get_selected_filter_doctor_text(self):
+        doctor_select = self.find(
+            *self.FILTER_DOCTOR_SELECT
+        )
+
+        options = doctor_select.find_elements(
+            By.TAG_NAME,
+            "option"
+        )
+
+        for option in options:
+            if option.is_selected():
+                return option.text
+
+        return ""
+
+    def get_week_view_doctor_names(self):
+        week_table = self.find(
+            *self.WEEK_SCHEDULE_TABLE
+        )
+
+        doctor_elements = week_table.find_elements(
+            By.CSS_SELECTOR,
+            "tbody td div.border.rounded.p-2.mb-2 strong"
+        )
+
+        return [
+            doctor.text.strip()
+            for doctor in doctor_elements
+            if doctor.text.strip() != ""
+        ]
+
+    def scroll_to_week_view(self):
+        self.scroll_to_element(
+            *self.WEEK_SCHEDULE_TABLE
+        )
+
+        time.sleep(2)
+
+    def get_week_range_text(self):
+        return self.find(
+            *self.WEEK_RANGE
+        ).text.strip()
+
+    def get_week_header_dates(self):
+        week_table = self.find(
+            *self.WEEK_SCHEDULE_TABLE
+        )
+
+        headers = week_table.find_elements(
+            By.CSS_SELECTOR,
+            "thead th small"
+        )
+
+        return [
+            header.text.strip()
+            for header in headers
+        ]
+
+    def click_previous_week(self):
+        self.click(
+            *self.PREVIOUS_WEEK_BUTTON
+        )
+
+        time.sleep(2)
+
+    def click_next_week(self):
+        self.click(
+            *self.NEXT_WEEK_BUTTON
+        )
+
+        time.sleep(2)
+
+    def click_edit_schedule_by_id(self, schedule_id):
+        schedule_table = self.find(
+            *self.SCHEDULE_LIST_TABLE
+        )
+
+        rows = schedule_table.find_elements(
+            By.CSS_SELECTOR,
+            "tbody tr"
+        )
+
+        for row in rows:
+            cells = row.find_elements(
+                By.TAG_NAME,
+                "td"
+            )
+
+            if len(cells) < 9:
+                continue
+
+            if cells[0].text.strip() == str(schedule_id):
+                self.driver.execute_script(
+                    "arguments[0].scrollIntoView("
+                    "{block: 'center'});",
+                    row
+                )
+
+                time.sleep(2)
+
+                edit_button = row.find_element(
+                    By.XPATH,
+                    ".//button[normalize-space()='Sửa']"
+                )
+
+                self.driver.execute_script(
+                    "arguments[0].click();",
+                    edit_button
+                )
+
+                time.sleep(2)
+
+                return True
+
+        return False
+
+    def get_update_form_title(self):
+        return self.find(
+            *self.UPDATE_FORM_TITLE
+        ).text
+
+    def click_update_button(self):
+        self.click(
+            *self.UPDATE_BUTTON
+        )
+
+        time.sleep(2)
+
+    def click_cancel_edit_button(self):
+        self.click(
+            *self.CANCEL_EDIT_BUTTON
+        )
+
+        time.sleep(2)
+
+    def click_delete_schedule_by_id(self, schedule_id):
+        schedule_table = self.find(
+            *self.SCHEDULE_LIST_TABLE
+        )
+
+        rows = schedule_table.find_elements(
+            By.CSS_SELECTOR,
+            "tbody tr"
+        )
+
+        for row in rows:
+            cells = row.find_elements(
+                By.TAG_NAME,
+                "td"
+            )
+
+            if len(cells) < 9:
+                continue
+
+            if cells[0].text.strip() == str(schedule_id):
+                self.driver.execute_script(
+                    "arguments[0].scrollIntoView("
+                    "{block: 'center'});",
+                    row
+                )
+
+                time.sleep(2)
+
+                delete_button = row.find_element(
+                    By.XPATH,
+                    ".//button[normalize-space()='Xóa']"
+                )
+
+                self.driver.execute_script(
+                    "arguments[0].click();",
+                    delete_button
+                )
+
+                time.sleep(1)
+
+                return True
+
+        return False
+

@@ -132,3 +132,71 @@ class DoctorScheduleApi:
                 count += 1
 
         return count
+
+    def get_doctors(self):
+        response = requests.get(
+            f"{self.BASE_URL}/doctors/all",
+            timeout=10
+        )
+
+        if response.status_code != 200:
+            raise Exception(
+                "Không lấy được danh sách bác sĩ. "
+                f"HTTP {response.status_code}: "
+                f"{response.text}"
+            )
+
+        return response.json()
+
+    def find_doctor_id(self, doctor_name):
+        doctors = self.get_doctors()
+
+        for doctor in doctors:
+            if doctor.get("fullName") == doctor_name:
+                return doctor.get("doctorId")
+
+        return None
+
+    def create_schedule(
+            self,
+            doctor_name,
+            work_date,
+            shift,
+            start_time,
+            end_time,
+            status,
+            note,
+            token):
+
+        doctor_id = self.find_doctor_id(
+            doctor_name
+        )
+
+        if doctor_id is None:
+            raise Exception(
+                f"Không tìm thấy bác sĩ {doctor_name}"
+            )
+
+        response = requests.post(
+            f"{self.BASE_URL}/secure/doctor-schedules",
+            headers={
+                "Authorization": f"Bearer {token}"
+            },
+            json={
+                "doctorId": doctor_id,
+                "workDate": work_date,
+                "shift": shift,
+                "startTime": start_time,
+                "endTime": end_time,
+                "status": status,
+                "note": note
+            },
+            timeout=10
+        )
+
+        if response.status_code not in [200, 201]:
+            raise Exception(
+                "Không tạo được lịch bác sĩ. "
+                f"HTTP {response.status_code}: "
+                f"{response.text}"
+            )
