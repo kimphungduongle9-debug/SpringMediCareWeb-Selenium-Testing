@@ -118,6 +118,26 @@ public class ApiMedicalRecordController {
         }
     }
 
+    @GetMapping("/medical-records/{id}")
+    public ResponseEntity<?> retrieveById(
+            @PathVariable("id") int id) {
+
+        MedicalRecord medicalRecord
+                = this.medicalRecordService.getMedicalRecordById(id);
+
+        if (medicalRecord == null) {
+            return new ResponseEntity<>(
+                    "Không tìm thấy hồ sơ bệnh án.",
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        return new ResponseEntity<>(
+                medicalRecord,
+                HttpStatus.OK
+        );
+    }
+
     @PutMapping("/medical-records/{id}")
     public ResponseEntity<?> update(
             @PathVariable("id") int id,
