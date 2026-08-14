@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-
+import com.ttkp.pojo.Notification;
+import com.ttkp.services.NotificationService;
+import java.text.SimpleDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Autowired
     private DoctorScheduleService doctorScheduleService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public String addAppointment(
@@ -120,7 +125,46 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public boolean cancelAppointment(int id) {
-        return this.appointmentRepo.updateAppointmentStatus(id, "cancelled");
+        Appointment appointment = this.appointmentRepo.getAppointmentById(id);
+
+        if (appointment == null) {
+            return false;
+        }
+
+        if ("cancelled".equals(appointment.getStatus())) {
+            return true;
+        }
+
+        boolean result
+                = this.appointmentRepo.updateAppointmentStatus(id, "cancelled");
+
+        if (!result) {
+            return false;
+        }
+
+        Notification notification = new Notification();
+
+        notification.setUserId(
+                appointment.getPatientId().getUserId()
+        );
+
+        SimpleDateFormat formatter
+                = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+
+        String message = String.format(
+                "Lich hen #%d voi bac si %s vao %s da bi huy",
+                appointment.getAppointmentId(),
+                appointment.getDoctorId().getFullName(),
+                formatter.format(appointment.getAppointmentDate())
+        );
+
+        notification.setMessage(message);
+        notification.setIsRead(false);
+        notification.setCreatedDate(new Date());
+
+        this.notificationService.addNotification(notification);
+
+        return true;
     }
 
     @Override
