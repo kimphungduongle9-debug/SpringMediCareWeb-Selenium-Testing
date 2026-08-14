@@ -10,6 +10,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.ttkp.pojo.Notification;
+import com.ttkp.services.NotificationService;
 
 @Service
 @Transactional
@@ -20,6 +22,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     @Autowired
     private AppointmentService appointmentService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public List<MedicalRecord> getMedicalRecordsByPatientId(int patientId) {
@@ -71,8 +76,33 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
         this.medicalRecordRepo.addOrUpdateMedicalRecord(medicalRecord);
 
-        return this.appointmentService
+        this.medicalRecordRepo.addOrUpdateMedicalRecord(medicalRecord);
+
+        boolean completed = this.appointmentService
                 .updateAppointmentStatus(appointmentId, "completed");
+
+        if (!completed) {
+            return false;
+        }
+
+        Notification notification = new Notification();
+
+        notification.setUserId(
+                appointment.getPatientId().getUserId()
+        );
+
+        String message = String.format(
+                "Ket qua kham cua ban da duoc bac si %s cap nhat",
+                appointment.getDoctorId().getFullName()
+        );
+
+        notification.setMessage(message);
+        notification.setIsRead(false);
+        notification.setCreatedDate(new Date());
+
+        this.notificationService.addNotification(notification);
+
+        return true;
     }
 
     @Override
