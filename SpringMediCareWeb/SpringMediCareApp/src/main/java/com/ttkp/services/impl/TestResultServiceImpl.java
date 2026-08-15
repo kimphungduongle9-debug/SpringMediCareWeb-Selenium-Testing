@@ -10,6 +10,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.ttkp.pojo.Notification;
+import com.ttkp.services.NotificationService;
 
 @Service
 @Transactional
@@ -20,6 +22,9 @@ public class TestResultServiceImpl implements TestResultService {
 
     @Autowired
     private MedicalRecordService medicalRecordService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public List<TestResult> getTestResultsByRecordId(int recordId) {
@@ -44,6 +49,25 @@ public class TestResultServiceImpl implements TestResultService {
 
         this.testResultRepo.addTestResult(testResult);
 
+        Notification notification = new Notification();
+
+        notification.setUserId(
+                medicalRecord.getPatientId().getUserId()
+        );
+
+        String message = String.format(
+                "Ket qua xet nghiem %s trong ho so kham benh #%d da duoc cap nhat",
+                testName,
+                medicalRecord.getRecordId()
+        );
+
+        notification.setMessage(message);
+        notification.setIsRead(false);
+        notification.setCreatedDate(new Date());
+
+        this.notificationService.addNotification(notification);
+
         return true;
+
     }
 }
