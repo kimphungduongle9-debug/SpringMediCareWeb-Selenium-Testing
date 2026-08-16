@@ -197,4 +197,9 @@ class BookingPage(BasePage):
 
         return f"{new_hour:02d}:{new_minute:02d}"
 
+    def open_page_by_doctor(self, doctor_id):
+        self.open(
+            f"http://localhost:3000/booking?doctorId={doctor_id}"
+        )
+
 

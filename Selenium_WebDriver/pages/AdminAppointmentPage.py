@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 
 from pages.BasePage import BasePage
 
-
+from selenium.webdriver.support import expected_conditions as EC
 class AdminAppointmentPage(BasePage):
 
     PAGE_TITLE = (
@@ -119,6 +119,12 @@ class AdminAppointmentPage(BasePage):
         )
 
         self.click(*button_locator)
+
+        alert = self.wait.until(
+            EC.alert_is_present()
+        )
+
+        alert.accept()
 
     def get_confirm_success_message(self):
         return self.find(
