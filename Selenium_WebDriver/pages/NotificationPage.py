@@ -1,7 +1,7 @@
+import unicodedata
+
 from selenium.webdriver.common.by import By
-
 from pages.BasePage import BasePage
-
 
 class NotificationPage(BasePage):
     """
@@ -50,7 +50,6 @@ class NotificationPage(BasePage):
 
     # Step 6:
     # Tìm đúng thông báo dựa trên ID của lịch vừa được xác nhận.
-    # Ví dụ appointment_id = 119 thì tìm notification có "#119".
     def get_notification_by_appointment_id(self, appointment_id):
         expected_id = f"#{appointment_id}"
 
@@ -91,3 +90,116 @@ class NotificationPage(BasePage):
         return notification.find_element(
             *self.NOTIFICATION_TIME
         ).text.strip()
+
+    @staticmethod
+    def normalize_text(text):
+        """
+        Chuẩn hóa chuỗi để so sánh nội dung notification:
+        - Chuyển về chữ thường.
+        - Loại bỏ dấu tiếng Việt.
+        - Chuyển đ/Đ thành d/D.
+        """
+        text = text.replace("đ", "d").replace("Đ", "D")
+
+        text = unicodedata.normalize(
+            "NFD",
+            text
+        )
+
+        text = "".join(
+            character
+            for character in text
+            if unicodedata.category(character) != "Mn"
+        )
+
+        return text.lower().strip()
+
+    def get_latest_notification_by_type_and_keyword(
+            self,
+            expected_type,
+            expected_keyword):
+        """
+        TC-NOTIFICATION-003 - Step 8:
+        Lấy notification mới nhất và kiểm tra
+        notification vừa phát sinh sau khi Doctor lưu kết quả khám.
+        """
+
+        notifications = self.finds(
+            *self.NOTIFICATION_ITEMS
+        )
+
+        if not notifications:
+            raise AssertionError(
+                "Patient không có notification nào."
+            )
+
+        # Notification mới nhất được hiển thị đầu danh sách.
+        latest_notification = notifications[0]
+
+        notification_type = latest_notification.find_element(
+            *self.NOTIFICATION_TYPE
+        ).text.strip()
+
+        notification_content = latest_notification.find_element(
+            *self.NOTIFICATION_CONTENT
+        ).text.strip()
+
+        assert notification_type == expected_type, (
+            "Notification mới nhất không đúng loại. "
+            f"Expected: '{expected_type}', "
+            f"Actual: '{notification_type}'."
+        )
+
+        normalized_expected = self.normalize_text(
+            expected_keyword
+        )
+
+        normalized_actual = self.normalize_text(
+            notification_content
+        )
+
+        assert normalized_expected in normalized_actual, (
+            "Notification mới nhất không có nội dung mong đợi. "
+            f"Expected keyword: '{expected_keyword}', "
+            f"Actual: '{notification_content}'."
+        )
+
+        return latest_notification
+
+    def has_notification_by_appointment_id(
+            self,
+            appointment_id):
+
+        expected_id = f"#{appointment_id}"
+
+        notifications = self.finds(
+            *self.NOTIFICATION_ITEMS
+        )
+
+        for notification in notifications:
+            content = notification.find_element(
+                *self.NOTIFICATION_CONTENT
+            ).text
+
+            if expected_id in content:
+                return True
+
+        return False
+
+    def get_all_notification_contents(self):
+        """
+        TC-NOTIFICATION-005:
+        Lấy toàn bộ nội dung notification đang hiển thị
+        của Patient hiện tại.
+        """
+
+        notifications = self.finds(
+            *self.NOTIFICATION_ITEMS
+        )
+
+        return [
+            notification.find_element(
+                *self.NOTIFICATION_CONTENT
+            ).text.strip()
+            for notification in notifications
+        ]
