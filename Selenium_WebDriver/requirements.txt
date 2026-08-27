@@ -1,5 +1,6 @@
 selenium==4.46.0
 pytest==9.1.1
+python-docx
 webdriver-manager==4.0.2
 requests
 openpyxl

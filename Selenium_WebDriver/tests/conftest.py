@@ -1,15 +1,24 @@
 import sys
 import time
+import re
 from pathlib import Path
-
+import inspect
 import pytest
 from selenium import webdriver
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PROJECT_ROOT))
 
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+# Import các module của project SAU KHI đã thêm PROJECT_ROOT vào sys.path.
 from api.AppointmentApi import AppointmentApi
 from api.MedicalRecordApi import MedicalRecordApi
+from utils.test_reporter import (
+    generate_word_report,
+    reset_test_report,
+    save_test_result,
+)
 
 @pytest.fixture
 def driver():
@@ -570,3 +579,156 @@ def appointment_tc4_data():
         "note": note,
         "patient_name": "Duong Le Kim Phung"
     }
+
+# ============================================================
+# NOTIFICATION TEST REPORT
+# Ghi nhận kết quả TC-NOTIFICATION và tự xuất báo cáo Word.
+# ============================================================
+
+_notification_tests_collected = False
+
+
+def get_notification_test_case_id(item):
+    """
+    Lấy mã Test Case từ tên hàm pytest.
+
+    Ví dụ:
+    test_tc_notification_001_patient_receives_notification_after_admin_confirms
+    -> TC-NOTIFICATION-001
+    """
+    match = re.search(r"test_tc_notification_(\d{3})", item.name)
+
+    if match is None:
+        return None
+
+    return f"TC-NOTIFICATION-{match.group(1)}"
+
+
+def pytest_sessionstart(session):
+    """Xóa dữ liệu report cũ trước mỗi lần pytest bắt đầu."""
+    global _notification_tests_collected
+    _notification_tests_collected = False
+    reset_test_report()
+
+
+def pytest_collection_modifyitems(session, config, items):
+    """Đánh dấu session hiện tại có chạy Notification test hay không."""
+    global _notification_tests_collected
+
+    _notification_tests_collected = any(
+        get_notification_test_case_id(item) is not None
+        for item in items
+    )
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """
+    Ghi nhận kết quả cuối cùng của từng Notification Test Case.
+
+    PASSED  : Test chạy thành công.
+    FAILED  : Test thất bại.
+    XFAILED : Expected failure / known bug.
+    SKIPPED : Test bị bỏ qua.
+    """
+    outcome = yield
+    report = outcome.get_result()
+
+    test_case_id = get_notification_test_case_id(item)
+
+    if test_case_id is None:
+        return
+
+    # Nếu lỗi xảy ra ở setup/teardown, vẫn ghi nhận FAILED.
+    if report.when in ("setup", "teardown") and report.failed:
+        save_test_result(
+            test_case_id=test_case_id,
+            status="FAILED",
+            detail=f"Lỗi tại giai đoạn {report.when}. Xem pytest output để biết chi tiết.",
+        )
+        return
+
+    # Kết quả chính của test được lấy ở giai đoạn call.
+    if report.when != "call":
+        return
+
+    if report.skipped and hasattr(report, "wasxfail"):
+        save_test_result(
+            test_case_id=test_case_id,
+            status="XFAILED",
+            detail=str(report.wasxfail),
+        )
+        return
+
+    if report.failed:
+        # Lấy phần lỗi cuối để Word có lý do cụ thể hơn thay vì chỉ ghi "FAILED".
+        detail = "Test Case thất bại. Xem pytest output để biết assertion chi tiết."
+        if getattr(report, "longreprtext", None):
+            last_lines = [
+                line.strip()
+                for line in report.longreprtext.splitlines()
+                if line.strip()
+            ]
+            if last_lines:
+                detail = last_lines[-1][:500]
+
+        save_test_result(
+            test_case_id=test_case_id,
+            status="FAILED",
+            detail=detail,
+        )
+        return
+
+    if report.skipped:
+        save_test_result(
+            test_case_id=test_case_id,
+            status="SKIPPED",
+            detail="Test Case bị bỏ qua.",
+        )
+        return
+
+    if report.passed:
+        save_test_result(
+            test_case_id=test_case_id,
+            status="PASSED",
+        )
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """
+    Sau khi pytest kết thúc, chỉ xuất Word khi session có Notification TC.
+
+    --collect-only không xuất report vì test chưa được thực thi.
+    """
+    if not _notification_tests_collected:
+        return
+
+    if session.config.option.collectonly:
+        return
+
+    generate_word_report(
+        "reports/Notification_Test_Report.docx"
+    )
+def pytest_runtest_setup(item):
+    """
+    Hiển thị mã Test Case và mô tả
+    trước khi bắt đầu thực thi từng test.
+    """
+
+    # Chỉ áp dụng cho Notification Test Case
+    if "test_tc_notification_" not in item.name:
+        return
+
+    description = inspect.getdoc(item.obj)
+
+    print("\n")
+    print("=" * 80)
+    print("TEST CASE DESCRIPTION")
+    print("=" * 80)
+
+    if description:
+        print(description)
+    else:
+        print("Không có mô tả Test Case.")
+
+    print("=" * 80)
