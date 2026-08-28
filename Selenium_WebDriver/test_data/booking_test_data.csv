@@ -1,0 +1,10 @@
+test_case_id,patient_username,patient_password,second_username,second_password,doctor_id,note_prefix,expected_success_message,expected_no_date_message,expected_no_time_message,expected_no_schedule_message,expected_outside_hours_message,expected_duplicate_message,expected_30_minutes_message,admin_username,admin_password
+TC-BOOKING-001,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-001-,Đặt lịch thành công,,,,,,,admin_system,Abc@123
+TC-BOOKING-002,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-002-,,Vui lòng chọn ngày khám để tiếp tục.,,,,,,admin,Abc@123
+TC-BOOKING-003,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-003-,,,Vui lòng chọn giờ khám để tiếp tục.,,,,,admin,Abc@123
+TC-BOOKING-004,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-004-,Đặt lịch thành công,,,,,,,admin,Abc@123
+TC-BOOKING-005,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-005-,,,,Bác sĩ không có lịch làm việc trong ngày này.,,,,,admin,Abc@123
+TC-BOOKING-006,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-006-,,,,,Giờ khám không nằm trong lịch làm việc của bác sĩ,,,,admin,Abc@123
+TC-BOOKING-007,patient_chi,Abc@123,patient_an,Abc@123,1,SELENIUM-TC-BOOKING-007-,,,,,,Khung giờ này đã có người đặt,,admin,Abc@123
+TC-BOOKING-008,patient_chi,Abc@123,patient_an,Abc@123,1,SELENIUM-TC-BOOKING-008-,,,,,,,30 phút,admin,Abc@123
+TC-BOOKING-009,,,,,1,SELENIUM-TC-BOOKING-009-,,,,,,,,admin,Abc@123

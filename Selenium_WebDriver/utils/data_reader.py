@@ -7,8 +7,16 @@ NOTIFICATION_TEST_DATA_CSV = (
     / "test_data"
     / "notification_test_data.csv"
 )
-
-
+BOOKING_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "booking_test_data.csv"
+)
+APPOINTMENT_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "appointment_test_data.csv"
+)
 def get_test_data_csv(file_path, test_case_id):
     with open(
         file_path,
