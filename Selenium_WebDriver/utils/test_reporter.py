@@ -1,5 +1,6 @@
+from datetime import datetime
 from pathlib import Path
-
+import re
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
@@ -7,18 +8,39 @@ from docx.shared import Pt
 
 # ============================================================
 # TEST EXECUTION DATA
-# Lưu kết quả các Step trong quá trình pytest thực thi.
 # ============================================================
 
 _test_steps = []
-
 _test_results = {}
 
 
 # ============================================================
+# HELPER
+# ============================================================
+
+def get_current_time():
+    """
+    Trả về thời gian hiện tại để ghi vào report.
+    """
+    return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+def clean_xml_text(value):
+    """
+    Loại bỏ control characters không hợp lệ với XML/Word.
+    """
+
+    if value is None:
+        return ""
+
+    text = str(value)
+
+    return re.sub(
+        r"[\x00-\x08\x0B\x0C\x0E-\x1F]",
+        "",
+        text
+    )
+# ============================================================
 # REPORT STEP
-# Vừa in kết quả ra terminal,
-# vừa lưu lại để cuối phiên test xuất Word.
 # ============================================================
 
 def report_step(
@@ -34,6 +56,8 @@ def report_step(
     Ví dụ:
     TC-NOTIFICATION-001 | STEP 1 | PASS | Patient đặt lịch hợp lệ
     """
+
+    recorded_at = get_current_time()
 
     message = (
         f"\n{test_case_id} | "
@@ -52,22 +76,61 @@ def report_step(
         "step_number": step_number,
         "status": status,
         "description": description,
-        "detail": detail or ""
+        "detail": detail or "",
+        "time": recorded_at
     })
 
 
 # ============================================================
+# REPORT FAILED STEP
+# ============================================================
+
+def report_failed_step(
+        test_case_id,
+        step_number,
+        detail
+):
+    """
+    Ghi tự động Step bị FAIL.
+
+    Hàm này được gọi từ conftest.py khi pytest phát hiện
+    một Notification Test Case bị lỗi.
+
+    Có kiểm tra duplicate để một Step FAIL không bị ghi 2 lần.
+    """
+
+    already_exists = any(
+        step["test_case_id"] == test_case_id
+        and str(step["step_number"]) == str(step_number)
+        and step["status"] == "FAIL"
+        for step in _test_steps
+    )
+
+    if already_exists:
+        return
+
+    report_step(
+        test_case_id=test_case_id,
+        step_number=step_number,
+        description=f"Step {step_number} thực thi thất bại",
+        status="FAIL",
+        detail=detail
+    )
+
+
+# ============================================================
 # SAVE TEST CASE RESULT
-# Được gọi từ conftest.py sau khi pytest chạy xong từng TC.
 # ============================================================
 
 def save_test_result(
         test_case_id,
         status,
-        detail=None
+        detail=None,
+        duration=None,
+        screenshot=None
 ):
     """
-    Lưu kết quả cuối cùng của một Test Case.
+    Lưu kết quả cuối cùng của Test Case.
 
     status:
     - PASSED
@@ -78,7 +141,10 @@ def save_test_result(
 
     _test_results[test_case_id] = {
         "status": status,
-        "detail": detail or ""
+        "detail": detail or "",
+        "duration": duration,
+        "screenshot": screenshot or "",
+        "time": get_current_time()
     }
 
 
@@ -120,7 +186,6 @@ def generate_word_report(
     # ========================================================
 
     title = document.add_paragraph()
-
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     title_run = title.add_run(
@@ -130,6 +195,12 @@ def generate_word_report(
 
     title_run.bold = True
     title_run.font.size = Pt(16)
+
+    generated_time = document.add_paragraph()
+    generated_time.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    generated_time.add_run(
+        f"Thời gian tạo báo cáo: {get_current_time()}"
+    )
 
     document.add_paragraph()
 
@@ -204,7 +275,7 @@ def generate_word_report(
 
     result_table = document.add_table(
         rows=1,
-        cols=3
+        cols=6
     )
 
     result_table.style = "Table Grid"
@@ -213,7 +284,10 @@ def generate_word_report(
 
     headers[0].text = "Test Case"
     headers[1].text = "Kết quả"
-    headers[2].text = "Ghi chú"
+    headers[2].text = "Thời gian"
+    headers[3].text = "Duration (s)"
+    headers[4].text = "Screenshot"
+    headers[5].text = "Ghi chú"
 
     for test_case_id in sorted(_test_results.keys()):
         result = _test_results[test_case_id]
@@ -222,7 +296,17 @@ def generate_word_report(
 
         row[0].text = test_case_id
         row[1].text = result["status"]
-        row[2].text = result["detail"]
+        row[2].text = result["time"]
+
+        duration = result["duration"]
+
+        if duration is None:
+            row[3].text = ""
+        else:
+            row[3].text = f"{duration:.2f}"
+
+        row[4].text = clean_xml_text(result["screenshot"])
+        row[5].text = clean_xml_text(result["detail"])
 
     document.add_paragraph()
 
@@ -237,7 +321,7 @@ def generate_word_report(
 
     step_table = document.add_table(
         rows=1,
-        cols=5
+        cols=6
     )
 
     step_table.style = "Table Grid"
@@ -247,40 +331,27 @@ def generate_word_report(
     headers[0].text = "Test Case"
     headers[1].text = "Step"
     headers[2].text = "Kết quả"
-    headers[3].text = "Mô tả"
-    headers[4].text = "Chi tiết"
+    headers[3].text = "Thời gian"
+    headers[4].text = "Mô tả"
+    headers[5].text = "Chi tiết"
 
     for step in _test_steps:
         row = step_table.add_row().cells
 
         row[0].text = step["test_case_id"]
-
-        row[1].text = str(
-            step["step_number"]
-        )
-
+        row[1].text = str(step["step_number"])
         row[2].text = step["status"]
+        row[3].text = step["time"]
+        row[4].text = clean_xml_text(step["description"])
+        row[5].text = clean_xml_text(step["detail"])
 
-        row[3].text = step["description"]
-
-        row[4].text = step["detail"]
-
-    document.save(
-        output_path
-    )
+    document.save(output_path)
 
     print(
         "\n============================================================"
     )
-
-    print(
-        "WORD TEST REPORT GENERATED:"
-    )
-
-    print(
-        output_path.resolve()
-    )
-
+    print("WORD TEST REPORT GENERATED:")
+    print(output_path.resolve())
     print(
         "============================================================"
     )

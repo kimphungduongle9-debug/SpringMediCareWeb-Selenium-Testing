@@ -342,7 +342,7 @@ def test_tc_notification_001_patient_receives_notification_after_admin_confirms(
 
     assert notification_type == test_data["notification_type"], (
         f"{test_case_id} | STEP 7 FAILED | "
-        f"Expected type: {test_data['notification_type']} | "
+        f"Expected notification type: {test_data['notification_type']} | "
         f"Actual: {notification_type}"
     )
 

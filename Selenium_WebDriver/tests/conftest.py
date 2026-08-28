@@ -18,8 +18,8 @@ from utils.test_reporter import (
     generate_word_report,
     reset_test_report,
     save_test_result,
+    report_failed_step,
 )
-
 @pytest.fixture
 def driver():
     browser = webdriver.Chrome()
@@ -28,8 +28,6 @@ def driver():
     browser.implicitly_wait(3)
 
     yield browser
-
-    time.sleep(3)
 
     browser.quit()
 
@@ -587,6 +585,168 @@ def appointment_tc4_data():
 
 _notification_tests_collected = False
 
+def get_failed_step_from_traceback(call):
+    """
+    Xác định Step bị lỗi từ traceback.
+
+    Ưu tiên:
+    1. Đọc trực tiếp STEP N FAILED trong assertion.
+    2. Nếu lỗi xảy ra trong helper/POM thì quay về dòng test
+       và tìm comment '# Step N:' gần nhất.
+
+    Nhờ vậy không cần sửa lại toàn bộ 9 Notification Test Case.
+    """
+
+    if call.excinfo is None:
+        return None
+
+    # --------------------------------------------------------
+    # Cách 1:
+    # Assertion hiện tại đã có dạng:
+    # TC-NOTIFICATION-001 | STEP 6 FAILED | ...
+    # --------------------------------------------------------
+
+    error_text = str(call.excinfo.value)
+
+    match = re.search(
+        r"STEP\s+(\d+)\s+FAILED",
+        error_text,
+        re.IGNORECASE
+    )
+
+    if match:
+        return int(match.group(1))
+
+    # --------------------------------------------------------
+    # Cách 2:
+    # Nếu lỗi nằm trong helper như login_account(),
+    # tìm dòng gọi helper trong test_notification.py
+    # rồi dò ngược lên comment '# Step N:'.
+    # --------------------------------------------------------
+
+    try:
+        traceback_entries = list(call.excinfo.traceback)
+
+        for entry in reversed(traceback_entries):
+
+            try:
+                file_path = Path(str(entry.path))
+            except Exception:
+                continue
+
+            if file_path.name != "test_notification.py":
+                continue
+
+            source_lines = file_path.read_text(
+                encoding="utf-8"
+            ).splitlines()
+
+            line_index = int(entry.lineno)
+
+            if line_index >= len(source_lines):
+                line_index = len(source_lines) - 1
+
+            for index in range(line_index, -1, -1):
+
+                step_match = re.search(
+                    r"#\s*Step\s+(\d+)\s*:",
+                    source_lines[index],
+                    re.IGNORECASE
+                )
+
+                if step_match:
+                    return int(step_match.group(1))
+
+    except Exception:
+        pass
+
+    return None
+
+
+def get_failure_detail(call):
+    """
+    Lấy lý do lỗi thực tế để đưa vào terminal và Word report.
+    """
+
+    if call.excinfo is None:
+        return "Không xác định được nguyên nhân lỗi."
+
+    detail = str(call.excinfo.value).strip()
+
+    if not detail:
+        return "Không xác định được nguyên nhân lỗi."
+
+    # Không để report Word bị nhồi lỗi quá dài.
+    if len(detail) > 1500:
+        detail = detail[:1500] + "..."
+
+    return detail
+
+
+def capture_failure_screenshot(
+        item,
+        test_case_id,
+        step_number=None
+):
+    """
+    Tự động chụp browser khi Notification Test Case FAIL.
+
+    File được lưu tại:
+    reports/screenshots/
+    """
+
+    browser = item.funcargs.get("driver")
+
+    if browser is None:
+        return ""
+
+    screenshot_directory = Path(
+        "reports/screenshots"
+    )
+
+    screenshot_directory.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    timestamp = time.strftime(
+        "%Y%m%d_%H%M%S"
+    )
+
+    if step_number is None:
+        file_name = (
+            f"{test_case_id}_FAILED_{timestamp}.png"
+        )
+    else:
+        file_name = (
+            f"{test_case_id}_STEP_{step_number}_"
+            f"FAILED_{timestamp}.png"
+        )
+
+    screenshot_path = (
+        screenshot_directory / file_name
+    )
+
+    try:
+        browser.save_screenshot(
+            str(screenshot_path)
+        )
+
+        print(
+            f"\nSCREENSHOT SAVED | "
+            f"{screenshot_path}"
+        )
+
+        return str(screenshot_path)
+
+    except Exception as error:
+
+        print(
+            "\nSCREENSHOT ERROR | "
+            f"{error}"
+        )
+
+        return ""
 
 def get_notification_test_case_id(item):
     """
@@ -619,81 +779,168 @@ def pytest_collection_modifyitems(session, config, items):
         get_notification_test_case_id(item) is not None
         for item in items
     )
-
-
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     """
-    Ghi nhận kết quả cuối cùng của từng Notification Test Case.
+    Ghi kết quả Notification Test Case.
+
+    Khi FAIL:
+    - xác định Test Case,
+    - xác định Step,
+    - ghi Step FAIL,
+    - ghi nguyên nhân,
+    - chụp screenshot,
+    - ghi duration.
 
     PASSED  : Test chạy thành công.
     FAILED  : Test thất bại.
-    XFAILED : Expected failure / known bug.
+    XFAILED : Known bug / expected failure.
     SKIPPED : Test bị bỏ qua.
     """
+
     outcome = yield
     report = outcome.get_result()
 
-    test_case_id = get_notification_test_case_id(item)
+    test_case_id = get_notification_test_case_id(
+        item
+    )
 
     if test_case_id is None:
         return
 
-    # Nếu lỗi xảy ra ở setup/teardown, vẫn ghi nhận FAILED.
-    if report.when in ("setup", "teardown") and report.failed:
+    # ========================================================
+    # SETUP / TEARDOWN FAILED
+    # ========================================================
+
+    if (
+        report.when in ("setup", "teardown")
+        and report.failed
+    ):
+
+        detail = get_failure_detail(call)
+
+        screenshot = capture_failure_screenshot(
+            item=item,
+            test_case_id=test_case_id
+        )
+
         save_test_result(
             test_case_id=test_case_id,
             status="FAILED",
-            detail=f"Lỗi tại giai đoạn {report.when}. Xem pytest output để biết chi tiết.",
+            detail=(
+                f"Lỗi tại giai đoạn {report.when}. "
+                f"{detail}"
+            ),
+            duration=report.duration,
+            screenshot=screenshot
         )
+
         return
 
-    # Kết quả chính của test được lấy ở giai đoạn call.
+    # Kết quả chính chỉ xử lý ở phase call
     if report.when != "call":
         return
 
-    if report.skipped and hasattr(report, "wasxfail"):
+    # ========================================================
+    # XFAIL
+    # ========================================================
+
+    if (
+        report.skipped
+        and hasattr(report, "wasxfail")
+    ):
+
         save_test_result(
             test_case_id=test_case_id,
             status="XFAILED",
             detail=str(report.wasxfail),
+            duration=report.duration
         )
+
         return
 
+    # ========================================================
+    # FAILED
+    # ========================================================
+
     if report.failed:
-        # Lấy phần lỗi cuối để Word có lý do cụ thể hơn thay vì chỉ ghi "FAILED".
-        detail = "Test Case thất bại. Xem pytest output để biết assertion chi tiết."
-        if getattr(report, "longreprtext", None):
-            last_lines = [
-                line.strip()
-                for line in report.longreprtext.splitlines()
-                if line.strip()
-            ]
-            if last_lines:
-                detail = last_lines[-1][:500]
+
+        detail = get_failure_detail(call)
+
+        step_number = (
+            get_failed_step_from_traceback(call)
+        )
+
+        # ----------------------------------------------------
+        # Ghi FAIL cho đúng Step
+        # ----------------------------------------------------
+
+        if step_number is not None:
+
+            report_failed_step(
+                test_case_id=test_case_id,
+                step_number=step_number,
+                detail=detail
+            )
+
+        else:
+
+            print(
+                f"\n{test_case_id} | "
+                "STEP UNKNOWN | FAIL | "
+                f"{detail}"
+            )
+
+        # ----------------------------------------------------
+        # Screenshot ngay tại thời điểm fail
+        # ----------------------------------------------------
+
+        screenshot = capture_failure_screenshot(
+            item=item,
+            test_case_id=test_case_id,
+            step_number=step_number
+        )
+
+        # ----------------------------------------------------
+        # Kết quả cuối Test Case
+        # ----------------------------------------------------
 
         save_test_result(
             test_case_id=test_case_id,
             status="FAILED",
             detail=detail,
+            duration=report.duration,
+            screenshot=screenshot
         )
+
         return
 
+    # ========================================================
+    # SKIPPED
+    # ========================================================
+
     if report.skipped:
+
         save_test_result(
             test_case_id=test_case_id,
             status="SKIPPED",
             detail="Test Case bị bỏ qua.",
+            duration=report.duration
         )
+
         return
 
+    # ========================================================
+    # PASSED
+    # ========================================================
+
     if report.passed:
+
         save_test_result(
             test_case_id=test_case_id,
             status="PASSED",
+            duration=report.duration
         )
-
-
 def pytest_sessionfinish(session, exitstatus):
     """
     Sau khi pytest kết thúc, chỉ xuất Word khi session có Notification TC.
