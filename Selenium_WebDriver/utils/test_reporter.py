@@ -366,3 +366,13 @@ def generate_word_report(
     )
 
     return output_path
+
+def report_test_case_start(
+        test_case_id,
+        description):
+
+    print()
+    print("=" * 70)
+    print(test_case_id)
+    print(description)
+    print("=" * 70)

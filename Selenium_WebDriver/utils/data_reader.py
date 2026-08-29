@@ -17,6 +17,21 @@ APPOINTMENT_TEST_DATA_CSV = (
     / "test_data"
     / "appointment_test_data.csv"
 )
+MY_APPOINTMENT_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "my_appointment_test_data.csv"
+)
+WORK_SCHEDULE_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "work_schedule_test_data.csv"
+)
+MEDICAL_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "medical_test_data.csv"
+)
 def get_test_data_csv(file_path, test_case_id):
     with open(
         file_path,

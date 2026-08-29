@@ -1,0 +1,10 @@
+test_case_id,patient_id,doctor_id,doctor_username,doctor_password,other_doctor_username,other_doctor_password,note,patient_name,doctor_name,diagnosis,treatment
+TC-MEDICAL-001,7,3,doctor_minh,Abc@123,,,SELENIUM-TC-MEDICAL-001,Duong Le Kim Phung,Ly Minh,Đau đầu nhẹ do thiếu ngủ,Nghỉ ngơi và uống đủ nước
+TC-MEDICAL-002,7,3,doctor_minh,Abc@123,,,SELENIUM-TC-MEDICAL-002,Duong Le Kim Phung,Ly Minh,,Nghỉ ngơi và uống thuốc theo hướng dẫn
+TC-MEDICAL-003,7,3,doctor_minh,Abc@123,,,SELENIUM-TC-MEDICAL-003,Duong Le Kim Phung,Ly Minh,Đau vai do vận động sai tư thế,
+TC-MEDICAL-004,7,3,doctor_minh,Abc@123,,,SELENIUM-TC-MEDICAL-004,Duong Le Kim Phung,Ly Minh,Chẩn đoán TC-MEDICAL-004,Hướng điều trị TC-MEDICAL-004
+TC-MEDICAL-005,7,3,doctor_minh,Abc@123,,,SELENIUM-TC-MEDICAL-005,Duong Le Kim Phung,Ly Minh,Đau lưng do ngồi lâu,Nghỉ ngơi và hạn chế vận động mạnh
+TC-MEDICAL-006,7,3,doctor_minh,Abc@123,,,SELENIUM-TC-MEDICAL-006,Duong Le Kim Phung,Ly Minh,Chẩn đoán ban đầu TC-MEDICAL-006,Hướng điều trị ban đầu TC-MEDICAL-006
+TC-MEDICAL-007,7,3,doctor_minh,Abc@123,doctor_binh,Abc@123,SELENIUM-TC-MEDICAL-007,Duong Le Kim Phung,Ly Minh,Chẩn đoán Selenium TC-MEDICAL-007,Điều trị Selenium TC-MEDICAL-007
+TC-MEDICAL-008,7,3,doctor_minh,Abc@123,doctor_binh,Abc@123,SELENIUM-TC-MEDICAL-008,Duong Le Kim Phung,Ly Minh,Chẩn đoán TC-MEDICAL-008,Hướng điều trị TC-MEDICAL-008
+TC-MEDICAL-009,7,3,doctor_minh,Abc@123,,,SELENIUM-TC-MEDICAL-009,Duong Le Kim Phung,Ly Minh,Chẩn đoán ban đầu TC-MEDICAL-009,Hướng điều trị ban đầu TC-MEDICAL-009

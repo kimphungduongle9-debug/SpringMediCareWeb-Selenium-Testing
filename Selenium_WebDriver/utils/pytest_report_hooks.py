@@ -19,6 +19,8 @@ from utils.test_reporter import (
 _notification_tests_collected = False
 _booking_tests_collected = False
 _appointment_tests_collected = False
+_my_appointment_tests_collected = False
+_work_schedule_tests_collected = False
 
 def get_failed_step_from_traceback(call):
     """
@@ -70,11 +72,12 @@ def get_failed_step_from_traceback(call):
                 continue
 
             file_name = file_path.name
-
             is_supported_test = (
                     file_name == "test_notification.py"
                     or file_name.startswith("test_booking")
                     or file_name.startswith("test_appointment")
+                    or file_name.startswith("test_my_appointment")
+                    or file_name.startswith("test_work_schedule")
             )
 
             if not is_supported_test:
@@ -222,10 +225,14 @@ def pytest_sessionstart(session):
     global _notification_tests_collected
     global _booking_tests_collected
     global _appointment_tests_collected
+    global _my_appointment_tests_collected
+    global _work_schedule_tests_collected
 
     _notification_tests_collected = False
     _booking_tests_collected = False
     _appointment_tests_collected = False
+    _my_appointment_tests_collected = False
+    _work_schedule_tests_collected = False
 
     reset_test_report()
 
@@ -234,6 +241,8 @@ def pytest_collection_modifyitems(session, config, items):
     global _notification_tests_collected
     global _booking_tests_collected
     global _appointment_tests_collected
+    global _my_appointment_tests_collected
+    global _work_schedule_tests_collected
 
     _notification_tests_collected = any(
         "test_tc_notification_" in item.name
@@ -247,6 +256,15 @@ def pytest_collection_modifyitems(session, config, items):
 
     _appointment_tests_collected = any(
         "test_tc_appointment_" in item.name
+        for item in items
+    )
+
+    _my_appointment_tests_collected = any(
+        "test_tc_myappointment_" in item.name
+        for item in items
+    )
+    _work_schedule_tests_collected = any(
+        "test_tc_workschedule_" in item.name
         for item in items
     )
 @pytest.hookimpl(hookwrapper=True)
@@ -438,6 +456,17 @@ def pytest_sessionfinish(session, exitstatus):
             "QUẢN LÝ LỊCH HẸN"
         )
 
+    if _my_appointment_tests_collected:
+        generate_word_report(
+            "reports/MyAppointment_Test_Report.docx",
+            "LỊCH HẸN CỦA TÔI"
+        )
+
+    if _work_schedule_tests_collected:
+        generate_word_report(
+            "reports/WorkSchedule_Test_Report.docx",
+            "LỊCH LÀM VIỆC CỦA BÁC SĨ"
+        )
 def pytest_runtest_setup(item):
     """
     Hiển thị mã Test Case và mô tả
