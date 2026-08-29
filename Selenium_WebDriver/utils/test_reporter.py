@@ -5,7 +5,7 @@ from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 
-
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # ============================================================
 # TEST EXECUTION DATA
 # ============================================================
@@ -166,7 +166,8 @@ def reset_test_report():
 # ============================================================
 
 def generate_word_report(
-        output_path="reports/Notification_Test_Report.docx"
+        output_path="reports/Notification_Test_Report.docx",
+        feature_name="THÔNG BÁO"
 ):
     """
     Xuất báo cáo kết quả kiểm thử Notification ra file Word.
@@ -174,11 +175,19 @@ def generate_word_report(
 
     output_path = Path(output_path)
 
+    if not output_path.is_absolute():
+        output_path = PROJECT_ROOT / output_path
+
     output_path.parent.mkdir(
         parents=True,
         exist_ok=True
     )
 
+    print(
+        f"\nREPORT DATA | "
+        f"Total TC = {len(_test_results)} | "
+        f"TC = {sorted(_test_results.keys())}"
+    )
     document = Document()
 
     # ========================================================
@@ -190,7 +199,7 @@ def generate_word_report(
 
     title_run = title.add_run(
         "BÁO CÁO KẾT QUẢ KIỂM THỬ TỰ ĐỘNG\n"
-        "CHỨC NĂNG THÔNG BÁO"
+        f"CHỨC NĂNG {feature_name}"
     )
 
     title_run.bold = True

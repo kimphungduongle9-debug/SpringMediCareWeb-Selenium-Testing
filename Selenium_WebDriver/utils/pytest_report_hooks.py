@@ -422,17 +422,20 @@ def pytest_sessionfinish(session, exitstatus):
 
     if _notification_tests_collected:
         generate_word_report(
-            "reports/Notification_Test_Report.docx"
+            "reports/Notification_Test_Report.docx",
+            "THÔNG BÁO"
         )
 
     if _booking_tests_collected:
         generate_word_report(
-            "reports/Booking_Test_Report.docx"
+            "reports/Booking_Test_Report.docx",
+            "ĐẶT LỊCH"
         )
 
     if _appointment_tests_collected:
         generate_word_report(
-            "reports/Appointment_Test_Report.docx"
+            "reports/Appointment_Test_Report.docx",
+            "QUẢN LÝ LỊCH HẸN"
         )
 
 def pytest_runtest_setup(item):
