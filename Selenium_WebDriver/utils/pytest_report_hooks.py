@@ -21,6 +21,10 @@ _booking_tests_collected = False
 _appointment_tests_collected = False
 _my_appointment_tests_collected = False
 _work_schedule_tests_collected = False
+_doctor_tests_collected = False
+_specialty_tests_collected = False
+_stat_tests_collected = False
+_drug_category_tests_collected = False
 
 def get_failed_step_from_traceback(call):
     """
@@ -78,6 +82,10 @@ def get_failed_step_from_traceback(call):
                     or file_name.startswith("test_appointment")
                     or file_name.startswith("test_my_appointment")
                     or file_name.startswith("test_work_schedule")
+                    or file_name.startswith("test_doctor")
+                    or file_name.startswith("test_specialty")
+                    or file_name.startswith("test_stat")
+                    or file_name.startswith("test_drug_category")
             )
 
             if not is_supported_test:
@@ -227,12 +235,20 @@ def pytest_sessionstart(session):
     global _appointment_tests_collected
     global _my_appointment_tests_collected
     global _work_schedule_tests_collected
+    global _doctor_tests_collected
+    global _specialty_tests_collected
+    global _stat_tests_collected
+    global _drug_category_tests_collected
 
     _notification_tests_collected = False
     _booking_tests_collected = False
     _appointment_tests_collected = False
     _my_appointment_tests_collected = False
     _work_schedule_tests_collected = False
+    _doctor_tests_collected = False
+    _specialty_tests_collected = False
+    _stat_tests_collected = False
+    _drug_category_tests_collected = False
 
     reset_test_report()
 
@@ -243,6 +259,10 @@ def pytest_collection_modifyitems(session, config, items):
     global _appointment_tests_collected
     global _my_appointment_tests_collected
     global _work_schedule_tests_collected
+    global _doctor_tests_collected
+    global _specialty_tests_collected
+    global _stat_tests_collected
+    global _drug_category_tests_collected
 
     _notification_tests_collected = any(
         "test_tc_notification_" in item.name
@@ -267,6 +287,23 @@ def pytest_collection_modifyitems(session, config, items):
         "test_tc_workschedule_" in item.name
         for item in items
     )
+    _doctor_tests_collected = any(
+        "test_tc_doctor_" in item.name
+        for item in items
+    )
+    _specialty_tests_collected = any(
+        "test_tc_specialty_" in item.name
+        for item in items
+    )
+    _stat_tests_collected = any(
+        "test_tc_stat_" in item.name
+        for item in items
+    )
+    _drug_category_tests_collected = any(
+        "test_tc_drug_category_" in item.name
+        for item in items
+    )
+
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     """
@@ -467,20 +504,53 @@ def pytest_sessionfinish(session, exitstatus):
             "reports/WorkSchedule_Test_Report.docx",
             "LỊCH LÀM VIỆC CỦA BÁC SĨ"
         )
+
+    if _doctor_tests_collected:
+        generate_word_report(
+            "reports/Doctor_Test_Report.docx",
+            "BÁC SĨ"
+        )
+
+    if _specialty_tests_collected:
+        generate_word_report(
+            "reports/Specialty_Test_Report.docx",
+            "CHUYÊN KHOA"
+        )
+
+    if _stat_tests_collected:
+        generate_word_report(
+            "reports/Stat_Test_Report.docx",
+            "THỐNG KÊ"
+        )
+
+    if _drug_category_tests_collected:
+        generate_word_report(
+            "reports/Drug_Category_Test_Report.docx",
+            "QUẢN LÝ KHO DƯỢC PHẨM"
+        )
+
 def pytest_runtest_setup(item):
     """
     Hiển thị mã Test Case và mô tả
     trước khi bắt đầu thực thi từng test.
     """
-
     is_notification = "test_tc_notification_" in item.name
     is_booking = "test_tc_booking_" in item.name
     is_appointment = "test_tc_appointment_" in item.name
-
+    is_doctor = "test_tc_doctor_" in item.name
+    is_specialty = "test_tc_specialty_" in item.name
+    is_stat = "test_tc_stat_" in item.name
+    is_drug_category = (
+            "test_tc_drug_category_" in item.name
+    )
     if not (
-        is_notification
-        or is_booking
-        or is_appointment
+            is_notification
+            or is_booking
+            or is_appointment
+            or is_doctor
+            or is_specialty
+            or is_stat
+            or is_drug_category
     ):
         return
 

@@ -10,7 +10,6 @@ from api.DoctorScheduleApi import DoctorScheduleApi
 
 BOOKING_URL = "http://localhost:3000/booking?doctorId=1"
 
-
 def login_account(driver, username, password):
     login_page = LoginPage(driver)
 
@@ -18,28 +17,39 @@ def login_account(driver, username, password):
 
     login_page.login(
         username,
-        password
+        password,
+        delay=0
     )
 
-    import time
-    time.sleep(2)
+    login_page.wait.until(
+        lambda d: d.current_url == "http://localhost:3000/"
+    )
 
-    assert driver.current_url == "http://localhost:3000/"
-
-
+    assert driver.current_url == "http://localhost:3000/", (
+        "Đăng nhập không thành công. "
+        f"Expected URL: http://localhost:3000/ | "
+        f"Actual URL: {driver.current_url}"
+    )
 def open_tran_binh_booking_page(driver):
     doctor_page = DoctorPage(driver)
 
     doctor_page.open_page()
 
-    import time
-    time.sleep(2)
-
     doctor_page.book_tran_binh()
 
-    assert driver.current_url == BOOKING_URL
+    booking_page = BookingPage(driver)
 
-    return BookingPage(driver)
+    booking_page.wait.until(
+        lambda d: d.current_url == BOOKING_URL
+    )
+
+    assert driver.current_url == BOOKING_URL, (
+        "Không mở đúng trang đặt lịch của bác sĩ Trần Bình. "
+        f"Expected URL: {BOOKING_URL} | "
+        f"Actual URL: {driver.current_url}"
+    )
+
+    return booking_page
 
 
 def get_or_create_booking_slot(

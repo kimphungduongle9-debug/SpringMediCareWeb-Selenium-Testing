@@ -120,18 +120,12 @@ def test_tc_booking_006_outside_working_hours(driver):
     """
 
     test_case_id = "TC-BOOKING-006"
-    test_data = get_test_data_csv(BOOKING_TEST_DATA_CSV, test_case_id)
-
-    doctor_id = int(test_data["doctor_id"])
-
-    booking_slot = get_or_create_booking_slot(
-        doctor_id=doctor_id,
-        test_data=test_data,
-        schedule_note=test_data["note_prefix"] + "SCHEDULE"
+    test_data = get_test_data_csv(
+        BOOKING_TEST_DATA_CSV,
+        test_case_id
     )
 
-    booking_date = booking_slot["booking_date"]
-    outside_time = "12:00"
+    doctor_id = int(test_data["doctor_id"])
 
     # Step 1 - Đăng nhập Patient
     login_account(
@@ -142,11 +136,13 @@ def test_tc_booking_006_outside_working_hours(driver):
 
     assert driver.current_url == "http://localhost:3000/", (
         f"{test_case_id} | STEP 1 FAILED | "
+        f"Expected URL: http://localhost:3000/ | "
         f"Actual URL: {driver.current_url}"
     )
 
     report_step(
-        test_case_id, 1,
+        test_case_id,
+        1,
         "Đăng nhập bằng tài khoản Patient hợp lệ thành công"
     )
 
@@ -155,34 +151,57 @@ def test_tc_booking_006_outside_working_hours(driver):
 
     assert driver.current_url == BOOKING_URL, (
         f"{test_case_id} | STEP 2 FAILED | "
-        f"Expected: {BOOKING_URL} | Actual: {driver.current_url}"
+        f"Expected URL: {BOOKING_URL} | "
+        f"Actual URL: {driver.current_url}"
     )
 
     report_step(
-        test_case_id, 2,
+        test_case_id,
+        2,
         "Mở trang Đặt lịch của bác sĩ Tran Binh thành công"
     )
 
     # Step 3 - Chọn ngày bác sĩ có lịch làm việc
+    try:
+        booking_slot = get_or_create_booking_slot(
+            doctor_id=doctor_id,
+            test_data=test_data,
+            schedule_note=test_data["note_prefix"] + "SCHEDULE"
+        )
+
+        booking_date = booking_slot["booking_date"]
+
+    except Exception as exc:
+        raise AssertionError(
+            f"{test_case_id} | STEP 3 FAILED | "
+            "Không thể tìm hoặc chuẩn bị ngày bác sĩ có lịch làm việc. "
+            f"Actual: {exc}"
+        ) from exc
+
     booking_page.enter_date(booking_date)
 
     report_step(
-        test_case_id, 3,
+        test_case_id,
+        3,
         f"Chọn ngày bác sĩ có lịch làm việc: {booking_date}"
     )
 
     # Step 4 - Nhập giờ ngoài ca làm việc
+    outside_time = "12:00"
+
     booking_page.enter_time(outside_time)
 
     actual_time = booking_page.get_time_value()
 
     assert actual_time == outside_time, (
         f"{test_case_id} | STEP 4 FAILED | "
-        f"Expected: {outside_time} | Actual: {actual_time}"
+        f"Expected time: {outside_time} | "
+        f"Actual time: {actual_time}"
     )
 
     report_step(
-        test_case_id, 4,
+        test_case_id,
+        4,
         f"Nhập giờ {outside_time} nằm ngoài ca làm việc của bác sĩ"
     )
 
@@ -190,7 +209,8 @@ def test_tc_booking_006_outside_working_hours(driver):
     booking_page.click_booking_button()
 
     report_step(
-        test_case_id, 5,
+        test_case_id,
+        5,
         "Nhấn nút Đặt lịch"
     )
 
@@ -200,11 +220,13 @@ def test_tc_booking_006_outside_working_hours(driver):
 
     assert expected_message in message, (
         f"{test_case_id} | STEP 6 FAILED | "
-        f"Expected: {expected_message} | Actual: {message}"
+        f"Expected: {expected_message} | "
+        f"Actual: {message}"
     )
 
     report_step(
-        test_case_id, 6,
+        test_case_id,
+        6,
         "Hệ thống từ chối đặt lịch vào giờ ngoài ca làm việc",
-        detail=message
+        detail=f"Expected: {expected_message} | Actual: {message}"
     )

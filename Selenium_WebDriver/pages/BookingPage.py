@@ -4,7 +4,7 @@ from pages.BasePage import BasePage
 
 import time
 from selenium.webdriver.common.keys import Keys
-
+from selenium.webdriver.support import expected_conditions as EC
 
 class BookingPage(BasePage):
 
@@ -53,11 +53,16 @@ class BookingPage(BasePage):
         self.open(self.URL)
 
     def get_warning_message(self):
-        element = self.scroll_to_element(
-            *self.WARNING_MESSAGE
+        element = self.wait.until(
+            EC.visibility_of_element_located(
+                self.WARNING_MESSAGE
+            )
         )
 
-        time.sleep(2)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            element
+        )
 
         return element.text
 
@@ -87,11 +92,15 @@ class BookingPage(BasePage):
         time.sleep(delay)
 
     def get_time_warning_message(self):
-        element = self.scroll_to_element(
-            *self.WARNING_MESSAGE
+        element = self.wait.until(
+            EC.visibility_of_element_located(
+                self.WARNING_MESSAGE
+            )
         )
-
-        time.sleep(2)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            element
+        )
 
         return element.text
 
