@@ -1,15 +1,12 @@
 import sys
 import time
-import re
 from pathlib import Path
-import inspect
 import pytest
 from selenium import webdriver
 from tests.helpers.appointment_helpers import get_or_create_booking_slot
 from utils.data_reader import (
     get_test_data_csv,
     APPOINTMENT_TEST_DATA_CSV,
-    MEDICAL_TEST_DATA_CSV,
 )
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -19,12 +16,7 @@ if str(PROJECT_ROOT) not in sys.path:
 # Import các module của project SAU KHI đã thêm PROJECT_ROOT vào sys.path.
 from api.AppointmentApi import AppointmentApi
 from api.MedicalRecordApi import MedicalRecordApi
-from utils.test_reporter import (
-    generate_word_report,
-    reset_test_report,
-    save_test_result,
-    report_failed_step,
-)
+
 pytest_plugins = ["utils.pytest_report_hooks",]
 
 @pytest.fixture
@@ -74,113 +66,6 @@ def booking_test_data():
             booking_time=booking_time,
             patient_ids=patient_ids
         )
-def prepare_medical_test_data(test_case_id):
-    test_data = get_test_data_csv(
-        MEDICAL_TEST_DATA_CSV,
-        test_case_id
-    )
-
-    medical_record_api = MedicalRecordApi()
-
-    patient_id = int(test_data["patient_id"])
-    doctor_id = int(test_data["doctor_id"])
-    note = test_data["note"]
-
-    confirmed_cases = {
-        "TC-MEDICAL-001",
-        "TC-MEDICAL-002",
-        "TC-MEDICAL-003",
-    }
-
-    if test_case_id in confirmed_cases:
-        appointment_id = (
-            medical_record_api
-            .prepare_confirmed_appointment(
-                patient_id=patient_id,
-                doctor_id=doctor_id,
-                notes=note
-            )
-        )
-    else:
-        appointment_id = (
-            medical_record_api
-            .prepare_completed_medical_record(
-                patient_id=patient_id,
-                doctor_id=doctor_id,
-                notes=note,
-                diagnosis=test_data["diagnosis"],
-                treatment=test_data["treatment"]
-            )
-        )
-
-    return {
-        **test_data,
-        "appointment_id": appointment_id,
-        "medical_record_api": medical_record_api
-    }
-
-
-@pytest.fixture
-def medical_record_tc1_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-001"
-    )
-
-
-@pytest.fixture
-def medical_record_tc2_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-002"
-    )
-
-
-@pytest.fixture
-def medical_record_tc3_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-003"
-    )
-
-
-@pytest.fixture
-def medical_record_tc4_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-004"
-    )
-
-
-@pytest.fixture
-def medical_record_tc5_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-005"
-    )
-
-
-@pytest.fixture
-def medical_record_tc6_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-006"
-    )
-
-
-@pytest.fixture
-def medical_record_tc7_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-007"
-    )
-
-
-@pytest.fixture
-def medical_record_tc8_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-008"
-    )
-
-
-@pytest.fixture
-def medical_record_tc9_data():
-    yield prepare_medical_test_data(
-        "TC-MEDICAL-009"
-    )
 
 @pytest.fixture
 def appointment_tc2_data():

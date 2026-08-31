@@ -217,3 +217,10 @@ class DoctorPage(BasePage):
                 ).text.strip()
             ) > 0
         )
+
+    def book_tran_binh(self, delay=0):
+        """
+        Tương thích với các test cũ đang đặt lịch bác sĩ Tran Binh.
+        Sử dụng lại hàm tổng quát sau khi DoctorPage được refactor.
+        """
+        self.click_booking_of_doctor("Tran Binh")
