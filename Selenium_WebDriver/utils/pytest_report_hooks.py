@@ -27,6 +27,7 @@ _stat_tests_collected = False
 _drug_category_tests_collected = False
 _medical_tests_collected = False
 _login_tests_collected = False
+_register_tests_collected = False
 
 def get_failed_step_from_traceback(call):
     """
@@ -90,6 +91,7 @@ def get_failed_step_from_traceback(call):
                     or file_name.startswith("test_drug_category")
                     or file_name.startswith("test_medical")
                     or file_name.startswith("test_login")
+                    or file_name.startswith("test_register")
             )
 
             if not is_supported_test:
@@ -245,6 +247,7 @@ def pytest_sessionstart(session):
     global _drug_category_tests_collected
     global _medical_tests_collected
     global _login_tests_collected
+    global _register_tests_collected
 
     _notification_tests_collected = False
     _booking_tests_collected = False
@@ -257,6 +260,7 @@ def pytest_sessionstart(session):
     _drug_category_tests_collected = False
     _medical_tests_collected = False
     _login_tests_collected = False
+    _register_tests_collected = False
 
     reset_test_report()
 
@@ -273,6 +277,7 @@ def pytest_collection_modifyitems(session, config, items):
     global _drug_category_tests_collected
     global _medical_tests_collected
     global _login_tests_collected
+    global _register_tests_collected
 
     _notification_tests_collected = any(
         "test_tc_notification_" in item.name
@@ -319,6 +324,10 @@ def pytest_collection_modifyitems(session, config, items):
     )
     _login_tests_collected = any(
         "test_tc_login_" in item.name
+        for item in items
+    )
+    _register_tests_collected = any(
+        "test_tc_register_" in item.name
         for item in items
     )
 
@@ -559,6 +568,12 @@ def pytest_sessionfinish(session, exitstatus):
             "ĐĂNG NHẬP"
         )
 
+    if _register_tests_collected:
+        generate_word_report(
+            "reports/Register_Test_Report.docx",
+            "ĐĂNG KÝ"
+        )
+
 def pytest_runtest_setup(item):
     """
     Hiển thị mã Test Case và mô tả
@@ -573,6 +588,8 @@ def pytest_runtest_setup(item):
     is_drug_category = ("test_tc_drug_category_" in item.name)
     is_medical = "test_tc_medical_" in item.name
     is_login = "test_tc_login_" in item.name
+    is_register = "test_tc_register_" in item.name
+
     if not (
             is_notification
             or is_booking
@@ -583,6 +600,7 @@ def pytest_runtest_setup(item):
             or is_drug_category
             or is_medical
             or is_login
+            or is_register
     ):
         return
 
