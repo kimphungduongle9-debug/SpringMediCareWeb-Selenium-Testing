@@ -28,6 +28,7 @@ _drug_category_tests_collected = False
 _medical_tests_collected = False
 _login_tests_collected = False
 _register_tests_collected = False
+_doctor_schedule_admin_tests_collected = False
 
 def get_failed_step_from_traceback(call):
     """
@@ -109,7 +110,7 @@ def get_failed_step_from_traceback(call):
             for index in range(line_index, -1, -1):
 
                 step_match = re.search(
-                    r"#\s*Step\s+(\d+)\s*:",
+                    r"#\s*Step\s+(\d+)\b",
                     source_lines[index],
                     re.IGNORECASE
                 )
@@ -248,6 +249,7 @@ def pytest_sessionstart(session):
     global _medical_tests_collected
     global _login_tests_collected
     global _register_tests_collected
+    global _doctor_schedule_admin_tests_collected
 
     _notification_tests_collected = False
     _booking_tests_collected = False
@@ -261,6 +263,7 @@ def pytest_sessionstart(session):
     _medical_tests_collected = False
     _login_tests_collected = False
     _register_tests_collected = False
+    _doctor_schedule_admin_tests_collected = False
 
     reset_test_report()
 
@@ -278,6 +281,7 @@ def pytest_collection_modifyitems(session, config, items):
     global _medical_tests_collected
     global _login_tests_collected
     global _register_tests_collected
+    global _doctor_schedule_admin_tests_collected
 
     _notification_tests_collected = any(
         "test_tc_notification_" in item.name
@@ -328,6 +332,10 @@ def pytest_collection_modifyitems(session, config, items):
     )
     _register_tests_collected = any(
         "test_tc_register_" in item.name
+        for item in items
+    )
+    _doctor_schedule_admin_tests_collected = any(
+        "test_tc_ds_admin_" in item.name
         for item in items
     )
 
@@ -574,6 +582,12 @@ def pytest_sessionfinish(session, exitstatus):
             "ĐĂNG KÝ"
         )
 
+    if _doctor_schedule_admin_tests_collected:
+        generate_word_report(
+            "reports/Doctor_Schedule_Admin_Test_Report.docx",
+            "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN"
+        )
+
 def pytest_runtest_setup(item):
     """
     Hiển thị mã Test Case và mô tả
@@ -589,6 +603,7 @@ def pytest_runtest_setup(item):
     is_medical = "test_tc_medical_" in item.name
     is_login = "test_tc_login_" in item.name
     is_register = "test_tc_register_" in item.name
+    is_doctor_schedule_admin = ("test_tc_ds_admin_" in item.name)
 
     if not (
             is_notification
@@ -601,6 +616,7 @@ def pytest_runtest_setup(item):
             or is_medical
             or is_login
             or is_register
+            or is_doctor_schedule_admin
     ):
         return
 

@@ -1,12 +1,19 @@
+from datetime import datetime
+
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions as EC
 
 from pages.BasePage import BasePage
 
-import time
 
 class DoctorScheduleAdminPage(BasePage):
-
     URL = "http://localhost:3000/doctor-schedules"
+
+    PAGE_TITLE = (
+        By.XPATH,
+        "//h2[normalize-space()='Quản lý lịch làm việc bác sĩ']"
+    )
 
     FORM_TITLE = (
         By.XPATH,
@@ -42,27 +49,57 @@ class DoctorScheduleAdminPage(BasePage):
         By.XPATH,
         "//button[normalize-space()='Thêm lịch']"
     )
-    SUCCESS_MESSAGE = (
+
+    MESSAGE_ALERT = (
         By.CSS_SELECTOR,
         "div.alert.alert-info"
     )
 
-    WEEK_SCHEDULE_TABLE = (
+    SCHEDULE_LIST_TABLE = (
+        By.XPATH,
+        "//h3[normalize-space()='Danh sách lịch làm việc']/following::table[1]"
+    )
+    WEEK_HEADER_DATES = (
+        By.XPATH,
+        "//h3[normalize-space()='Lịch làm việc theo tuần']"
+        "/following::table[1]/thead/tr/th[position()>1]/small"
+    )
+
+    WEEK_SHIFT_ROWS = (
+        By.XPATH,
+        "//h3[normalize-space()='Lịch làm việc theo tuần']"
+        "/following::table[1]/tbody/tr"
+    )
+
+    FILTER_DOCTOR_SELECT = (
+        By.XPATH,
+        "//h3[normalize-space()='Lọc lịch làm việc']"
+        "/following::select[1]"
+    )
+
+    WEEK_VIEW_TABLE = (
         By.XPATH,
         "//h3[normalize-space()='Lịch làm việc theo tuần']"
         "/following::table[1]"
     )
-
-    SCHEDULE_LIST_TABLE = (
+    WEEK_RANGE_TEXT = (
         By.XPATH,
-        "//h3[normalize-space()='Danh sách lịch làm việc']"
-        "/following::table[1]"
+        "//label[normalize-space()='Tuần làm việc']"
+        "/following::div[contains(@class,'text-center')][1]"
     )
-    WORK_DATE_DAY_8 = (
+
+    PREVIOUS_WEEK_BUTTON = (
         By.XPATH,
-        "//div[contains(@class, 'react-datepicker__day') "
-        "and not(contains(@class, 'react-datepicker__day--outside-month')) "
-        "and normalize-space()='8']"
+        "//button[contains(normalize-space(), 'Tuần trước')]"
+    )
+
+    NEXT_WEEK_BUTTON = (
+        By.XPATH,
+        "//button[contains(normalize-space(), 'Tuần sau')]"
+    )
+    UPDATE_FORM_TITLE = (
+        By.XPATH,
+        "//h3[normalize-space()='Cập nhật lịch làm việc']"
     )
 
     UPDATE_BUTTON = (
@@ -74,151 +111,88 @@ class DoctorScheduleAdminPage(BasePage):
         By.XPATH,
         "//button[normalize-space()='Hủy sửa']"
     )
-    WORK_DATE_DAY_1 = (
-        By.XPATH,
-        "//div[contains(@class, 'react-datepicker__day') "
-        "and not(contains(@class, 'react-datepicker__day--outside-month')) "
-        "and normalize-space()='1']"
-    )
-    FILTER_DOCTOR_SELECT = (
-        By.XPATH,
-        "//div[contains(@class, 'feature-card') "
-        "and contains(., 'Lọc lịch làm việc')]"
-        "//label[normalize-space()='Bác sĩ']"
-        "/following-sibling::select"
-    )
-    PREVIOUS_WEEK_BUTTON = (
-        By.XPATH,
-        "//button[normalize-space()='← Tuần trước']"
-    )
-    WEEK_RANGE = (
-        By.XPATH,
-        "//button[normalize-space()='← Tuần trước']"
-        "/following-sibling::div[1]"
-    )
-    NEXT_WEEK_BUTTON = (
-        By.XPATH,
-        "//button[normalize-space()='Tuần sau →']"
-    )
-    UPDATE_FORM_TITLE = (
-        By.XPATH,
-        "//h3[normalize-space()='Cập nhật lịch làm việc']"
-    )
     def open_page(self):
         self.open(self.URL)
+        self.wait.until(
+            EC.visibility_of_element_located(self.PAGE_TITLE)
+        )
+
+    def get_page_title(self):
+        return self.find(*self.PAGE_TITLE).text.strip()
 
     def get_form_title(self):
-        return self.find(
-            *self.FORM_TITLE
-        ).text
+        return self.find(*self.FORM_TITLE).text.strip()
 
     def is_doctor_select_displayed(self):
-        return self.find(
-            *self.DOCTOR_SELECT
-        ).is_displayed()
+        return self.find(*self.DOCTOR_SELECT).is_displayed()
 
     def is_work_date_input_displayed(self):
-        return self.find(
-            *self.WORK_DATE_INPUT
-        ).is_displayed()
+        return self.find(*self.WORK_DATE_INPUT).is_displayed()
 
     def is_shift_select_displayed(self):
-        return self.find(
-            *self.SHIFT_SELECT
-        ).is_displayed()
+        return self.find(*self.SHIFT_SELECT).is_displayed()
 
     def is_status_select_displayed(self):
-        return self.find(
-            *self.STATUS_SELECT
-        ).is_displayed()
+        return self.find(*self.STATUS_SELECT).is_displayed()
 
     def is_note_input_displayed(self):
-        return self.find(
-            *self.NOTE_INPUT
-        ).is_displayed()
+        return self.find(*self.NOTE_INPUT).is_displayed()
 
     def is_add_button_displayed(self):
-        return self.find(
-            *self.ADD_BUTTON
-        ).is_displayed()
+        return self.find(*self.ADD_BUTTON).is_displayed()
 
-    def is_update_button_present(self):
-        return len(
-            self.finds(
-                *self.UPDATE_BUTTON
-            )
-        ) > 0
-
-    def is_cancel_edit_button_present(self):
-        return len(
-            self.finds(
-                *self.CANCEL_EDIT_BUTTON
-            )
-        ) > 0
+    def wait_for_doctors_loaded(self):
+        self.wait.until(
+            lambda driver: len(
+                Select(
+                    driver.find_element(*self.DOCTOR_SELECT)
+                ).options
+            ) > 1
+        )
 
     def get_doctor_options(self):
-        doctor_select = self.find(
-            *self.DOCTOR_SELECT
-        )
-
-        options = doctor_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
+        self.wait_for_doctors_loaded()
         return [
-            option.text
-            for option in options
+            option.text.strip()
+            for option in Select(
+                self.find(*self.DOCTOR_SELECT)
+            ).options
         ]
 
-    def get_selected_doctor_value(self):
-        return self.find(
-            *self.DOCTOR_SELECT
-        ).get_attribute("value")
+    def get_shift_options(self):
+        return [
+            option.text.strip()
+            for option in Select(
+                self.find(*self.SHIFT_SELECT)
+            ).options
+        ]
+
+    def get_status_options(self):
+        return [
+            option.text.strip()
+            for option in Select(
+                self.find(*self.STATUS_SELECT)
+            ).options
+        ]
+
+    def get_selected_doctor_text(self):
+        return Select(
+            self.find(*self.DOCTOR_SELECT)
+        ).first_selected_option.text.strip()
+
+    def get_selected_shift_text(self):
+        return Select(
+            self.find(*self.SHIFT_SELECT)
+        ).first_selected_option.text.strip()
+
+    def get_selected_status_text(self):
+        return Select(
+            self.find(*self.STATUS_SELECT)
+        ).first_selected_option.text.strip()
 
     def get_work_date_value(self):
         return self.find(
             *self.WORK_DATE_INPUT
-        ).get_attribute("value")
-
-    def get_shift_options(self):
-        shift_select = self.find(
-            *self.SHIFT_SELECT
-        )
-
-        options = shift_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        return [
-            option.text
-            for option in options
-        ]
-
-    def get_selected_shift_value(self):
-        return self.find(
-            *self.SHIFT_SELECT
-        ).get_attribute("value")
-
-    def get_status_options(self):
-        status_select = self.find(
-            *self.STATUS_SELECT
-        )
-
-        options = status_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        return [
-            option.text
-            for option in options
-        ]
-
-    def get_selected_status_value(self):
-        return self.find(
-            *self.STATUS_SELECT
         ).get_attribute("value")
 
     def get_note_value(self):
@@ -226,149 +200,155 @@ class DoctorScheduleAdminPage(BasePage):
             *self.NOTE_INPUT
         ).get_attribute("value")
 
+    def open_doctor_dropdown(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self.DOCTOR_SELECT)
+        ).click()
+
+    def open_shift_dropdown(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self.SHIFT_SELECT)
+        ).click()
+
+    def open_status_dropdown(self):
+        self.wait.until(
+            EC.element_to_be_clickable(self.STATUS_SELECT)
+        ).click()
+
     def select_doctor(self, doctor_name):
-        doctor_select = self.find(
-            *self.DOCTOR_SELECT
+        self.wait_for_doctors_loaded()
+        doctor_select = self.wait.until(
+            EC.element_to_be_clickable(self.DOCTOR_SELECT)
         )
-
-        options = doctor_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        for option in options:
-            if option.text == doctor_name:
-                option.click()
-                return
+        Select(doctor_select).select_by_visible_text(doctor_name)
 
     def select_shift(self, shift_name):
-        shift_select = self.find(
-            *self.SHIFT_SELECT
+        shift_select = self.wait.until(
+            EC.element_to_be_clickable(self.SHIFT_SELECT)
         )
-
-        options = shift_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        for option in options:
-            if option.text == shift_name:
-                option.click()
-                return
+        Select(shift_select).select_by_visible_text(shift_name)
 
     def select_status(self, status_name):
-        status_select = self.find(
-            *self.STATUS_SELECT
+        status_select = self.wait.until(
+            EC.element_to_be_clickable(self.STATUS_SELECT)
+        )
+        Select(status_select).select_by_visible_text(status_name)
+
+    def select_work_date(self, target_date):
+        """
+        Chọn ngày trên React DatePicker.
+
+        target_date:
+            datetime.date
+        """
+        date_input = self.wait.until(
+            EC.element_to_be_clickable(self.WORK_DATE_INPUT)
+        )
+        date_input.click()
+
+        self.wait.until(
+            EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, ".react-datepicker")
+            )
         )
 
-        options = status_select.find_elements(
-            By.TAG_NAME,
-            "option"
+        month_header_locator = (
+            By.CSS_SELECTOR,
+            ".react-datepicker__current-month"
         )
 
-        for option in options:
-            if option.text == status_name:
-                option.click()
-                return
-
-    def get_selected_doctor_text(self):
-        doctor_select = self.find(
-            *self.DOCTOR_SELECT
+        next_button_locator = (
+            By.CSS_SELECTOR,
+            ".react-datepicker__navigation--next"
         )
 
-        options = doctor_select.find_elements(
-            By.TAG_NAME,
-            "option"
+        previous_button_locator = (
+            By.CSS_SELECTOR,
+            ".react-datepicker__navigation--previous"
         )
 
-        for option in options:
-            if option.is_selected():
-                return option.text
+        for _ in range(24):
+            current_month = self.wait.until(
+                EC.visibility_of_element_located(
+                    month_header_locator
+                )
+            ).text.strip()
 
-        return ""
+            current_month_date = datetime.strptime(
+                current_month,
+                "%B %Y"
+            ).date().replace(day=1)
 
-    def get_selected_shift_text(self):
-        shift_select = self.find(
-            *self.SHIFT_SELECT
+            target_month_date = target_date.replace(day=1)
+
+            if current_month_date == target_month_date:
+                break
+
+            locator = (
+                next_button_locator
+                if current_month_date < target_month_date
+                else previous_button_locator
+            )
+
+            self.wait.until(
+                EC.element_to_be_clickable(locator)
+            ).click()
+
+        day_locator = (
+            By.XPATH,
+            (
+                "//div[contains(@class,'react-datepicker__day') "
+                "and not(contains(@class,"
+                "'react-datepicker__day--outside-month')) "
+                f"and normalize-space()='{target_date.day}']"
+            )
         )
 
-        options = shift_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        for option in options:
-            if option.is_selected():
-                return option.text
-
-        return ""
-
-    def get_selected_status_text(self):
-        status_select = self.find(
-            *self.STATUS_SELECT
-        )
-
-        options = status_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        for option in options:
-            if option.is_selected():
-                return option.text
-
-        return ""
-
-    def click_doctor_select(self):
-        self.find(
-            *self.DOCTOR_SELECT
+        self.wait.until(
+            EC.element_to_be_clickable(day_locator)
         ).click()
 
-    def click_shift_select(self):
-        self.find(
-            *self.SHIFT_SELECT
-        ).click()
+        expected_value = target_date.strftime("%d/%m/%Y")
 
-    def click_status_select(self):
-        self.find(
-            *self.STATUS_SELECT
-        ).click()
-
-    def click_work_date_input(self):
-        self.click(
-            *self.WORK_DATE_INPUT
+        self.wait.until(
+            lambda driver: driver.find_element(
+                *self.WORK_DATE_INPUT
+            ).get_attribute("value") == expected_value
         )
-
-    def select_work_date_day_8(self):
-        self.find(
-            *self.WORK_DATE_INPUT
-        ).click()
-
-        time.sleep(1)
-
-        self.find(
-            *self.WORK_DATE_DAY_8
-        ).click()
-
-        time.sleep(1)
 
     def enter_note(self, note):
-        self.typing(
-            *self.NOTE_INPUT,
-            note
+        note_input = self.wait.until(
+            EC.visibility_of_element_located(self.NOTE_INPUT)
         )
+        note_input.clear()
+        note_input.send_keys(note)
 
     def click_add_button(self):
-        self.click(
-            *self.ADD_BUTTON
+        button = self.wait.until(
+            EC.presence_of_element_located(self.ADD_BUTTON)
         )
 
-        time.sleep(2)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            button
+        )
 
-    def get_success_message(self):
-        return self.find(
-            *self.SUCCESS_MESSAGE
-        ).text
+        self.wait.until(
+            EC.invisibility_of_element_located(
+                (By.CSS_SELECTOR, ".react-datepicker")
+            )
+        )
+
+        self.wait.until(
+            EC.element_to_be_clickable(self.ADD_BUTTON)
+        ).click()
+
+    def get_message(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.MESSAGE_ALERT
+            )
+        ).text.strip()
 
     def is_schedule_present_in_list(
             self,
@@ -376,13 +356,15 @@ class DoctorScheduleAdminPage(BasePage):
             work_date,
             shift_name,
             status,
-            note):
-
-        schedule_table = self.find(
-            *self.SCHEDULE_LIST_TABLE
+            note
+    ):
+        table = self.wait.until(
+            EC.visibility_of_element_located(
+                self.SCHEDULE_LIST_TABLE
+            )
         )
 
-        rows = schedule_table.find_elements(
+        rows = table.find_elements(
             By.CSS_SELECTOR,
             "tbody tr"
         )
@@ -396,403 +378,384 @@ class DoctorScheduleAdminPage(BasePage):
             if len(cells) < 8:
                 continue
 
+            actual_doctor = cells[1].text.strip()
+            actual_date = cells[2].text.strip()
+            actual_shift = cells[3].text.strip()
+            actual_status = cells[6].text.strip()
+            actual_note = cells[7].text.strip()
+
             if (
-                    cells[1].text.strip() == doctor_name
-                    and cells[2].text.strip() == work_date
-                    and cells[3].text.strip() == shift_name
-                    and cells[6].text.strip() == status
-                    and cells[7].text.strip() == note
+                    actual_doctor == doctor_name
+                    and actual_date == work_date
+                    and actual_shift == shift_name
+                    and actual_status == status
+                    and actual_note == note
             ):
                 return True
 
         return False
 
-    def is_schedule_present_in_week_view(
-            self,
-            doctor_name,
-            work_date,
-            shift_name,
-            status,
-            note):
-
-        week_table = self.find(
-            *self.WEEK_SCHEDULE_TABLE
-        )
-
-        headers = week_table.find_elements(
-            By.CSS_SELECTOR,
-            "thead th"
-        )
-
-        day_index = -1
-
-        for index in range(1, len(headers)):
-            small = headers[index].find_element(
-                By.TAG_NAME,
-                "small"
-            )
-
-            if small.text.strip() == work_date:
-                day_index = index - 1
-                break
-
-        if day_index == -1:
-            return False
-
-        rows = week_table.find_elements(
-            By.CSS_SELECTOR,
-            "tbody tr"
-        )
-
-        for row in rows:
-            shift_header = row.find_element(
-                By.TAG_NAME,
-                "th"
-            )
-
-            shift_label = shift_header.find_element(
-                By.TAG_NAME,
-                "div"
-            ).text.strip()
-
-            if shift_label != shift_name:
-                continue
-
-            cells = row.find_elements(
-                By.TAG_NAME,
-                "td"
-            )
-
-            if day_index >= len(cells):
-                return False
-
-            target_cell = cells[day_index]
-
-            cell_text = target_cell.text
-
-            return (
-                    doctor_name in cell_text
-                    and status in cell_text
-                    and note in cell_text
-            )
-
-        return False
-
-    def scroll_to_success_message(self):
-        self.scroll_to_element(
-            *self.SUCCESS_MESSAGE
-        )
-
-        time.sleep(1)
-
-    def scroll_to_schedule_list(self):
-        self.scroll_to_element(
-            *self.SCHEDULE_LIST_TABLE
-        )
-
-        time.sleep(1)
-
-    def scroll_to_schedule_in_list(
-            self,
-            doctor_name,
-            work_date,
-            shift_name,
-            status,
-            note):
-
-        schedule_table = self.find(
-            *self.SCHEDULE_LIST_TABLE
-        )
-
-        rows = schedule_table.find_elements(
-            By.CSS_SELECTOR,
-            "tbody tr"
-        )
-
-        for row in rows:
-            cells = row.find_elements(
-                By.TAG_NAME,
-                "td"
-            )
-
-            if len(cells) < 8:
-                continue
-
-            if (
-                    cells[1].text.strip() == doctor_name
-                    and cells[2].text.strip() == work_date
-                    and cells[3].text.strip() == shift_name
-                    and cells[6].text.strip() == status
-                    and cells[7].text.strip() == note
-            ):
-                self.driver.execute_script(
-                    "arguments[0].scrollIntoView("
-                    "{block: 'center'});",
-                    row
-                )
-
-                time.sleep(2)
-
-                return True
-
-        return False
-
-    def scroll_to_schedule_in_week_view(
-            self,
-            doctor_name,
-            work_date,
-            shift_name,
-            status,
-            note):
-
-        week_table = self.find(
-            *self.WEEK_SCHEDULE_TABLE
-        )
-
-        headers = week_table.find_elements(
-            By.CSS_SELECTOR,
-            "thead th"
-        )
-
-        day_index = -1
-
-        for index in range(1, len(headers)):
-            date_text = headers[index].find_element(
-                By.TAG_NAME,
-                "small"
-            ).text.strip()
-
-            if date_text == work_date:
-                day_index = index - 1
-                break
-
-        if day_index == -1:
-            return False
-
-        rows = week_table.find_elements(
-            By.CSS_SELECTOR,
-            "tbody tr"
-        )
-
-        for row in rows:
-            shift_header = row.find_element(
-                By.TAG_NAME,
-                "th"
-            )
-
-            shift_label = shift_header.find_element(
-                By.TAG_NAME,
-                "div"
-            ).text.strip()
-
-            if shift_label != shift_name:
-                continue
-
-            cells = row.find_elements(
-                By.TAG_NAME,
-                "td"
-            )
-
-            if day_index >= len(cells):
-                return False
-
-            target_cell = cells[day_index]
-
-            schedules = target_cell.find_elements(
-                By.CSS_SELECTOR,
-                "div.border.rounded.p-2.mb-2"
-            )
-
-            for schedule in schedules:
-                schedule_text = schedule.text
-
-                if (
-                        doctor_name in schedule_text
-                        and status in schedule_text
-                        and note in schedule_text
-                ):
-                    self.driver.execute_script(
-                        "arguments[0].scrollIntoView("
-                        "{block: 'center'});",
-                        schedule
-                    )
-
-                    time.sleep(2)
-
-                    return True
-
-        return False
-
-    def is_doctor_value_missing(self):
-        doctor_select = self.find(
-            *self.DOCTOR_SELECT
-        )
-
-        return self.driver.execute_script(
-            "return arguments[0].validity.valueMissing;",
-            doctor_select
-        )
-
-    def scroll_to_doctor_select(self):
-        doctor_select = self.find(
-            *self.DOCTOR_SELECT
-        )
-
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView("
-            "{block: 'center'});",
-            doctor_select
-        )
-
-        time.sleep(2)
-
-    def is_work_date_value_missing(self):
-        work_date_input = self.find(
-            *self.WORK_DATE_INPUT
-        )
-
-        return self.driver.execute_script(
-            "return arguments[0].validity.valueMissing;",
-            work_date_input
-        )
-
-    def scroll_to_work_date_input(self):
-        work_date_input = self.find(
-            *self.WORK_DATE_INPUT
-        )
-
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView("
-            "{block: 'center'});",
-            work_date_input
-        )
-
-        time.sleep(2)
-
-    def select_work_date_day_1(self):
-        self.find(
-            *self.WORK_DATE_INPUT
-        ).click()
-
-        time.sleep(1)
-
-        self.find(
-            *self.WORK_DATE_DAY_1
-        ).click()
-
-        time.sleep(1)
-
-    def click_add_button_multiple_times(
-            self,
-            times=3):
-
-        add_button = self.find(
-            *self.ADD_BUTTON
-        )
-
-        for _ in range(times):
-            self.driver.execute_script(
-                "arguments[0].click();",
-                add_button
-            )
-
-        time.sleep(3)
-
-    def select_filter_doctor(self, doctor_name):
-        doctor_select = self.find(
-            *self.FILTER_DOCTOR_SELECT
-        )
-
-        options = doctor_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        for option in options:
-            if option.text == doctor_name:
-                option.click()
-                time.sleep(2)
-                return
-
-    def get_selected_filter_doctor_text(self):
-        doctor_select = self.find(
-            *self.FILTER_DOCTOR_SELECT
-        )
-
-        options = doctor_select.find_elements(
-            By.TAG_NAME,
-            "option"
-        )
-
-        for option in options:
-            if option.is_selected():
-                return option.text
-
-        return ""
-
-    def get_week_view_doctor_names(self):
-        week_table = self.find(
-            *self.WEEK_SCHEDULE_TABLE
-        )
-
-        doctor_elements = week_table.find_elements(
-            By.CSS_SELECTOR,
-            "tbody td div.border.rounded.p-2.mb-2 strong"
-        )
-
-        return [
-            doctor.text.strip()
-            for doctor in doctor_elements
-            if doctor.text.strip() != ""
-        ]
-
-    def scroll_to_week_view(self):
-        self.scroll_to_element(
-            *self.WEEK_SCHEDULE_TABLE
-        )
-
-        time.sleep(2)
-
-    def get_week_range_text(self):
+    def get_work_date_validation_message(self):
         return self.find(
-            *self.WEEK_RANGE
-        ).text.strip()
+            *self.WORK_DATE_INPUT
+        ).get_attribute("validationMessage")
+
+    def scroll_to_message(self):
+        message = self.wait.until(
+            EC.visibility_of_element_located(
+                self.MESSAGE_ALERT
+            )
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            message
+        )
+
+    def is_message_displayed(self):
+        return self.find(
+            *self.MESSAGE_ALERT
+        ).is_displayed()
+
+    def scroll_to_top(self):
+        self.driver.execute_script(
+            "window.scrollTo({top: 0, behavior: 'smooth'});"
+        )
+
+        self.wait.until(
+            lambda driver:
+            driver.execute_script("return window.scrollY") <= 5
+        )
 
     def get_week_header_dates(self):
-        week_table = self.find(
-            *self.WEEK_SCHEDULE_TABLE
-        )
-
-        headers = week_table.find_elements(
-            By.CSS_SELECTOR,
-            "thead th small"
+        elements = self.finds(
+            *self.WEEK_HEADER_DATES
         )
 
         return [
-            header.text.strip()
-            for header in headers
+            element.text.strip()
+            for element in elements
         ]
 
-    def click_previous_week(self):
-        self.click(
-            *self.PREVIOUS_WEEK_BUTTON
+    def is_schedule_present_in_week(
+            self,
+            doctor_name,
+            work_date,
+            shift_name
+    ):
+        dates = self.get_week_header_dates()
+
+        rows = self.finds(
+            *self.WEEK_SHIFT_ROWS
         )
 
-        time.sleep(2)
+        for row in rows:
+            shift_info = row.find_element(
+                By.TAG_NAME,
+                "th"
+            ).text.splitlines()
+
+            if not shift_info:
+                continue
+
+            actual_shift = shift_info[0].strip()
+
+            if actual_shift != shift_name:
+                continue
+
+            cells = row.find_elements(
+                By.TAG_NAME,
+                "td"
+            )
+
+            for index, cell in enumerate(cells):
+                if index >= len(dates):
+                    continue
+
+                if dates[index].strip() != work_date:
+                    continue
+
+                cards = cell.find_elements(
+                    By.XPATH,
+                    "./div"
+                )
+
+                for card in cards:
+                    strong_elements = card.find_elements(
+                        By.TAG_NAME,
+                        "strong"
+                    )
+
+                    if not strong_elements:
+                        continue
+
+                    actual_doctor = (
+                        strong_elements[0].text.strip()
+                    )
+
+                    if actual_doctor == doctor_name:
+                        return True
+
+        return False
+
+    def go_to_week_containing(self, target_date):
+        """
+        Chuyển bảng Lịch làm việc theo tuần
+        đến tuần chứa target_date.
+        """
+
+        for _ in range(52):
+            date_texts = self.get_week_header_dates()
+
+            if not date_texts:
+                raise AssertionError(
+                    "Không đọc được các ngày "
+                    "trong bảng Lịch làm việc theo tuần"
+                )
+
+            displayed_dates = [
+                datetime.strptime(
+                    value,
+                    "%d/%m/%Y"
+                ).date()
+                for value in date_texts
+            ]
+
+            first_date = min(displayed_dates)
+            last_date = max(displayed_dates)
+
+            if first_date <= target_date <= last_date:
+                return
+
+            old_dates = date_texts.copy()
+            if target_date > last_date:
+                button = self.wait.until(
+                    EC.presence_of_element_located(
+                        self.NEXT_WEEK_BUTTON
+                    )
+                )
+
+            else:
+                button = self.wait.until(
+                    EC.presence_of_element_located(
+                        self.PREVIOUS_WEEK_BUTTON
+                    )
+                )
+
+            # Đưa nút vào giữa màn hình để tránh footer che.
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center'});",
+                button
+            )
+
+            # Click bằng JavaScript để tránh footer/credit
+            # chặn thao tác click vật lý của Selenium.
+            self.driver.execute_script(
+                "arguments[0].click();",
+                button
+            )
+
+            self.wait.until(
+                lambda driver:
+                self.get_week_header_dates() != old_dates
+            )
+
+        raise AssertionError(
+            "Không chuyển được bảng tuần tới ngày "
+            f"{target_date.strftime('%d/%m/%Y')}"
+        )
+
+    def scroll_to_schedule_list(self):
+        element = self.wait.until(
+            EC.visibility_of_element_located(
+                self.SCHEDULE_LIST_TABLE
+            )
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            element
+        )
+
+    def click_add_button_multiple_times(self, click_count=3):
+        button = self.wait.until(
+            EC.element_to_be_clickable(
+                self.ADD_BUTTON
+            )
+        )
+
+        # Click lần đầu: tạo lịch
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            button
+        )
+
+        self.driver.execute_script(
+            "arguments[0].click();",
+            button
+        )
+
+        # Chờ hệ thống xử lý và form reset sau khi tạo thành công
+        self.wait.until(
+            lambda driver:
+            self.get_selected_doctor_text() == "-- Chọn bác sĩ --"
+        )
+
+        # Các lần click tiếp theo xảy ra trên form đã reset.
+        # Browser validation phải chặn vì chưa chọn bác sĩ/ngày.
+        for _ in range(click_count - 1):
+            button = self.wait.until(
+                EC.presence_of_element_located(
+                    self.ADD_BUTTON
+                )
+            )
+
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center'});",
+                button
+            )
+
+            button.click()
+
+    def select_filter_doctor(self, doctor_name):
+        filter_select = self.wait.until(
+            EC.element_to_be_clickable(
+                self.FILTER_DOCTOR_SELECT
+            )
+        )
+
+        Select(
+            filter_select
+        ).select_by_visible_text(
+            doctor_name
+        )
+
+    def get_selected_filter_doctor_text(self):
+        return Select(
+            self.find(
+                *self.FILTER_DOCTOR_SELECT
+            )
+        ).first_selected_option.text.strip()
+
+    def scroll_to_week_view(self):
+        table = self.wait.until(
+            EC.visibility_of_element_located(
+                self.WEEK_VIEW_TABLE
+            )
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            table
+        )
+
+    def get_week_view_doctor_names(self):
+        table = self.wait.until(
+            EC.visibility_of_element_located(
+                self.WEEK_VIEW_TABLE
+            )
+        )
+
+        names = []
+
+        strong_elements = table.find_elements(
+            By.TAG_NAME,
+            "strong"
+        )
+
+        for element in strong_elements:
+            text = element.text.strip()
+
+            if text:
+                names.append(text)
+
+        return names
+
+    def get_week_range_text(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.WEEK_RANGE_TEXT
+            )
+        ).text.strip()
+
+    def click_previous_week(self):
+        button = self.wait.until(
+            EC.presence_of_element_located(
+                self.PREVIOUS_WEEK_BUTTON
+            )
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            button
+        )
+
+        old_range = self.get_week_range_text()
+
+        # JS click để tránh footer che nút
+        self.driver.execute_script(
+            "arguments[0].click();",
+            button
+        )
+
+        self.wait.until(
+            lambda d: self.get_week_range_text() != old_range
+        )
 
     def click_next_week(self):
-        self.click(
-            *self.NEXT_WEEK_BUTTON
+        button = self.wait.until(
+            EC.presence_of_element_located(
+                self.NEXT_WEEK_BUTTON
+            )
         )
 
-        time.sleep(2)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            button
+        )
 
+        old_range = self.get_week_range_text()
+
+        self.driver.execute_script(
+            "arguments[0].click();",
+            button
+        )
+
+        self.wait.until(
+            lambda d: self.get_week_range_text() != old_range
+        )
+
+    def get_update_form_title(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.UPDATE_FORM_TITLE
+            )
+        ).text.strip()
+
+    def click_update_button(self):
+        button = self.wait.until(
+            EC.presence_of_element_located(
+                self.UPDATE_BUTTON
+            )
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            button
+        )
+
+        self.driver.execute_script(
+            "arguments[0].click();",
+            button
+        )
     def click_edit_schedule_by_id(self, schedule_id):
-        schedule_table = self.find(
-            *self.SCHEDULE_LIST_TABLE
+        table = self.wait.until(
+            EC.visibility_of_element_located(
+                self.SCHEDULE_LIST_TABLE
+            )
         )
 
-        rows = schedule_table.find_elements(
+        rows = table.find_elements(
             By.CSS_SELECTOR,
             "tbody tr"
         )
@@ -807,55 +770,63 @@ class DoctorScheduleAdminPage(BasePage):
                 continue
 
             if cells[0].text.strip() == str(schedule_id):
-                self.driver.execute_script(
-                    "arguments[0].scrollIntoView("
-                    "{block: 'center'});",
-                    row
-                )
-
-                time.sleep(2)
-
-                edit_button = row.find_element(
+                edit_button = cells[8].find_element(
                     By.XPATH,
                     ".//button[normalize-space()='Sửa']"
                 )
 
                 self.driver.execute_script(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    edit_button
+                )
+
+                # Tránh footer che nút
+                self.driver.execute_script(
                     "arguments[0].click();",
                     edit_button
                 )
 
-                time.sleep(2)
+                self.wait.until(
+                    EC.visibility_of_element_located(
+                        self.UPDATE_FORM_TITLE
+                    )
+                )
 
                 return True
 
         return False
 
-    def get_update_form_title(self):
-        return self.find(
-            *self.UPDATE_FORM_TITLE
-        ).text
-
-    def click_update_button(self):
-        self.click(
-            *self.UPDATE_BUTTON
-        )
-
-        time.sleep(2)
-
     def click_cancel_edit_button(self):
-        self.click(
-            *self.CANCEL_EDIT_BUTTON
+        button = self.wait.until(
+            EC.element_to_be_clickable(
+                self.CANCEL_EDIT_BUTTON
+            )
         )
 
-        time.sleep(2)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            button
+        )
+
+        self.driver.execute_script(
+            "arguments[0].click();",
+            button
+        )
+
+        self.wait.until(
+            EC.visibility_of_element_located(
+                self.FORM_TITLE
+            )
+        )
 
     def click_delete_schedule_by_id(self, schedule_id):
-        schedule_table = self.find(
-            *self.SCHEDULE_LIST_TABLE
+        table = self.wait.until(
+            EC.visibility_of_element_located(
+                self.SCHEDULE_LIST_TABLE
+            )
         )
 
-        rows = schedule_table.find_elements(
+        rows = table.find_elements(
             By.CSS_SELECTOR,
             "tbody tr"
         )
@@ -870,17 +841,14 @@ class DoctorScheduleAdminPage(BasePage):
                 continue
 
             if cells[0].text.strip() == str(schedule_id):
-                self.driver.execute_script(
-                    "arguments[0].scrollIntoView("
-                    "{block: 'center'});",
-                    row
-                )
-
-                time.sleep(2)
-
-                delete_button = row.find_element(
+                delete_button = cells[8].find_element(
                     By.XPATH,
                     ".//button[normalize-space()='Xóa']"
+                )
+
+                self.driver.execute_script(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    delete_button
                 )
 
                 self.driver.execute_script(
@@ -888,9 +856,6 @@ class DoctorScheduleAdminPage(BasePage):
                     delete_button
                 )
 
-                time.sleep(1)
-
                 return True
 
         return False
-
