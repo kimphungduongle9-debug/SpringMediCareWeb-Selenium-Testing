@@ -185,3 +185,4 @@ class AppointmentApi:
             "Không tìm thấy lịch hẹn có ghi chú: "
             + note
         )
+

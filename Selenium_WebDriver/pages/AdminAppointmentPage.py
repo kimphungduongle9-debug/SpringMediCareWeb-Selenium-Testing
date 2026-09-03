@@ -135,3 +135,21 @@ class AdminAppointmentPage(BasePage):
         return self.find(
             *self.CANCEL_SUCCESS_MESSAGE
         ).text
+
+    def wait_for_status_by_note(
+            self,
+            note,
+            expected_status):
+        status_locator = (
+            By.XPATH,
+            f"//tbody/tr[td[normalize-space()='{note}']]/td[5]"
+        )
+
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                status_locator,
+                expected_status
+            )
+        )
+
+        return self.get_status_by_note(note)

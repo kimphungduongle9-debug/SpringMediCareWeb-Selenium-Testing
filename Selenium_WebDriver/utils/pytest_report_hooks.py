@@ -4,12 +4,14 @@ import time
 from pathlib import Path
 
 import pytest
-
 from utils.test_reporter import (
     generate_word_report,
+    generate_overall_report,
+    register_test_case,
     reset_test_report,
     save_test_result,
     report_failed_step,
+    report_step,
 )
 
 # ============================================================
@@ -29,6 +31,24 @@ _medical_tests_collected = False
 _login_tests_collected = False
 _register_tests_collected = False
 _doctor_schedule_admin_tests_collected = False
+_medical_history_tests_collected = False
+
+FEATURE_NAMES = {
+    "NOTIFICATION": "THÔNG BÁO",
+    "BOOKING": "ĐẶT LỊCH",
+    "APPOINTMENT": "QUẢN LÝ LỊCH HẸN",
+    "MYAPPOINTMENT": "LỊCH HẸN CỦA TÔI",
+    "WORKSCHEDULE": "LỊCH LÀM VIỆC CỦA BÁC SĨ",
+    "DOCTOR": "BÁC SĨ",
+    "SPECIALTY": "CHUYÊN KHOA",
+    "STAT": "THỐNG KÊ",
+    "DRUG-CATEGORY": "QUẢN LÝ KHO DƯỢC PHẨM",
+    "MEDICAL": "HỒ SƠ BỆNH ÁN",
+    "MEDICALHISTORY": "LỊCH SỬ KHÁM BỆNH",
+    "LOGIN": "ĐĂNG NHẬP",
+    "REGISTER": "ĐĂNG KÝ",
+    "DS-ADMIN": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+}
 
 def get_failed_step_from_traceback(call):
     """
@@ -81,7 +101,7 @@ def get_failed_step_from_traceback(call):
 
             file_name = file_path.name
             is_supported_test = (
-                    file_name == "test_notification.py"
+                    file_name.startswith("test_notification")
                     or file_name.startswith("test_booking")
                     or file_name.startswith("test_appointment")
                     or file_name.startswith("test_my_appointment")
@@ -94,7 +114,6 @@ def get_failed_step_from_traceback(call):
                     or file_name.startswith("test_login")
                     or file_name.startswith("test_register")
             )
-
             if not is_supported_test:
                 continue
 
@@ -235,6 +254,31 @@ def get_test_case_id(item):
 
     return f"TC-{module_name}-{test_number}"
 
+def get_feature_name(test_case_id):
+    """
+    Xác định chức năng từ mã Test Case.
+    """
+
+    if test_case_id is None:
+        return "KHÁC"
+
+    without_prefix = test_case_id.replace(
+        "TC-",
+        "",
+        1
+    )
+
+    module_code = re.sub(
+        r"-\d{3}$",
+        "",
+        without_prefix
+    )
+
+    return FEATURE_NAMES.get(
+        module_code,
+        module_code
+    )
+
 def pytest_sessionstart(session):
     """Xóa dữ liệu report cũ trước mỗi lần pytest bắt đầu."""
     global _notification_tests_collected
@@ -250,6 +294,7 @@ def pytest_sessionstart(session):
     global _login_tests_collected
     global _register_tests_collected
     global _doctor_schedule_admin_tests_collected
+    global _medical_history_tests_collected
 
     _notification_tests_collected = False
     _booking_tests_collected = False
@@ -264,6 +309,7 @@ def pytest_sessionstart(session):
     _login_tests_collected = False
     _register_tests_collected = False
     _doctor_schedule_admin_tests_collected = False
+    _medical_history_tests_collected = False
 
     reset_test_report()
 
@@ -282,6 +328,7 @@ def pytest_collection_modifyitems(session, config, items):
     global _login_tests_collected
     global _register_tests_collected
     global _doctor_schedule_admin_tests_collected
+    global _medical_history_tests_collected
 
     _notification_tests_collected = any(
         "test_tc_notification_" in item.name
@@ -336,6 +383,10 @@ def pytest_collection_modifyitems(session, config, items):
     )
     _doctor_schedule_admin_tests_collected = any(
         "test_tc_ds_admin_" in item.name
+        for item in items
+    )
+    _medical_history_tests_collected = any(
+        "test_tc_medicalhistory_" in item.name
         for item in items
     )
 
@@ -406,19 +457,38 @@ def pytest_runtest_makereport(item, call):
     # ========================================================
 
     if (
-        report.skipped
-        and hasattr(report, "wasxfail")
+            report.skipped
+            and hasattr(report, "wasxfail")
     ):
+
+        detail = get_failure_detail(call)
+
+        step_number = (
+            get_failed_step_from_traceback(call)
+        )
+
+        if step_number is not None:
+            report_step(
+                test_case_id=test_case_id,
+                step_number=step_number,
+                description=(
+                    "Known bug - Step không đạt Expected Result"
+                ),
+                status="XFAIL",
+                detail=detail
+            )
 
         save_test_result(
             test_case_id=test_case_id,
             status="XFAILED",
-            detail=str(report.wasxfail),
+            detail=(
+                f"{report.wasxfail} | "
+                f"{detail}"
+            ),
             duration=report.duration
         )
 
         return
-
     # ========================================================
     # FAILED
     # ========================================================
@@ -505,89 +575,178 @@ def pytest_sessionfinish(session, exitstatus):
     """
     Sau khi pytest kết thúc,
     tự động xuất Word report theo module đã chạy.
+
+    Mỗi report riêng chỉ chứa Test Case
+    thuộc đúng chức năng của report đó.
+
+    Cuối cùng xuất Overall Test Report
+    chứa toàn bộ Test Case của session.
     """
 
     if session.config.option.collectonly:
         return
 
+    # ========================================================
+    # NOTIFICATION
+    # ========================================================
+
     if _notification_tests_collected:
         generate_word_report(
             "reports/Notification_Test_Report.docx",
-            "THÔNG BÁO"
+            "THÔNG BÁO",
+            "TC-NOTIFICATION-"
         )
+
+    # ========================================================
+    # BOOKING
+    # ========================================================
 
     if _booking_tests_collected:
         generate_word_report(
             "reports/Booking_Test_Report.docx",
-            "ĐẶT LỊCH"
+            "ĐẶT LỊCH",
+            "TC-BOOKING-"
         )
+
+    # ========================================================
+    # APPOINTMENT
+    # ========================================================
 
     if _appointment_tests_collected:
         generate_word_report(
             "reports/Appointment_Test_Report.docx",
-            "QUẢN LÝ LỊCH HẸN"
+            "QUẢN LÝ LỊCH HẸN",
+            "TC-APPOINTMENT-"
         )
+
+    # ========================================================
+    # MY APPOINTMENT
+    # ========================================================
 
     if _my_appointment_tests_collected:
         generate_word_report(
             "reports/MyAppointment_Test_Report.docx",
-            "LỊCH HẸN CỦA TÔI"
+            "LỊCH HẸN CỦA TÔI",
+            "TC-MYAPPOINTMENT-"
         )
+
+    # ========================================================
+    # WORK SCHEDULE
+    # ========================================================
 
     if _work_schedule_tests_collected:
         generate_word_report(
             "reports/WorkSchedule_Test_Report.docx",
-            "LỊCH LÀM VIỆC CỦA BÁC SĨ"
+            "LỊCH LÀM VIỆC CỦA BÁC SĨ",
+            "TC-WORKSCHEDULE-"
         )
+
+    # ========================================================
+    # DOCTOR
+    # ========================================================
 
     if _doctor_tests_collected:
         generate_word_report(
             "reports/Doctor_Test_Report.docx",
-            "BÁC SĨ"
+            "BÁC SĨ",
+            "TC-DOCTOR-"
         )
+
+    # ========================================================
+    # SPECIALTY
+    # ========================================================
 
     if _specialty_tests_collected:
         generate_word_report(
             "reports/Specialty_Test_Report.docx",
-            "CHUYÊN KHOA"
+            "CHUYÊN KHOA",
+            "TC-SPECIALTY-"
         )
+
+    # ========================================================
+    # STAT
+    # ========================================================
 
     if _stat_tests_collected:
         generate_word_report(
             "reports/Stat_Test_Report.docx",
-            "THỐNG KÊ"
+            "THỐNG KÊ",
+            "TC-STAT-"
         )
+
+    # ========================================================
+    # DRUG CATEGORY
+    # ========================================================
 
     if _drug_category_tests_collected:
         generate_word_report(
             "reports/Drug_Category_Test_Report.docx",
-            "QUẢN LÝ KHO DƯỢC PHẨM"
+            "QUẢN LÝ KHO DƯỢC PHẨM",
+            "TC-DRUG-CATEGORY-"
         )
+
+    # ========================================================
+    # MEDICAL
+    # ========================================================
 
     if _medical_tests_collected:
         generate_word_report(
             "reports/Medical_Test_Report.docx",
-            "HỒ SƠ BỆNH ÁN"
+            "HỒ SƠ BỆNH ÁN",
+            "TC-MEDICAL-"
         )
+
+    # ========================================================
+    # LOGIN
+    # ========================================================
 
     if _login_tests_collected:
         generate_word_report(
             "reports/Login_Test_Report.docx",
-            "ĐĂNG NHẬP"
+            "ĐĂNG NHẬP",
+            "TC-LOGIN-"
         )
+
+    # ========================================================
+    # REGISTER
+    # ========================================================
 
     if _register_tests_collected:
         generate_word_report(
             "reports/Register_Test_Report.docx",
-            "ĐĂNG KÝ"
+            "ĐĂNG KÝ",
+            "TC-REGISTER-"
         )
+
+    # ========================================================
+    # DOCTOR SCHEDULE ADMIN
+    # ========================================================
 
     if _doctor_schedule_admin_tests_collected:
         generate_word_report(
             "reports/Doctor_Schedule_Admin_Test_Report.docx",
-            "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN"
+            "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+            "TC-DS-ADMIN-"
         )
 
+    # ========================================================
+    # MEDICAL HISTORY
+    # ========================================================
+
+    if _medical_history_tests_collected:
+        generate_word_report(
+            "reports/Medical_History_Test_Report.docx",
+            "LỊCH SỬ KHÁM BỆNH",
+            "TC-MEDICALHISTORY-"
+        )
+
+    # ========================================================
+    # OVERALL TEST REPORT
+    # ========================================================
+
+    generate_overall_report(
+        "reports/Overall_Test_Report.docx"
+    )
 def pytest_runtest_setup(item):
     """
     Hiển thị mã Test Case và mô tả
@@ -604,6 +763,9 @@ def pytest_runtest_setup(item):
     is_login = "test_tc_login_" in item.name
     is_register = "test_tc_register_" in item.name
     is_doctor_schedule_admin = ("test_tc_ds_admin_" in item.name)
+    is_medical_history = ("test_tc_medicalhistory_" in item.name)
+    is_my_appointment = "test_tc_myappointment_" in item.name
+    is_work_schedule = "test_tc_workschedule_" in item.name
 
     if not (
             is_notification
@@ -617,10 +779,26 @@ def pytest_runtest_setup(item):
             or is_login
             or is_register
             or is_doctor_schedule_admin
+            or is_medical_history
+            or is_my_appointment
+            or is_work_schedule
     ):
         return
 
     description = inspect.getdoc(item.obj)
+
+    test_case_id = get_test_case_id(
+        item
+    )
+
+    if test_case_id is not None:
+        register_test_case(
+            test_case_id=test_case_id,
+            feature_name=get_feature_name(
+                test_case_id
+            ),
+            description=description or ""
+        )
 
     print("\n")
     print("=" * 80)

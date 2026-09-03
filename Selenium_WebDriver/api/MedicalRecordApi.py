@@ -649,3 +649,63 @@ class MedicalRecordApi:
             expected_status="confirmed"
         )
         return appointment_id
+
+    def get_medical_records_by_patient(self, patient_id):
+        response = requests.get(
+            f"{self.BASE_URL}/medical-records/patient/{patient_id}",
+            timeout=10
+        )
+
+        assert response.status_code == 200, (
+            "Không lấy được Lịch sử khám bệnh của Patient. "
+            f"Expected HTTP: 200 | "
+            f"Actual HTTP: {response.status_code} | "
+            f"Response: {response.text}"
+        )
+
+        return response.json()
+
+    def update_medical_record(
+            self,
+            record_id,
+            diagnosis,
+            treatment,
+            token):
+        """
+        Cập nhật Medical Record qua API.
+        Dùng cho TEST SETUP để đưa dữ liệu về trạng thái chuẩn.
+        """
+
+        response = requests.put(
+            f"{self.BASE_URL}/medical-records/{record_id}",
+            json={
+                "diagnosis": diagnosis,
+                "treatment": treatment
+            },
+            headers={
+                "Authorization": f"Bearer {token}"
+            },
+            timeout=10
+        )
+
+        assert response.status_code == 200, (
+            "Không reset được Medical Record cho Selenium. "
+            f"Expected HTTP: 200 | "
+            f"Actual HTTP: {response.status_code} | "
+            f"Response: {response.text}"
+        )
+
+    def get_medical_record_by_id(self, record_id):
+        response = requests.get(
+            f"{self.BASE_URL}/medical-records/{record_id}",
+            timeout=10
+        )
+
+        assert response.status_code == 200, (
+            "Không lấy được Medical Record. "
+            f"Expected HTTP: 200 | "
+            f"Actual HTTP: {response.status_code} | "
+            f"Response: {response.text}"
+        )
+
+        return response.json()
