@@ -1,0 +1,12 @@
+test_case_id,admin_username,admin_password,category_name,search_keyword,drug_name,price,new_price,quantity,min_quantity,production_date,expiry_date,dosage_form,unit,strength,manufacturer,status,image,note_prefix
+TC-DRUG-CATEGORY-001,admin_system,Abc@123,,,,,,,,,,,,,,,,SELENIUM-TC-DRUG-CATEGORY-001-
+TC-DRUG-CATEGORY-002,admin_system,Abc@123,Thuốc răng hàm mặt,,,,,,,,,,,,,,,SELENIUM-TC-DRUG-CATEGORY-002-
+TC-DRUG-CATEGORY-003,admin_system,Abc@123,,Franrogyl,Franrogyl,10000,12000,,,,,,,,,,,SELENIUM-TC-DRUG-CATEGORY-003-
+TC-DRUG-CATEGORY-004,admin_system,Abc@123,Tất cả,Franrogyl,Franrogyl,,,,,,,,,,,,,SELENIUM-TC-DRUG-CATEGORY-004-
+TC-DRUG-CATEGORY-005,admin_system,Abc@123,Thuốc tiêu hóa,Franrogyl,Franrogyl,,,,,,,,,,,,,SELENIUM-TC-DRUG-CATEGORY-005-
+TC-DRUG-CATEGORY-006,admin_system,Abc@123,Thuốc răng hàm mặt,Franrogyl,Franrogyl,,,,,,,,,,,,,SELENIUM-TC-DRUG-CATEGORY-006-
+TC-DRUG-CATEGORY-007,admin_system,Abc@123,Vitamin và khoáng chất,,Selenium Drug Valid,12000,,107,20,2026-08-20,2027-08-20,Viên nén,viên,500mg,OPV,available,,SELENIUM-TC-DRUG-CATEGORY-007-
+TC-DRUG-CATEGORY-008,admin_system,Abc@123,Vitamin và khoáng chất,,,12000,,107,20,2026-08-20,2027-08-20,Viên nén,viên,500mg,OPV,available,,SELENIUM-TC-DRUG-CATEGORY-008-
+TC-DRUG-CATEGORY-009,admin_system,Abc@123,Vitamin và khoáng chất,,Selenium Drug Negative,-12000,,107,20,2026-08-20,2027-08-20,Viên nén,viên,500mg,OPV,available,,SELENIUM-TC-DRUG-CATEGORY-009-
+TC-DRUG-CATEGORY-010,admin_system,Abc@123,Vitamin và khoáng chất,,Selenium Drug Invalid Date,12000,,107,20,2025-08-20,2025-08-19,Viên nén,viên,Spiramycin + Metronidazole,OPV,available,,SELENIUM-TC-DRUG-CATEGORY-010-
+TC-DRUG-CATEGORY-011,admin_system,Abc@123,Vitamin và khoáng chất,,Selenium Drug Delete,12000,,107,20,2026-08-20,2027-08-20,Viên nén,viên,500mg,OPV,available,,SELENIUM-TC-DRUG-CATEGORY-011-

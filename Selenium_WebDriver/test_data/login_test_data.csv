@@ -1,0 +1,11 @@
+test_case_id,username,email,password,invalid_password,invalid_username,expected_name,expected_error,protected_url
+TC-LOGIN-001,patient_an,,Abc@123,,,Nguyen,,
+TC-LOGIN-002,,an@gmail.com,Abc@123,,,Nguyen,,
+TC-LOGIN-003,,,Abc@123,,,,,
+TC-LOGIN-004,patient_an,,,,,,,
+TC-LOGIN-005,,,,,,,,
+TC-LOGIN-006,patient_an,,Abc@123,Abc@124,,,Sai tên đăng nhập hoặc mật khẩu,
+TC-LOGIN-007,,,Abc@123,,user_not_exist_999999,,Sai tên đăng nhập hoặc mật khẩu,
+TC-LOGIN-008,patient_an,,Abc@123,,,,,
+TC-LOGIN-009,,,,,,,,http://localhost:3000/my-appointments
+TC-LOGIN-010,patient_an,,Abc@123,,,,,

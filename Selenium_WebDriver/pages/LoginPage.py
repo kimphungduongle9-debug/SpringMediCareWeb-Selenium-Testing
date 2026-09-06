@@ -100,5 +100,34 @@ class LoginPage(BasePage):
     def is_login_nav_link_displayed(self):
         return self.find(*self.LOGIN_NAV_LINK).is_displayed()
 
+    def enter_username(self, username):
+        self.typing(
+            *self.USERNAME_INPUT,
+            username
+        )
 
+    def enter_password(self, password):
+        self.typing(
+            *self.PASSWORD_INPUT,
+            password
+        )
 
+    def click_login(self):
+        self.click(
+            *self.LOGIN_BUTTON
+        )
+
+    def is_login_nav_link_present(self):
+        return len(
+            self.finds(*self.LOGIN_NAV_LINK)
+        ) > 0
+
+    def get_username_value(self):
+        return self.find(
+            *self.USERNAME_INPUT
+        ).get_attribute("value")
+
+    def get_password_value(self):
+        return self.find(
+            *self.PASSWORD_INPUT
+        ).get_attribute("value")

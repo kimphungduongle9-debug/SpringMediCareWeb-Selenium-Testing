@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
-
 import requests
-
 
 class MedicalRecordApi:
 
@@ -129,13 +127,9 @@ class MedicalRecordApi:
         sắp xếp từ gần nhất đến xa nhất.
         """
 
-        schedules = self.get_doctor_schedules(
-            doctor_id
-        )
+        schedules = self.get_doctor_schedules(doctor_id)
 
-        tomorrow = (
-            datetime.now() + timedelta(days=1)
-        ).date()
+        tomorrow = (datetime.now() + timedelta(days=1)).date()
 
         available_schedules = []
 
@@ -182,13 +176,9 @@ class MedicalRecordApi:
         - Cách lịch hiện có ít nhất 30 phút.
         """
 
-        schedules = self.get_available_future_schedules(
-            doctor_id
-        )
+        schedules = self.get_available_future_schedules(doctor_id)
 
-        appointments = self.get_appointments_by_doctor(
-            doctor_id
-        )
+        appointments = self.get_appointments_by_doctor(doctor_id)
 
         occupied_times = []
 
@@ -215,9 +205,7 @@ class MedicalRecordApi:
             )
 
         for schedule in schedules:
-            work_date = schedule[
-                "_parsed_work_date"
-            ]
+            work_date = schedule["_parsed_work_date"]
 
             start_time = datetime.strptime(
                 schedule.get("startTime"),
@@ -229,15 +217,8 @@ class MedicalRecordApi:
                 "%H:%M:%S"
             ).time()
 
-            candidate = datetime.combine(
-                work_date,
-                start_time
-            )
-
-            schedule_end = datetime.combine(
-                work_date,
-                end_time
-            )
+            candidate = datetime.combine(work_date,start_time)
+            schedule_end = datetime.combine(work_date,end_time)
 
             while candidate < schedule_end:
                 has_conflict = any(
@@ -258,10 +239,7 @@ class MedicalRecordApi:
                             "%H:%M"
                         )
                     }
-
-                candidate += timedelta(
-                    minutes=30
-                )
+                candidate += timedelta(minutes=30)
 
         raise AssertionError(
             "Không tìm thấy giờ đặt lịch còn trống "
@@ -284,9 +262,7 @@ class MedicalRecordApi:
             "%d/%m/%Y %H:%M"
         )
 
-        appointments = self.get_appointments_by_doctor(
-            doctor_id
-        )
+        appointments = self.get_appointments_by_doctor(doctor_id)
 
         matching_appointments = []
 
@@ -325,9 +301,7 @@ class MedicalRecordApi:
             if actual_date != expected_date:
                 continue
 
-            matching_appointments.append(
-                appointment
-            )
+            matching_appointments.append(appointment)
 
         assert matching_appointments, (
             "Đã tạo lịch nhưng không tìm lại được "
@@ -335,13 +309,9 @@ class MedicalRecordApi:
         )
 
         matching_appointments.sort(
-            key=lambda item: item.get(
-                "appointmentId",
-                0
-            ),
+            key=lambda item: item.get("appointmentId",0),
             reverse=True
         )
-
         return matching_appointments[0]
 
     def create_appointment(
@@ -454,15 +424,10 @@ class MedicalRecordApi:
         Tìm lịch theo appointmentId trong danh sách
         lịch của bác sĩ.
         """
-
-        appointments = self.get_appointments_by_doctor(
-            doctor_id
-        )
+        appointments = self.get_appointments_by_doctor(doctor_id)
 
         for appointment in appointments:
-            actual_appointment_id = appointment.get(
-                "appointmentId"
-            )
+            actual_appointment_id = appointment.get("appointmentId")
 
             if actual_appointment_id == appointment_id:
                 return appointment
@@ -478,19 +443,11 @@ class MedicalRecordApi:
         Kiểm tra lịch đã chuyển đúng trạng thái.
         """
 
-        appointment = self.get_appointment_by_id(
-            doctor_id,
-            appointment_id
-        )
+        appointment = self.get_appointment_by_id(doctor_id,appointment_id)
 
-        assert appointment is not None, (
-            f"Không tìm thấy lịch ID {appointment_id}."
-        )
+        assert appointment is not None, (f"Không tìm thấy lịch ID {appointment_id}.")
 
-        actual_status = appointment.get(
-            "status",
-            ""
-        ).lower()
+        actual_status = appointment.get("status","").lower()
 
         assert actual_status == expected_status.lower(), (
             "Trạng thái lịch không đúng. "
@@ -529,10 +486,7 @@ class MedicalRecordApi:
             if actual_notes != notes:
                 continue
 
-            status = appointment.get(
-                "status",
-                ""
-            ).lower()
+            status = appointment.get("status","").lower()
 
             if status != "completed":
                 continue
@@ -545,18 +499,13 @@ class MedicalRecordApi:
             if actual_patient_id != patient_id:
                 continue
 
-            matching_appointments.append(
-                appointment
-            )
+            matching_appointments.append(appointment)
 
         if not matching_appointments:
             return None
 
         matching_appointments.sort(
-            key=lambda item: item.get(
-                "appointmentId",
-                0
-            ),
+            key=lambda item: item.get("appointmentId",0),
             reverse=True
         )
 
@@ -583,15 +532,9 @@ class MedicalRecordApi:
         )
 
         if reusable_appointment is not None:
-            return reusable_appointment[
-                "appointmentId"
-            ]
+            return reusable_appointment["appointmentId"]
 
-        booking_slot = (
-            self.find_available_booking_slot(
-                doctor_id
-            )
-        )
+        booking_slot = (self.find_available_booking_slot(doctor_id))
 
         appointment = self.create_appointment(
             patient_id=patient_id,
@@ -605,97 +548,27 @@ class MedicalRecordApi:
             notes=notes
         )
 
-        appointment_id = appointment[
-            "appointmentId"
-        ]
+        appointment_id = appointment["appointmentId"]
 
         self.confirm_appointment(
             appointment_id
         )
-
         self.assert_appointment_status(
             doctor_id=doctor_id,
             appointment_id=appointment_id,
             expected_status="confirmed"
         )
-
         self.create_medical_record(
             appointment_id=appointment_id,
             diagnosis=diagnosis,
             treatment=treatment
         )
-
         self.assert_appointment_status(
             doctor_id=doctor_id,
             appointment_id=appointment_id,
             expected_status="completed"
         )
-
         return appointment_id
-
-    def prepare_tc7_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_completed_medical_record(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-007",
-            diagnosis=(
-                "Chẩn đoán Selenium TC-MEDICAL-007"
-            ),
-            treatment=(
-                "Điều trị Selenium TC-MEDICAL-007"
-            )
-        )
-
-    def prepare_tc5_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_completed_medical_record(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-005",
-            diagnosis=(
-                "Đau lưng do ngồi lâu"
-            ),
-            treatment=(
-                "Nghỉ ngơi và hạn chế vận động mạnh"
-            )
-        )
-
-    def prepare_tc6_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_completed_medical_record(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-006",
-            diagnosis=(
-                "Chẩn đoán ban đầu TC-MEDICAL-006"
-            ),
-            treatment=(
-                "Hướng điều trị ban đầu TC-MEDICAL-006"
-            )
-        )
-
-    def prepare_tc9_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_completed_medical_record(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-009",
-            diagnosis=(
-                "Chẩn đoán ban đầu TC-MEDICAL-009"
-            ),
-            treatment=(
-                "Hướng điều trị ban đầu TC-MEDICAL-009"
-            )
-        )
 
     def find_confirmed_appointment(
             self,
@@ -706,11 +579,7 @@ class MedicalRecordApi:
         Tìm lịch đã xác nhận để có thể khám bệnh.
         """
 
-        appointments = (
-            self.get_appointments_by_doctor(
-                doctor_id
-            )
-        )
+        appointments = (self.get_appointments_by_doctor(doctor_id))
 
         for appointment in appointments:
             patient = appointment.get(
@@ -760,7 +629,6 @@ class MedicalRecordApi:
                 doctor_id
             )
         )
-
         appointment = self.create_appointment(
             patient_id=patient_id,
             doctor_id=doctor_id,
@@ -772,81 +640,72 @@ class MedicalRecordApi:
             ],
             notes=notes
         )
-
-        appointment_id = appointment[
-            "appointmentId"
-        ]
-
-        self.confirm_appointment(
-            appointment_id
-        )
+        appointment_id = appointment["appointmentId"]
+        self.confirm_appointment(appointment_id)
 
         self.assert_appointment_status(
             doctor_id=doctor_id,
             appointment_id=appointment_id,
             expected_status="confirmed"
         )
-
         return appointment_id
 
-    def prepare_tc1_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_confirmed_appointment(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-001"
+    def get_medical_records_by_patient(self, patient_id):
+        response = requests.get(
+            f"{self.BASE_URL}/medical-records/patient/{patient_id}",
+            timeout=10
         )
 
-    def prepare_tc2_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_confirmed_appointment(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-002"
+        assert response.status_code == 200, (
+            "Không lấy được Lịch sử khám bệnh của Patient. "
+            f"Expected HTTP: 200 | "
+            f"Actual HTTP: {response.status_code} | "
+            f"Response: {response.text}"
         )
 
-    def prepare_tc3_data(
+        return response.json()
+
+    def update_medical_record(
             self,
-            patient_id,
-            doctor_id):
-        return self.prepare_confirmed_appointment(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-003"
+            record_id,
+            diagnosis,
+            treatment,
+            token):
+        """
+        Cập nhật Medical Record qua API.
+        Dùng cho TEST SETUP để đưa dữ liệu về trạng thái chuẩn.
+        """
+
+        response = requests.put(
+            f"{self.BASE_URL}/medical-records/{record_id}",
+            json={
+                "diagnosis": diagnosis,
+                "treatment": treatment
+            },
+            headers={
+                "Authorization": f"Bearer {token}"
+            },
+            timeout=10
         )
 
-    def prepare_tc4_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_completed_medical_record(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-004",
-            diagnosis=(
-                "Chẩn đoán TC-MEDICAL-004"
-            ),
-            treatment=(
-                "Hướng điều trị TC-MEDICAL-004"
-            )
+        assert response.status_code == 200, (
+            "Không reset được Medical Record cho Selenium. "
+            f"Expected HTTP: 200 | "
+            f"Actual HTTP: {response.status_code} | "
+            f"Response: {response.text}"
         )
 
-    def prepare_tc8_data(
-            self,
-            patient_id,
-            doctor_id):
-        return self.prepare_completed_medical_record(
-            patient_id=patient_id,
-            doctor_id=doctor_id,
-            notes="SELENIUM-TC-MEDICAL-008",
-            diagnosis=(
-                "Chẩn đoán TC-MEDICAL-008"
-            ),
-            treatment=(
-                "Hướng điều trị TC-MEDICAL-008"
-            )
+    def get_medical_record_by_id(self, record_id):
+        response = requests.get(
+            f"{self.BASE_URL}/medical-records/{record_id}",
+            timeout=10
         )
+
+        assert response.status_code == 200, (
+            "Không lấy được Medical Record. "
+            f"Expected HTTP: 200 | "
+            f"Actual HTTP: {response.status_code} | "
+            f"Response: {response.text}"
+        )
+
+        return response.json()

@@ -1,0 +1,10 @@
+test_case_id,patient_username,patient_password,admin_username,admin_password,doctor_username,doctor_password,other_doctor_username,other_doctor_password,patient_id,doctor_id,doctor_name,patient_name,note_prefix,diagnosis,treatment
+TC-APPOINTMENT-001,patient_an,Abc@123,admin_system,Abc@123,doctor_minh,Abc@123,doctor_binh,Abc@123,1,1,Tran Binh,Nguyen An,SELENIUM-TC-APPOINTMENT-001-,,
+TC-APPOINTMENT-002,,,admin_system,Abc@123,doctor_minh,Abc@123,doctor_binh,Abc@123,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-002-,,
+TC-APPOINTMENT-003,,,admin_system,Abc@123,doctor_minh,Abc@123,doctor_binh,Abc@123,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-003-,,
+TC-APPOINTMENT-004,,,,,doctor_minh,Abc@123,,,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-004-,,
+TC-APPOINTMENT-005,,,,,doctor_minh,Abc@123,,,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-005-,,
+TC-APPOINTMENT-006,,,,,doctor_minh,Abc@123,,,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-006-,,
+TC-APPOINTMENT-007,,,,,doctor_binh,Abc@123,doctor_minh,Abc@123,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-007-,,
+TC-APPOINTMENT-008,,,,,doctor_minh,Abc@123,,,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-008-,,
+TC-APPOINTMENT-009,,,,,doctor_minh,Abc@123,,,7,3,Ly Minh,Duong Le Kim Phung,SELENIUM-TC-APPOINTMENT-009-,Đau cổ do ngồi sai tư thế,Nghỉ ngơi và tập vận động nhẹ

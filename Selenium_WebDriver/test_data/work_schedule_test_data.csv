@@ -1,0 +1,6 @@
+test_case_id,doctor_username,doctor_password,other_doctor_username,other_doctor_password,expected_page_title,expected_doctor_name,expected_specialty,expected_shift_morning,expected_shift_afternoon,expected_shift_evening,expected_empty_text
+TC-WORKSCHEDULE-001,doctor_dung,Abc@123,doctor_binh,Abc@123,Lịch làm việc của tôi,,,Ca sáng,Ca chiều,Ca tối,Trống
+TC-WORKSCHEDULE-002,doctor_dung,Abc@123,doctor_binh,Abc@123,Lịch làm việc của tôi,,,Ca sáng,Ca chiều,Ca tối,Trống
+TC-WORKSCHEDULE-003,doctor_dung,Abc@123,doctor_binh,Abc@123,Lịch làm việc của tôi,,,Ca sáng,Ca chiều,Ca tối,Trống
+TC-WORKSCHEDULE-004,doctor_dung,Abc@123,doctor_binh,Abc@123,Lịch làm việc của tôi,,,Ca sáng,Ca chiều,Ca tối,Trống
+TC-WORKSCHEDULE-005,doctor_dung,Abc@123,doctor_binh,Abc@123,Lịch làm việc của tôi,,,Ca sáng,Ca chiều,Ca tối,Trống

@@ -68,6 +68,33 @@ class RegisterPage(BasePage):
     def open_page(self):
         self.open(self.URL)
 
+    def enter_first_name(self, first_name):
+        self.typing(*self.FIRST_NAME_INPUT, first_name)
+
+    def enter_last_name(self, last_name):
+        self.typing(*self.LAST_NAME_INPUT, last_name)
+
+    def enter_email(self, email):
+        self.typing(*self.EMAIL_INPUT, email)
+
+    def enter_phone(self, phone):
+        self.typing(*self.PHONE_INPUT, phone)
+
+    def enter_username(self, username):
+        self.typing(*self.USERNAME_INPUT, username)
+
+    def enter_password(self, password):
+        self.typing(*self.PASSWORD_INPUT, password)
+
+    def enter_confirm_password(self, confirm_password):
+        self.typing(*self.CONFIRM_PASSWORD_INPUT, confirm_password)
+
+    def upload_avatar(self, avatar_path):
+        self.find(*self.AVATAR_INPUT).send_keys(avatar_path)
+
+    def click_register(self):
+        self.click(*self.REGISTER_BUTTON)
+
     def get_avatar_validation_message(self):
         return self.find(
             *self.AVATAR
@@ -142,3 +169,28 @@ class RegisterPage(BasePage):
         )
 
         return element.text
+
+    def get_last_name_validation_message(self):
+        return self.find(*self.LAST_NAME_INPUT).get_attribute(
+            "validationMessage"
+        )
+
+    def get_phone_validation_message(self):
+        return self.find(*self.PHONE_INPUT).get_attribute(
+            "validationMessage"
+        )
+
+    def get_username_validation_message(self):
+        return self.find(*self.USERNAME_INPUT).get_attribute(
+            "validationMessage"
+        )
+
+    def get_password_validation_message(self):
+        return self.find(*self.PASSWORD_INPUT).get_attribute(
+            "validationMessage"
+        )
+
+    def get_confirm_password_validation_message(self):
+        return self.find(
+            *self.CONFIRM_PASSWORD_INPUT
+        ).get_attribute("validationMessage")

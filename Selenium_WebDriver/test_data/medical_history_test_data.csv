@@ -1,0 +1,7 @@
+test_case_id,patient_id,patient_username,patient_password,doctor_id,note_prefix,admin_username,admin_password,doctor_username,doctor_password,diagnosis,treatment,patient_b_id,patient_b_username,patient_b_password,doctor_name
+TC-MEDICALHISTORY-001,1,patient_an,Abc@123,1,SELENIUM-TC-MEDICALHISTORY-001-,admin_system,Abc@123,,,
+TC-MEDICALHISTORY-002,1,patient_an,Abc@123,1,SELENIUM-TC-MEDICALHISTORY-002-,admin_system,Abc@123,,,
+TC-MEDICALHISTORY-003,1,patient_an,Abc@123,1,SELENIUM-TC-MEDICALHISTORY-003-,admin_system,Abc@123,doctor_binh,Abc@123,Đau đầu nhẹ do thiếu ngủ,Nghỉ ngơi và uống đủ nước
+TC-MEDICALHISTORY-004,1,patient_an,Abc@123,1,SELENIUM-TC-MEDICALHISTORY-004-,admin_system,Abc@123,doctor_binh,Abc@123,,
+TC-MEDICALHISTORY-005,1,patient_an,Abc@123,1,SELENIUM-TC-MEDICALHISTORY-005-,admin_system,Abc@123,doctor_binh,Abc@123,,,3,patient_thu,Abc@123
+TC-MEDICALHISTORY-006,1,patient_an,Abc@123,1,SELENIUM-TC-MEDICALHISTORY-006-,admin_system,Abc@123,doctor_binh,Abc@123,Chẩn đoán ban đầu TC-MEDICALHISTORY-006,Hướng điều trị ban đầu TC-MEDICALHISTORY-006,,,,Tran Binh

@@ -1,0 +1,21 @@
+test_case_id,username,password,page_title,form_title,doctor_name,date_offset_days,shift_form,shift_name,status_form,status_display,note,success_message,doctor_default,work_date_default,shift_default,status_default,note_default,shift_options,status_options,error_message,doctor_name_2,status_form_2,status_display_2
+TC-DS-ADMIN-001,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,Thêm lịch làm việc,,,,,,,,,-- Chọn bác sĩ --,,Ca sáng: 07:00 - 11:30,Có lịch làm việc,,"Ca sáng: 07:00 - 11:30|Ca chiều: 13:00 - 17:00|Ca tối: 17:30 - 21:00","Có lịch làm việc|Không làm việc"
+TC-DS-ADMIN-002,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,7,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử lịch làm việc,Thêm lịch làm việc thành công!,,,,,,,
+TC-DS-ADMIN-003,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,8,Ca sáng: 07:00 - 11:30,Ca sáng,Không làm việc,Không làm,Không trực,Thêm lịch làm việc thành công!,,,,,,,
+TC-DS-ADMIN-004,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,9,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,,Thêm lịch làm việc thành công!,,,,,,,
+TC-DS-ADMIN-005,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,,10,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,,,-- Chọn bác sĩ --,,Ca sáng: 07:00 - 11:30,Có lịch làm việc,,,
+TC-DS-ADMIN-006,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,,,,,Ca sáng: 07:00 - 11:30,Có lịch làm việc,,,
+TC-DS-ADMIN-007,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,-1,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử ngày đã qua,,,,,,,,
+TC-DS-ADMIN-008,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,11,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử trùng lịch,Thêm lịch làm việc thành công!,,,,,,,,Lịch làm việc của bác sĩ trong ngày và ca này đã tồn tại.
+TC-DS-ADMIN-009,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,12,Ca chiều: 13:00 - 17:00,Ca chiều,Có lịch làm việc,Có lịch,Kiểm thử nhiều ca,Thêm lịch làm việc thành công!,,,,,,,,
+TC-DS-ADMIN-010,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,13,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử hai bác sĩ cùng ca,Thêm lịch làm việc thành công!,,,,,,,,,Ly Minh
+TC-DS-ADMIN-011,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,14,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử trạng thái xung đột,Thêm lịch làm việc thành công!,,,,,,,,Lịch làm việc của bác sĩ trong ngày và ca này đã tồn tại.,,Không làm việc,Không làm
+TC-DS-ADMIN-012,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,15,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử nhấn liên tục,Thêm lịch làm việc thành công!,,,,,,,,,,,
+TC-DS-ADMIN-013,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,16,Ca chiều: 13:00 - 17:00,Ca chiều,Không làm việc,Không làm,Kiểm thử reset form,Thêm lịch làm việc thành công!,-- Chọn bác sĩ --,,Ca sáng: 07:00 - 11:30,Có lịch làm việc,,,,,,,
+TC-DS-ADMIN-014,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,,,,,,,,,,,,,,,,,,,
+TC-DS-ADMIN-015,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh
+TC-DS-ADMIN-016,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ
+TC-DS-ADMIN-017,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ
+TC-DS-ADMIN-018,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,17,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử cập nhật lịch,,,,,,,,,,,Không làm việc,Không làm
+TC-DS-ADMIN-019,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,18,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử hủy sửa,,,,,,,,,,,Không làm việc,Không làm
+TC-DS-ADMIN-020,admin_system,Abc@123,Quản lý lịch làm việc bác sĩ,,Tran Binh,19,Ca sáng: 07:00 - 11:30,Ca sáng,Có lịch làm việc,Có lịch,Kiểm thử xóa lịch

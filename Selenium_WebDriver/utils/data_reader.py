@@ -1,44 +1,69 @@
 import csv
 from pathlib import Path
-from openpyxl import load_workbook
 
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
-NOTIFICATION_TEST_DATA_FILE = (
-    PROJECT_ROOT
-    / "TestCases"
-    / "Notification_TestCase.xlsx"
-)
 
 NOTIFICATION_TEST_DATA_CSV = (
     Path(__file__).resolve().parents[1]
     / "test_data"
     / "notification_test_data.csv"
 )
-
-
-def get_test_data(file_path, test_case_id):
-    workbook = load_workbook(file_path, data_only=True)
-    sheet = workbook["AUTOMATION_DATA"]
-
-    headers = [cell.value for cell in sheet[1]]
-
-    for row in sheet.iter_rows(min_row=2, values_only=True):
-        row_data = dict(zip(headers, row))
-
-        if row_data["test_case_id"] == test_case_id:
-            workbook.close()
-            return row_data
-
-    workbook.close()
-    raise ValueError(
-        f"Không tìm thấy test case: {test_case_id}"
-    )
-
-
+BOOKING_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "booking_test_data.csv"
+)
+APPOINTMENT_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "appointment_test_data.csv"
+)
+MY_APPOINTMENT_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "my_appointment_test_data.csv"
+)
+WORK_SCHEDULE_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "work_schedule_test_data.csv"
+)
+MEDICAL_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "medical_test_data.csv"
+)
+DRUG_CATEGORY_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "drug_category_test_data.csv"
+)
+LOGIN_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "login_test_data.csv"
+)
+REGISTER_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "register_test_data.csv"
+)
+DOCTOR_SCHEDULE_ADMIN_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "doctor_schedule_admin_test_data.csv"
+)
+MEDICAL_HISTORY_TEST_DATA_CSV = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "medical_history_test_data.csv"
+)
 def get_test_data_csv(file_path, test_case_id):
-    with open(file_path, mode="r", encoding="utf-8-sig", newline="") as file:
+    with open(
+        file_path,
+        mode="r",
+        encoding="utf-8-sig",
+        newline=""
+    ) as file:
         reader = csv.DictReader(file)
 
         for row in reader:
