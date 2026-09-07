@@ -1,6 +1,7 @@
 import sys
 import time
 from pathlib import Path
+import os
 import pytest
 from selenium import webdriver
 from tests.helpers.appointment_helpers import get_or_create_booking_slot
@@ -21,15 +22,24 @@ pytest_plugins = ["utils.pytest_report_hooks",]
 
 @pytest.fixture
 def driver():
-    browser = webdriver.Chrome()
+    options = webdriver.ChromeOptions()
 
-    browser.maximize_window()
+    if os.getenv("CI") == "true":
+        options.add_argument("--headless=new")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--window-size=1920,1080")
+
+    browser = webdriver.Chrome(options=options)
+
+    if os.getenv("CI") != "true":
+        browser.maximize_window()
+
     browser.implicitly_wait(3)
 
     yield browser
 
     browser.quit()
-
 
 @pytest.fixture
 def booking_test_data():
