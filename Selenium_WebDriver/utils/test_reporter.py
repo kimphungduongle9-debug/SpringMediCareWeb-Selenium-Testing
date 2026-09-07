@@ -1,7 +1,7 @@
 from datetime import datetime
 from pathlib import Path
 import re
-
+import json
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
@@ -9,6 +9,11 @@ from docx.shared import Pt, RGBColor
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+OVERALL_STATE_PATH = (
+    PROJECT_ROOT
+    / "reports"
+    / "overall_report_state.json"
+)
 
 FONT_NAME = "Times New Roman"
 FONT_SIZE = Pt(13)
@@ -218,7 +223,7 @@ def register_test_case(
     clean_description = (description or "").strip()
     lines = clean_description.splitlines()
 
-    if lines and lines[0].strip() == test_case_id:
+    if (lines and lines[0].strip().rstrip(":") == test_case_id):
         clean_description = "\n".join(lines[1:]).strip()
 
     _test_cases[test_case_id] = {
@@ -232,6 +237,45 @@ def reset_test_report():
     _test_results.clear()
     _test_cases.clear()
 
+def load_overall_state():
+    if not OVERALL_STATE_PATH.exists():
+        return {
+            "test_cases": {},
+            "test_results": {}
+        }
+
+    try:
+        with open(
+            OVERALL_STATE_PATH,
+            "r",
+            encoding="utf-8"
+        ) as file:
+            return json.load(file)
+
+    except Exception:
+        return {
+            "test_cases": {},
+            "test_results": {}
+        }
+
+
+def save_overall_state(state):
+    OVERALL_STATE_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    with open(
+        OVERALL_STATE_PATH,
+        "w",
+        encoding="utf-8"
+    ) as file:
+        json.dump(
+            state,
+            file,
+            ensure_ascii=False,
+            indent=2
+        )
 
 # ============================================================
 # REPORT RIÊNG TỪNG CHỨC NĂNG
@@ -370,6 +414,32 @@ def generate_overall_report(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Đọc dữ liệu Overall của các lần chạy trước
+    overall_state = load_overall_state()
+
+    overall_test_cases = overall_state[
+        "test_cases"
+    ]
+
+    overall_test_results = overall_state[
+        "test_results"
+    ]
+
+    # Chỉ cập nhật các TC vừa chạy trong session hiện tại
+    overall_test_cases.update(
+        _test_cases
+    )
+
+    overall_test_results.update(
+        _test_results
+    )
+
+    # Lưu lại để lần chạy sau không mất module cũ
+    save_overall_state({
+        "test_cases": overall_test_cases,
+        "test_results": overall_test_results
+    })
+
     document = Document()
 
     _add_report_title(
@@ -380,13 +450,16 @@ def generate_overall_report(
 
     # 1. Tổng quan
     document.add_heading("1. Tổng quan kết quả", level=1)
-    _add_summary_table(document, _test_results)
+    _add_summary_table(
+        document,
+        overall_test_results
+    )
     document.add_paragraph()
 
     # Gom TC theo chức năng
     feature_tests = {}
 
-    for test_case_id, info in _test_cases.items():
+    for test_case_id, info in overall_test_cases.items():
         feature_name = info["feature"]
 
         feature_tests.setdefault(
@@ -415,9 +488,10 @@ def generate_overall_report(
         test_case_ids = feature_tests[feature_name]
 
         feature_results = {
-            test_case_id: _test_results[test_case_id]
+            test_case_id:
+                overall_test_results[test_case_id]
             for test_case_id in test_case_ids
-            if test_case_id in _test_results
+            if test_case_id in overall_test_results
         }
 
         counts = _count_statuses(feature_results)
@@ -444,9 +518,9 @@ def generate_overall_report(
         )
 
         feature_results = {
-            test_case_id: _test_results[test_case_id]
+            test_case_id: overall_test_results[test_case_id]
             for test_case_id in test_case_ids
-            if test_case_id in _test_results
+            if test_case_id in overall_test_results
         }
 
         counts = _count_statuses(feature_results)
@@ -474,11 +548,11 @@ def generate_overall_report(
         headers[3].text = "Ghi chú"
 
         for test_case_id in test_case_ids:
-            if test_case_id not in _test_results:
+            if test_case_id not in overall_test_results:
                 continue
 
-            result = _test_results[test_case_id]
-            info = _test_cases.get(test_case_id, {})
+            result = overall_test_results[test_case_id]
+            info = overall_test_cases.get(test_case_id,{})
 
             row = table.add_row().cells
 

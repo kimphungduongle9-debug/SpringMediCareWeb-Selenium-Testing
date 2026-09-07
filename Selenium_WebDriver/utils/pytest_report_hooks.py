@@ -481,10 +481,7 @@ def pytest_runtest_makereport(item, call):
         save_test_result(
             test_case_id=test_case_id,
             status="XFAILED",
-            detail=(
-                f"{report.wasxfail} | "
-                f"{detail}"
-            ),
+            detail=str(report.wasxfail),
             duration=report.duration
         )
 

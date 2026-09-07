@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
 from pages.BasePage import BasePage
-
+from selenium.webdriver.support import expected_conditions as EC
 
 class PrescriptionPage(BasePage):
     """
@@ -91,12 +91,28 @@ class PrescriptionPage(BasePage):
     # =========================
 
     def select_drug_by_index(self, option_index):
+        option_index = int(option_index)
+
+        self.wait.until(
+            EC.presence_of_element_located(
+                self.DRUG_SELECT
+            )
+        )
+
+        self.wait.until(
+            lambda driver: len(
+                Select(
+                    driver.find_element(*self.DRUG_SELECT)
+                ).options
+            ) > option_index
+        )
+
         drug_select = Select(
             self.find(*self.DRUG_SELECT)
         )
 
         drug_select.select_by_index(
-            int(option_index)
+            option_index
         )
 
         return (

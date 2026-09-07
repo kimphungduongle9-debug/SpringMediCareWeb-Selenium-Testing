@@ -2,10 +2,56 @@ from selenium.webdriver.common.by import By
 
 from pages.BasePage import BasePage
 
-import time
-
-
 class RegisterPage(BasePage):
+    """
+    Page Object cho chức năng Đăng ký tài khoản.
+
+    Mapping Test Case -> Method chính:
+
+    TC-REGISTER-001
+    - Step 1: open_page()
+    - Step 2: enter_first_name(), enter_last_name(),
+      enter_email(), enter_phone(), enter_username(),
+      enter_password(), enter_confirm_password()
+    - Step 3: upload_avatar()
+    - Step 4: click_register()
+
+    TC-REGISTER-002 -> TC-REGISTER-009
+    - Nhập các trường hợp lệ:
+      + enter_first_name()
+      + enter_last_name()
+      + enter_email()
+      + enter_phone()
+      + enter_username()
+      + enter_password()
+      + enter_confirm_password()
+      + upload_avatar()
+    - Thực hiện đăng ký:
+      + click_register()
+    - Kiểm tra required validation:
+      + get_avatar_validation_message()
+      + get_first_name_validation_message()
+      + get_last_name_validation_message()
+      + get_email_validation_message()
+      + get_phone_validation_message()
+      + get_username_validation_message()
+      + get_password_validation_message()
+      + get_confirm_password_validation_message()
+
+    TC-REGISTER-010 -> TC-REGISTER-017
+    - Nhập dữ liệu validation bằng các method enter_*()
+    - upload_avatar()
+    - click_register()
+    - Kiểm tra:
+      + get_email_validation_message()
+      + get_error_message()
+
+    TC-REGISTER-018 -> TC-REGISTER-019
+    - Nhập username/email đã tồn tại bằng enter_*()
+    - upload_avatar()
+    - click_register()
+    - Kiểm tra lỗi bằng get_error_message()
+    """
 
     URL = "http://localhost:3000/register"
 
@@ -109,49 +155,51 @@ class RegisterPage(BasePage):
             username,
             password,
             confirm_password,
-            avatar_path,
-            delay=1.5
+            avatar_path
     ):
-
-        time.sleep(delay)
-
         self.typing(
             *self.FIRST_NAME_INPUT,
             first_name
         )
 
-        time.sleep(delay)
+        self.typing(
+            *self.LAST_NAME_INPUT,
+            last_name
+        )
 
-        self.typing(*self.LAST_NAME_INPUT,last_name)
+        self.typing(
+            *self.EMAIL_INPUT,
+            email
+        )
 
-        time.sleep(delay)
+        self.typing(
+            *self.PHONE_INPUT,
+            phone
+        )
 
-        self.typing(*self.EMAIL_INPUT,email)
+        self.typing(
+            *self.USERNAME_INPUT,
+            username
+        )
 
-        time.sleep(delay)
+        self.typing(
+            *self.PASSWORD_INPUT,
+            password
+        )
 
-        self.typing(*self.PHONE_INPUT,phone)
-
-        time.sleep(delay)
-
-        self.typing(*self.USERNAME_INPUT,username)
-
-        time.sleep(delay)
-
-        self.typing(*self.PASSWORD_INPUT,password)
-
-        time.sleep(delay)
-
-        self.typing(*self.CONFIRM_PASSWORD_INPUT,confirm_password)
-
-        time.sleep(delay)
+        self.typing(
+            *self.CONFIRM_PASSWORD_INPUT,
+            confirm_password
+        )
 
         if avatar_path:
-            self.find(*self.AVATAR_INPUT).send_keys(avatar_path)
+            self.find(
+                *self.AVATAR_INPUT
+            ).send_keys(avatar_path)
 
-        time.sleep(delay)
-
-        self.click(*self.REGISTER_BUTTON)
+        self.click(
+            *self.REGISTER_BUTTON
+        )
 
     def get_first_name_validation_message(self):
         return self.find(

@@ -6,8 +6,333 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from pages.BasePage import BasePage
 
-
 class DoctorScheduleAdminPage(BasePage):
+    """
+    Page Object cho chức năng Quản lý lịch làm việc bác sĩ của Admin.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-DS-ADMIN-001
+    - Step 2: Mở trang Quản lý lịch làm việc bác sĩ
+      + open_page()
+      + get_page_title()
+    - Step 3: Kiểm tra form Thêm lịch làm việc
+      + get_form_title()
+    - Step 4: Kiểm tra danh sách Bác sĩ
+      + open_doctor_dropdown()
+      + get_doctor_options()
+    - Step 5: Kiểm tra danh sách Ca làm việc
+      + open_shift_dropdown()
+      + get_shift_options()
+    - Step 6: Kiểm tra danh sách Trạng thái
+      + open_status_dropdown()
+      + get_status_options()
+    - Step 7: Kiểm tra các trường và giá trị mặc định
+      + is_doctor_select_displayed()
+      + is_work_date_input_displayed()
+      + is_shift_select_displayed()
+      + is_status_select_displayed()
+      + is_note_input_displayed()
+      + is_add_button_displayed()
+      + get_selected_doctor_text()
+      + get_work_date_value()
+      + get_selected_shift_text()
+      + get_selected_status_text()
+      + get_note_value()
+
+    TC-DS-ADMIN-002 -> TC-DS-ADMIN-004
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+      + get_page_title()
+    - Nhập dữ liệu lịch
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + enter_note()
+      + get_selected_doctor_text()
+      + get_work_date_value()
+      + get_selected_shift_text()
+      + get_selected_status_text()
+      + get_note_value()
+    - Thêm lịch
+      + click_add_button()
+      + get_message()
+    - Kiểm tra lịch vừa tạo
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-005
+    - Step 3: Giữ Bác sĩ ở trạng thái chưa chọn
+      + get_selected_doctor_text()
+    - Step 4: Chọn ngày làm việc
+      + select_work_date()
+      + get_work_date_value()
+    - Step 5: Kiểm tra Ca và Trạng thái mặc định
+      + get_selected_shift_text()
+      + get_selected_status_text()
+    - Step 6: Thêm lịch
+      + click_add_button()
+    - Step 7: Kiểm tra không tạo lịch khi chưa chọn bác sĩ
+      + get_selected_doctor_text()
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-006
+    - Step 3: Chọn bác sĩ
+      + select_doctor()
+      + get_selected_doctor_text()
+    - Step 4: Để trống ngày làm việc
+      + get_work_date_value()
+    - Step 5: Kiểm tra Ca và Trạng thái mặc định
+      + get_selected_shift_text()
+      + get_selected_status_text()
+    - Step 6: Thêm lịch
+      + click_add_button()
+    - Step 7: Kiểm tra validation Ngày làm việc
+      + get_work_date_validation_message()
+      + get_work_date_value()
+      + get_selected_doctor_text()
+
+    TC-DS-ADMIN-007
+    - Step 3: Chọn bác sĩ
+      + select_doctor()
+      + get_selected_doctor_text()
+    - Step 4: Chọn ngày đã qua
+      + select_work_date()
+      + get_work_date_value()
+    - Step 5: Chọn Ca và Trạng thái
+      + select_shift()
+      + select_status()
+      + get_selected_shift_text()
+      + get_selected_status_text()
+    - Step 6: Thêm lịch
+      + click_add_button()
+    - Step 7: Kiểm tra phản hồi hệ thống
+      + get_message()
+
+    TC-DS-ADMIN-008
+    - Step 3-5: Nhập dữ liệu lịch lần đầu
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + enter_note()
+    - Step 6: Thêm lịch lần đầu
+      + click_add_button()
+      + get_message()
+    - Step 7: Nhập lại cùng bác sĩ, ngày và ca
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+    - Step 8: Thêm lịch lần nữa
+      + click_add_button()
+      + scroll_to_top()
+    - Step 9: Kiểm tra thông báo lịch trùng
+      + get_message()
+      + is_message_displayed()
+
+    TC-DS-ADMIN-009
+    - Step 3: Kiểm tra ca đã tồn tại
+      + is_schedule_present_in_list()
+    - Step 4-5: Chọn cùng bác sĩ, ngày nhưng ca khác
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+    - Step 6: Thêm ca thứ hai
+      + enter_note()
+      + click_add_button()
+      + get_message()
+    - Step 7: Kiểm tra cả hai ca vẫn tồn tại
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-010
+    - Step 3-4: Thêm lịch cho bác sĩ thứ nhất
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + enter_note()
+      + click_add_button()
+      + get_message()
+    - Step 5-7: Thêm cùng ngày, cùng ca cho bác sĩ thứ hai
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + enter_note()
+      + click_add_button()
+      + get_message()
+    - Step 8: Kiểm tra lịch của hai bác sĩ
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-011
+    - Step 3-5: Tạo lịch ban đầu
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + enter_note()
+      + click_add_button()
+      + get_message()
+    - Step 6-8: Nhập lại cùng lịch nhưng trạng thái khác
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + click_add_button()
+      + scroll_to_top()
+    - Step 9: Kiểm tra hệ thống từ chối trạng thái xung đột
+      + get_message()
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-012
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+      + get_page_title()
+    - Step 3: Nhập dữ liệu lịch hợp lệ
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + enter_note()
+      + get_selected_doctor_text()
+      + get_work_date_value()
+      + get_selected_shift_text()
+      + get_selected_status_text()
+      + get_note_value()
+    - Step 4: Nhấn Thêm lịch nhiều lần liên tục
+      + click_add_button_multiple_times()
+    - Step 5: Kiểm tra chỉ tạo một lịch
+      + get_message()
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-013
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+      + get_page_title()
+    - Step 3: Nhập dữ liệu lịch
+      + select_doctor()
+      + select_work_date()
+      + select_shift()
+      + select_status()
+      + enter_note()
+    - Step 4: Thêm lịch thành công
+      + click_add_button()
+      + get_message()
+    - Step 5: Kiểm tra form reset
+      + get_selected_doctor_text()
+      + get_work_date_value()
+      + get_selected_shift_text()
+      + get_selected_status_text()
+      + get_note_value()
+      + is_add_button_displayed()
+
+    TC-DS-ADMIN-014
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+      + get_page_title()
+    - Step 3: Lọc theo bác sĩ
+      + select_filter_doctor()
+      + get_selected_filter_doctor_text()
+    - Step 4: Kiểm tra bảng tuần sau lọc
+      + scroll_to_week_view()
+      + get_week_view_doctor_names()
+
+    TC-DS-ADMIN-015
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+    - Step 3: Lọc theo bác sĩ
+      + select_filter_doctor()
+      + get_week_view_doctor_names()
+    - Step 4: Bỏ điều kiện lọc
+      + select_filter_doctor()
+      + get_selected_filter_doctor_text()
+    - Step 5: Kiểm tra hiển thị lại tất cả bác sĩ
+      + scroll_to_week_view()
+      + get_week_view_doctor_names()
+
+    TC-DS-ADMIN-016
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+    - Step 3: Ghi nhận tuần hiện tại
+      + get_week_range_text()
+    - Step 4: Chuyển sang tuần trước
+      + click_previous_week()
+      + get_week_range_text()
+
+    TC-DS-ADMIN-017
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+    - Step 3: Ghi nhận tuần hiện tại
+      + get_week_range_text()
+    - Step 4: Chuyển sang tuần sau
+      + click_next_week()
+      + get_week_range_text()
+
+    TC-DS-ADMIN-018
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+      + get_page_title()
+    - Step 3: Mở lịch cần sửa
+      + scroll_to_schedule_list()
+      + click_edit_schedule_by_id()
+    - Step 4: Kiểm tra dữ liệu cũ
+      + get_update_form_title()
+      + get_selected_doctor_text()
+      + get_work_date_value()
+      + get_selected_shift_text()
+      + get_selected_status_text()
+      + get_note_value()
+    - Step 5: Thay đổi Trạng thái và Ghi chú
+      + select_status()
+      + enter_note()
+      + get_selected_status_text()
+      + get_note_value()
+    - Step 6: Cập nhật lịch
+      + click_update_button()
+      + get_message()
+    - Step 7: Kiểm tra dữ liệu sau cập nhật
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-019
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+    - Step 3: Mở lịch cần sửa
+      + scroll_to_schedule_list()
+      + click_edit_schedule_by_id()
+      + get_update_form_title()
+    - Step 4: Kiểm tra dữ liệu ban đầu
+      + get_selected_status_text()
+      + get_note_value()
+    - Step 5: Thay đổi dữ liệu nhưng chưa lưu
+      + select_status()
+      + enter_note()
+    - Step 6: Hủy sửa
+      + click_cancel_edit_button()
+      + get_form_title()
+    - Step 7: Kiểm tra dữ liệu cũ không thay đổi
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+
+    TC-DS-ADMIN-020
+    - Step 2: Mở trang quản lý lịch
+      + open_page()
+    - Step 3: Xác định lịch cần xóa
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+    - Step 4: Nhấn Xóa
+      + click_delete_schedule_by_id()
+    - Step 6: Kiểm tra thông báo sau khi xác nhận xóa
+      + get_message()
+    - Step 7: Kiểm tra lịch không còn trong danh sách
+      + scroll_to_schedule_list()
+      + is_schedule_present_in_list()
+    """
+
     URL = "http://localhost:3000/doctor-schedules"
 
     PAGE_TITLE = (

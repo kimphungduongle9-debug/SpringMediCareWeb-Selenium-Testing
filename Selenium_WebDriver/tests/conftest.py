@@ -335,15 +335,20 @@ def appointment_tc9_data():
 
 @pytest.fixture
 def appointment_tc1_data():
+    test_data = get_test_data_csv(
+        APPOINTMENT_TEST_DATA_CSV,
+        "TC-APPOINTMENT-001"
+    )
     appointment_api = AppointmentApi()
-    medical_record_api = MedicalRecordApi()
+    doctor_id = int(
+        test_data["doctor_id"]
+    )
 
-    doctor_id = 1
-
-    booking_slot = (
-        medical_record_api
-        .find_available_booking_slot(
-            doctor_id
+    booking_slot = get_or_create_booking_slot(
+        doctor_id=doctor_id,
+        doctor_name=test_data["doctor_name"],
+        schedule_note=(
+            "TC-APPOINTMENT-001-AUTO-SCHEDULE"
         )
     )
 
@@ -363,6 +368,23 @@ def appointment_tc1_data():
         ],
         "note": note
     }
+
+    # Cleanup đúng appointment mà TC001 vừa tạo
+    appointment = appointment_api.find_appointment_by_note(
+        doctor_id=doctor_id,
+        note=note
+    )
+
+    if appointment is not None:
+        status = str(
+            appointment.get("status", "")
+        ).lower()
+
+        if status not in ["cancelled", "canceled"]:
+            appointment_api.cancel_appointment(
+                appointment["appointmentId"]
+            )
+
 @pytest.fixture
 def appointment_tc4_data():
     test_data = get_test_data_csv(

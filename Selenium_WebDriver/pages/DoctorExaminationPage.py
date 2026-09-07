@@ -5,6 +5,95 @@ from pages.BasePage import BasePage
 
 class DoctorExaminationPage(BasePage):
 
+    """
+    Page Object cho chức năng Khám bệnh của Doctor.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-APPOINTMENT-005
+    - Step 3: Truy cập trực tiếp trang khám của lịch chưa xác nhận
+      + open_page()
+      + get_invalid_appointment_message()
+    - Step 4: Kiểm tra không hiển thị dữ liệu và form khám
+      + is_appointment_information_present()
+      + is_create_record_form_present()
+
+    TC-APPOINTMENT-006
+    - Step 4: Kiểm tra mở đúng trang Khám bệnh
+      + get_page_title()
+    - Step 5: Kiểm tra form khám bệnh
+      + is_create_record_form_present()
+
+    TC-APPOINTMENT-007
+    - Step 3: Truy cập trực tiếp trang khám bằng appointmentId
+      + open_page()
+    - Step 4: Kiểm tra hệ thống từ chối quyền truy cập
+      + get_access_denied_message()
+    - Step 5: Kiểm tra không hiển thị dữ liệu và form khám
+      + is_appointment_information_present()
+      + is_create_record_form_present()
+
+    TC-APPOINTMENT-008
+    - Step 4: Truy cập lịch đã hủy và kiểm tra hệ thống chặn
+      + open_page()
+      + get_invalid_appointment_message()
+    - Step 5: Kiểm tra không hiển thị dữ liệu và form khám
+      + is_appointment_information_present()
+      + is_create_record_form_present()
+
+    TC-APPOINTMENT-009
+    - Step 2: Kiểm tra mở đúng trang Khám bệnh
+      + get_page_title()
+    - Step 3: Kiểm tra form và nhập kết quả khám
+      + is_create_record_form_present()
+      + enter_diagnosis()
+      + enter_treatment()
+    - Step 4: Lưu hồ sơ bệnh án
+      + click_save_medical_record()
+
+    TC-MEDICAL-001
+    - Step 6: Kiểm tra trang Khám bệnh
+      + get_page_title()
+      + is_appointment_information_present()
+      + is_create_record_form_present()
+    - Step 7: Nhập Chẩn đoán và Hướng điều trị
+      + enter_diagnosis()
+      + enter_treatment()
+    - Step 8: Lưu hồ sơ bệnh án
+      + click_save_medical_record()
+
+    TC-MEDICAL-002
+    - Step 3: Kiểm tra mở đúng trang Khám bệnh
+      + get_page_title()
+    - Step 4: Để trống Chẩn đoán và nhập Hướng điều trị
+      + enter_diagnosis()
+      + enter_treatment()
+    - Step 5: Thực hiện lưu hồ sơ
+      + click_save_medical_record()
+    - Step 6: Kiểm tra validation và form vẫn hiển thị
+      + get_validation_message()
+      + is_create_record_form_present()
+
+    TC-MEDICAL-003
+    - Step 3: Kiểm tra mở đúng trang Khám bệnh
+      + get_page_title()
+    - Step 4: Nhập Chẩn đoán và để trống Hướng điều trị
+      + enter_diagnosis()
+      + enter_treatment()
+    - Step 5: Thực hiện lưu hồ sơ
+      + click_save_medical_record()
+    - Step 6: Kiểm tra validation và form vẫn hiển thị
+      + get_validation_message()
+      + is_create_record_form_present()
+
+    TC-MEDICAL-004
+    - Step 6: Truy cập trực tiếp trang Khám bệnh của lịch đã hoàn thành
+      + open_page()
+    - Step 7: Kiểm tra hệ thống chặn tạo hồ sơ mới
+      + get_invalid_appointment_message()
+      + is_create_record_form_present()
+    """
+
     PAGE_TITLE = (
         By.XPATH,
         "//h2[normalize-space()='Khám bệnh']"

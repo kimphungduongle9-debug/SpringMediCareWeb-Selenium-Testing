@@ -18,7 +18,6 @@ def login_account(driver, username, password):
     login_page.login(
         username,
         password,
-        delay=0
     )
 
     login_page.wait.until(
@@ -51,7 +50,6 @@ def open_tran_binh_booking_page(driver):
 
     return booking_page
 
-
 def get_or_create_booking_slot(
         doctor_id,
         test_data,
@@ -59,12 +57,13 @@ def get_or_create_booking_slot(
 ):
     """
     Tìm slot đặt lịch còn trống.
-    Nếu không còn slot thì tự tạo một ca làm việc test
+    Nếu không còn slot thì tự tạo thêm ca làm việc test
     trong tương lai rồi tìm lại slot.
     """
 
     medical_record_api = MedicalRecordApi()
 
+    # Ưu tiên dùng slot đang có sẵn.
     try:
         return medical_record_api.find_available_booking_slot(
             doctor_id
@@ -79,46 +78,61 @@ def get_or_create_booking_slot(
         )
 
         doctor_name = "Tran Binh"
-        created_work_date = None
 
-        for days_ahead in range(1, 31):
-            work_date_obj = (
+        shifts = [
+            ("morning", "07:00:00", "11:30:00"),
+            ("afternoon", "13:00:00", "17:00:00"),
+            ("evening", "18:00:00", "21:00:00"),
+        ]
+
+        # Tìm tối đa 60 ngày tiếp theo.
+        for days_ahead in range(1, 61):
+            work_date = (
                 datetime.now().date()
                 + timedelta(days=days_ahead)
-            )
+            ).strftime("%Y-%m-%d")
 
-            work_date = work_date_obj.strftime(
-                "%Y-%m-%d"
-            )
-
-            existing_schedule = (
-                doctor_schedule_api.find_schedule(
-                    doctor_name=doctor_name,
-                    work_date=work_date,
-                    shift="morning"
+            for shift, start_time, end_time in shifts:
+                existing_schedule = (
+                    doctor_schedule_api.find_schedule(
+                        doctor_name=doctor_name,
+                        work_date=work_date,
+                        shift=shift
+                    )
                 )
-            )
 
-            if existing_schedule is None:
+                # Ca này đã tồn tại thì thử ca khác.
+                if existing_schedule is not None:
+                    continue
+
                 doctor_schedule_api.create_schedule(
                     doctor_name=doctor_name,
                     work_date=work_date,
-                    shift="morning",
-                    start_time="07:00:00",
-                    end_time="11:30:00",
+                    shift=shift,
+                    start_time=start_time,
+                    end_time=end_time,
                     status="available",
                     note=schedule_note,
                     token=admin_token
                 )
 
-                created_work_date = work_date
-                break
+                # Sau khi tạo schedule mới,
+                # kiểm tra thật sự đã có slot đặt lịch chưa.
+                try:
+                    return (
+                        medical_record_api
+                        .find_available_booking_slot(
+                            doctor_id
+                        )
+                    )
 
-        assert created_work_date is not None, (
+                except AssertionError:
+                    # Chưa có slot thì tiếp tục thử
+                    # ca/ngày tiếp theo.
+                    continue
+
+        raise AssertionError(
             f"{schedule_note} | "
-            "Không thể chuẩn bị lịch làm việc cho bác sĩ."
-        )
-
-        return medical_record_api.find_available_booking_slot(
-            doctor_id
+            "Không thể chuẩn bị slot đặt lịch "
+            "còn trống cho bác sĩ."
         )

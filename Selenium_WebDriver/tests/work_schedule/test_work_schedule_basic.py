@@ -20,13 +20,13 @@ def report_test_case_start(test_case_id, description):
 # ============================================================
 
 def test_tc_workschedule_001(driver):
-    test_case_id = "TC-WORKSCHEDULE-001"
-    description = (
-        "Kiểm tra Doctor xem được đúng thông tin cá nhân "
-        "và lịch làm việc của mình trong tuần được hiển thị."
-    )
+    """
+    TC-WORKSCHEDULE-001:
+    Kiểm tra Doctor xem được đúng thông tin cá nhân
+    và lịch làm việc của mình trong tuần được hiển thị.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-WORKSCHEDULE-001"
 
     test_data = get_test_data_csv(
         WORK_SCHEDULE_TEST_DATA_CSV,
@@ -174,13 +174,14 @@ def test_tc_workschedule_001(driver):
 # ============================================================
 
 def test_tc_workschedule_002(driver):
-    test_case_id = "TC-WORKSCHEDULE-002"
-    description = (
-        "Kiểm tra chức năng Tuần trước hiển thị đúng lịch làm việc "
-        "của Doctor trong tuần liền trước."
-    )
+    """
+    TC-WORKSCHEDULE-002:
+    Kiểm tra chức năng Tuần trước hiển thị đúng
+    lịch làm việc của Doctor trong tuần liền trước.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-WORKSCHEDULE-002"
+
 
     test_data = get_test_data_csv(
         WORK_SCHEDULE_TEST_DATA_CSV,
@@ -305,13 +306,13 @@ def test_tc_workschedule_002(driver):
 # ============================================================
 
 def test_tc_workschedule_003(driver):
-    test_case_id = "TC-WORKSCHEDULE-003"
-    description = (
-        "Kiểm tra chức năng Tuần sau hiển thị đúng lịch làm việc "
-        "của Doctor trong tuần kế tiếp."
-    )
+    """
+    TC-WORKSCHEDULE-003:
+    Kiểm tra chức năng Tuần sau hiển thị đúng
+    lịch làm việc của Doctor trong tuần kế tiếp.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-WORKSCHEDULE-003"
 
     test_data = get_test_data_csv(
         WORK_SCHEDULE_TEST_DATA_CSV,

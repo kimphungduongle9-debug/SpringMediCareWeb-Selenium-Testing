@@ -3,7 +3,66 @@ from selenium.webdriver.common.by import By
 from pages.BasePage import BasePage
 
 from selenium.webdriver.support import expected_conditions as EC
+
 class AdminAppointmentPage(BasePage):
+    """
+    Page Object cho chức năng Quản lý lịch hẹn của Admin.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-APPOINTMENT-001
+    - Step 5: Mở trang Quản lý lịch hẹn và tìm lịch vừa tạo
+      + open_page()
+      + get_page_title()
+      + get_appointment_id_by_note()
+    - Step 6: Kiểm tra thông tin, trạng thái và nút thao tác
+      + get_patient_name_by_note()
+      + get_doctor_name_by_note()
+      + get_appointment_time_by_note()
+      + get_status_by_note()
+      + is_confirm_button_present()
+      + is_cancel_button_present()
+
+    TC-APPOINTMENT-002
+    - Step 1: Mở trang Quản lý lịch hẹn
+      + open_page()
+      + get_page_title()
+    - Step 2: Tìm lịch đang Chờ xác nhận
+      + get_appointment_id_by_note()
+      + get_status_by_note()
+      + is_confirm_button_present()
+    - Step 3: Xác nhận lịch hẹn
+      + click_confirm()
+    - Step 4: Kiểm tra thông báo xác nhận thành công
+      + get_confirm_success_message()
+    - Step 5: Kiểm tra trạng thái và dữ liệu sau xác nhận
+      + get_status_by_note()
+      + is_confirm_button_present()
+      + is_cancel_button_present()
+      + get_patient_name_by_note()
+      + get_doctor_name_by_note()
+      + get_appointment_time_by_note()
+
+    TC-APPOINTMENT-003
+    - Step 1: Mở trang Quản lý lịch hẹn
+      + open_page()
+      + get_page_title()
+    - Step 2: Tìm lịch đang Chờ xác nhận
+      + get_appointment_id_by_note()
+      + get_status_by_note()
+      + is_cancel_button_present()
+    - Step 3: Hủy lịch hẹn
+      + click_cancel()
+    - Step 4: Kiểm tra thông báo hủy thành công
+      + get_cancel_success_message()
+    - Step 5: Kiểm tra trạng thái và dữ liệu sau khi hủy
+      + get_status_by_note()
+      + is_confirm_button_present()
+      + is_cancel_button_present()
+      + get_patient_name_by_note()
+      + get_doctor_name_by_note()
+      + get_appointment_time_by_note()
+    """
 
     PAGE_TITLE = (
         By.XPATH,

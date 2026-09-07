@@ -4,6 +4,60 @@ from pages.BasePage import BasePage
 from selenium.webdriver.support.ui import WebDriverWait
 
 class MyAppointmentPage(BasePage):
+    """
+    Page Object cho chức năng Lịch hẹn của tôi của Patient.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-MYAPPOINTMENT-001
+    - Step 5: Mở trang Lịch hẹn của tôi
+      + open_page()
+      + get_page_title()
+    - Step 6: Tìm lịch hẹn vừa tạo
+      + wait_for_appointment_by_note()
+      + get_appointment_by_note()
+    - Step 7-8: Kiểm tra Doctor, thời gian, ghi chú
+      và trạng thái Chờ xác nhận
+      + wait_for_appointment_by_note()
+
+    TC-MYAPPOINTMENT-002
+    - Step 7: Patient mở trang và tìm lịch
+      vừa được Admin xác nhận
+      + open_page()
+      + wait_for_appointment_by_note()
+    - Step 8: Kiểm tra thông tin và trạng thái Đã xác nhận
+      + wait_for_appointment_by_note()
+
+    TC-MYAPPOINTMENT-003
+    - Step 7: Patient mở trang và tìm lịch
+      vừa bị Admin hủy
+      + open_page()
+      + wait_for_appointment_by_note()
+    - Step 8: Kiểm tra thông tin và trạng thái Đã hủy
+      + wait_for_appointment_by_note()
+
+    TC-MYAPPOINTMENT-004
+    - Step 2: Kiểm tra lịch vừa tạo
+      ở trạng thái Chờ xác nhận
+      + open_page()
+      + wait_for_appointment_by_note()
+    - Step 8: Patient mở lại trang và tìm lịch
+      sau khi Doctor hoàn thành khám
+      + open_page()
+      + wait_for_appointment_by_note()
+    - Step 9: Kiểm tra trạng thái Đã hoàn thành
+      và dữ liệu ban đầu không thay đổi
+      + wait_for_appointment_by_note()
+
+    TC-MYAPPOINTMENT-005
+    - Step 8: Patient B mở Lịch hẹn của tôi
+      và tìm lịch mới tại slot đã giải phóng
+      + open_page()
+      + wait_for_appointment_by_note()
+    - Step 9: Kiểm tra lịch mới có ID khác
+      và trạng thái Chờ xác nhận
+      + wait_for_appointment_by_note()
+    """
 
     URL = "http://localhost:3000/my-appointments"
 

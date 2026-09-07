@@ -4,7 +4,6 @@ from pages.BasePage import BasePage
 
 
 class TestResultPage(BasePage):
-    __test__ = False
     """
     Page Object cho chức năng Xét nghiệm
     trong Chi tiết hồ sơ bệnh án.
@@ -14,6 +13,8 @@ class TestResultPage(BasePage):
     - Step 5: Nhập kết quả xét nghiệm hợp lệ.
     - Step 6: Lưu kết quả xét nghiệm.
     """
+
+    __test__ = False
 
     # ============================================================
     # LOCATORS

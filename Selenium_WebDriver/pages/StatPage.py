@@ -8,6 +8,44 @@ from pages.LoginPage import LoginPage
 
 class StatPage(BasePage):
 
+    """
+    Page Object cho chức năng Thống kê của Admin.
+
+    Mapping Test Case -> Step -> Method:
+    # TC-STAT-001
+    - Step 6-7: Đối chiếu dữ liệu bảng và biểu đồ
+      + get_table_rows()
+      + get_bar_count()
+      + get_chart_labels()
+
+    # TC-STAT-002
+    - Step 5: Đối chiếu biểu đồ và bảng giới tính
+      + get_bar_count()
+      + get_chart_labels()
+    - Step 6-7: Kiểm tra Bệnh nhân theo nhóm tuổi
+      + get_table_rows()
+      + get_bar_count()
+      + get_chart_labels()
+    - Step 8-9: Kiểm tra Bệnh nhân theo chuyên khoa
+      + get_section()
+      + get_table_rows()
+      + get_chart_labels()
+
+    # TC-STAT-003
+    - Step 5: Xem doanh thu
+      + click_view_revenue()
+    - Step 6-10: Kiểm tra dữ liệu doanh thu
+      + get_table_rows()
+      + is_chart_displayed()
+      + get_chart_labels()
+      + is_currency_format()
+
+    # TC-STAT-004
+    - Step 8-9: Cuộn và kiểm tra dữ liệu vẫn ổn định
+      + scroll_inside_section()
+      + get_table_rows()
+    """
+
     BASE_URL = "http://localhost:3000"
 
     DRUG_STAT_URL = (
@@ -44,9 +82,9 @@ class StatPage(BasePage):
     )
 
     def login_admin(
-        self,
-        username="admin_system",
-        password="Abc@123"
+            self,
+            username="admin_system",
+            password="Abc@123"
     ):
         login_page = LoginPage(self.driver)
 
@@ -54,8 +92,7 @@ class StatPage(BasePage):
 
         login_page.login(
             username,
-            password,
-            delay=0
+            password
         )
 
         self.wait.until(

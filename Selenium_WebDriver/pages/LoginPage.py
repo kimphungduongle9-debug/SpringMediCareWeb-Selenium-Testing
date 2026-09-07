@@ -1,10 +1,67 @@
 from selenium.webdriver.common.by import By
 
 from pages.BasePage import BasePage
-
-import time
-
 class LoginPage(BasePage):
+    """
+    Page Object cho chức năng Đăng nhập / Đăng xuất.
+
+    Mapping Test Case -> Method chính:
+
+    TC-LOGIN-001, TC-LOGIN-002
+    - Step 1: open_page()
+    - Step 2: enter_username(), get_username_value()
+    - Step 3: enter_password(), get_password_value()
+    - Step 4: click_login()
+    - Step 5: get_user_greeting(), is_logout_button_displayed()
+
+    TC-LOGIN-003
+    - Step 2: enter_username(), get_username_value()
+    - Step 3: enter_password()
+    - Step 4: click_login()
+    - Step 5: get_username_validation_message(),
+      is_logout_button_present()
+
+    TC-LOGIN-004
+    - Step 2: enter_username()
+    - Step 3: enter_password(), get_password_value()
+    - Step 4: click_login()
+    - Step 5: get_password_validation_message(),
+      is_logout_button_present()
+
+    TC-LOGIN-005
+    - Step 2-3: enter_username(), enter_password()
+    - Step 4: click_login()
+    - Step 5: get_username_validation_message(),
+      get_password_validation_message(),
+      is_logout_button_present()
+
+    TC-LOGIN-006, TC-LOGIN-007
+    - Step 2-3: enter_username(), enter_password()
+    - Step 4: click_login()
+    - Step 5: get_error_message(), is_logout_button_present()
+
+    TC-LOGIN-008
+    - Step 1: open_page(), enter_username(),
+      enter_password(), click_login()
+    - Step 2: logout()
+    - Step 3: is_login_button_displayed(),
+      is_logout_button_present()
+
+    TC-LOGIN-009
+    - Step 1: open_page(), is_logout_button_present()
+    - Step 2: open()
+    - Step 3: is_login_required_message_displayed(),
+      is_login_nav_link_displayed()
+
+    TC-LOGIN-010
+    - Step 1: open_page(), enter_username(),
+      enter_password(), click_login()
+    - Step 2: logout()
+    - Step 4: is_login_nav_link_displayed(),
+      is_user_greeting_present(),
+      is_logout_button_present()
+    """
+
     URL = "http://localhost:3000/login"
 
     USERNAME_INPUT = (
@@ -49,16 +106,20 @@ class LoginPage(BasePage):
     def open_page(self):
         self.open(self.URL)
 
-    def login(self, username, password, delay=1.5):
-        time.sleep(delay)
+    def login(self, username, password):
+        self.typing(
+            *self.USERNAME_INPUT,
+            username
+        )
 
-        self.typing(*self.USERNAME_INPUT, username)
-        time.sleep(delay)
+        self.typing(
+            *self.PASSWORD_INPUT,
+            password
+        )
 
-        self.typing(*self.PASSWORD_INPUT, password)
-        time.sleep(delay)
-
-        self.click(*self.LOGIN_BUTTON)
+        self.click(
+            *self.LOGIN_BUTTON
+        )
 
     def get_user_greeting(self):
         return self.find(*self.USER_GREETING).text
@@ -84,9 +145,6 @@ class LoginPage(BasePage):
 
     def is_login_button_displayed(self):
         return self.find(*self.LOGIN_BUTTON).is_displayed()
-    #
-    # def is_login_nav_link_displayed(self):
-    #     return self.find(*self.LOGIN_NAV_LINK).is_displayed()
 
     def is_logout_button_present(self):
         return len(self.finds(*self.LOGOUT_BUTTON)) > 0

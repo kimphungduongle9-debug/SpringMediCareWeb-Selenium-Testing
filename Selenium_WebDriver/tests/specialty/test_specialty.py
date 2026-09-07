@@ -311,7 +311,7 @@ def test_tc_specialty_004_view_doctors_by_specialty(driver):
     # Step 4:
     title = page.get_doctor_specialty_title()
 
-    expected_title = "Bác sĩ thuộc chuyên khoa"
+    expected_title = f"Bác sĩ thuộc chuyên khoa {specialty_name}"
 
     assert title == expected_title, (
         f"{test_case_id} | STEP 4 FAILED | "

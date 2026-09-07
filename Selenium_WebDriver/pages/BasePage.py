@@ -1,7 +1,17 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
 class BasePage:
+    """
+    Lớp Page Object cơ sở.
+
+    Cung cấp các thao tác dùng chung cho các Page Object:
+    - Mở trang.
+    - Tìm phần tử bằng explicit wait.
+    - Nhập dữ liệu.
+    - Click phần tử.
+    - Tìm nhiều phần tử.
+    - Cuộn đến phần tử.
+    """
     def __init__(self, driver, timeout=10):
         self.driver = driver
         self.wait = WebDriverWait(driver, timeout)
@@ -28,8 +38,6 @@ class BasePage:
             "arguments[0].scrollIntoView({block:'center'});",
             element
         )
-
-        time.sleep(0.5)
 
         self.driver.execute_script(
             "arguments[0].click();",

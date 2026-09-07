@@ -5,6 +5,90 @@ from datetime import datetime
 
 class DoctorWorkSchedulePage(BasePage):
 
+    """
+    Page Object cho chức năng xem Lịch làm việc của Doctor.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-WORKSCHEDULE-001
+    - Step 2: Mở trang Lịch làm việc của tôi
+      + open_page()
+      + get_page_title()
+    - Step 3: Kiểm tra thông tin Doctor và chuyên khoa
+      + get_doctor_name()
+      + get_specialty()
+    - Step 4: Kiểm tra khoảng tuần và 7 ngày hiển thị
+      + get_week_range()
+      + get_week_header_dates()
+    - Step 5: Kiểm tra các ca làm việc trong tuần
+      + get_week_shift_rows()
+    - Step 6: Kiểm tra lịch thuộc đúng Doctor và các ô trống
+      + get_week_doctor_names()
+      + get_empty_cell_count()
+
+    TC-WORKSCHEDULE-002
+    - Step 2: Mở trang và ghi nhận tuần hiện tại
+      + open_page()
+      + get_week_range()
+      + get_week_header_dates()
+    - Step 3: Chuyển sang tuần trước
+      + click_previous_week()
+      + get_week_header_dates()
+    - Step 4: Kiểm tra tuần sau khi chuyển
+      + get_week_range()
+    - Step 5: Kiểm tra dữ liệu lịch thuộc đúng tuần vừa chọn
+      + get_week_schedule_records()
+
+    TC-WORKSCHEDULE-003
+    - Step 2: Mở trang và ghi nhận tuần hiện tại
+      + open_page()
+      + get_week_range()
+      + get_week_header_dates()
+    - Step 3: Chuyển sang tuần sau
+      + click_next_week()
+      + get_week_header_dates()
+    - Step 4: Kiểm tra tuần sau khi chuyển
+      + get_week_range()
+    - Step 5: Kiểm tra dữ liệu lịch thuộc đúng tuần vừa chọn
+      + get_week_schedule_records()
+
+    TC-WORKSCHEDULE-004
+    - Step 2: Mở trang Lịch làm việc của tôi
+      + open_page()
+      + get_page_title()
+    - Step 3: Tìm một tuần có lịch và ghi nhận dữ liệu
+      + get_week_range()
+      + has_schedule_in_week()
+      + click_previous_week()
+      + get_week_schedule_records()
+    - Step 4: Mở khu vực Danh sách lịch làm việc
+      + scroll_to_schedule_list()
+    - Step 5: Lấy dữ liệu trong Danh sách lịch làm việc
+      + get_schedule_list_records()
+    - Step 6: Đối chiếu dữ liệu bảng tuần và danh sách
+      + get_week_schedule_records()
+      + get_schedule_list_records()
+
+    TC-WORKSCHEDULE-005
+    - Step 2: Ghi nhận thông tin và lịch của Doctor A
+      + open_page()
+      + get_doctor_name()
+      + get_specialty()
+      + get_week_schedule_records()
+      + scroll_to_schedule_list()
+      + get_schedule_list_records()
+    - Step 5: Ghi nhận thông tin và lịch của Doctor B
+      + open_page()
+      + get_doctor_name()
+      + get_specialty()
+      + get_week_schedule_records()
+      + scroll_to_schedule_list()
+      + get_schedule_list_records()
+    - Step 6-7: Kiểm tra mỗi Doctor chỉ thấy lịch của mình
+      + get_week_schedule_records()
+      + get_schedule_list_records()
+    """
+
     URL = "http://localhost:3000/doctor-work-schedule"
 
     PAGE_TITLE = (

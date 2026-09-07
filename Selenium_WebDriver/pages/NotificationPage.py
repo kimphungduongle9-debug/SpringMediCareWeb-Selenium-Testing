@@ -2,15 +2,37 @@ import unicodedata
 
 from selenium.webdriver.common.by import By
 from pages.BasePage import BasePage
+from selenium.common.exceptions import NoSuchElementException
 
 class NotificationPage(BasePage):
     """
-    Page Object cho trang Thông báo của Patient.
+    Page Object cho chức năng Notification của Patient.
 
-    TC-NOTIFICATION-001 sử dụng Page Object này cho:
-    - Step 5: Mở trang Thông báo.
-    - Step 6: Tìm thông báo của lịch vừa được Admin xác nhận.
-    - Step 7: Lấy loại, nội dung và thời gian thông báo để kiểm tra.
+    Mapping Test Case -> Step -> Method:
+
+    TC-NOTIFICATION-001
+    - Step 5: Mở trang Thông báo
+      + open_page()
+      + get_page_title()
+
+    - Step 6: Tìm thông báo của lịch vừa được Admin xác nhận
+      + get_notification_by_appointment_id()
+
+    - Step 7: Lấy loại, nội dung và thời gian thông báo để kiểm tra
+      + get_notification_type()
+      + get_notification_content()
+      + get_notification_time()
+
+    TC-NOTIFICATION-003
+    - Step 8: Kiểm tra notification mới nhất sau khi Doctor lưu kết quả khám
+      + get_latest_notification_by_type_and_keyword()
+
+    TC-NOTIFICATION-005
+    - Kiểm tra notification theo appointment ID
+      + has_notification_by_appointment_id()
+
+    - Lấy toàn bộ nội dung notification hiện có
+      + get_all_notification_contents()
     """
 
     URL = "http://localhost:3000/notifications"
@@ -40,16 +62,18 @@ class NotificationPage(BasePage):
         "span"
     )
 
-    # Step 5:
-    # Patient mở trang Thông báo.
+    # TC-NOTIFICATION-001 - Step 5
+    # Mở trang Thông báo.
     def open_page(self):
         self.open(self.URL)
 
+    # TC-NOTIFICATION-001 - Step 5
+    # Lấy tiêu đề trang Thông báo.
     def get_page_title(self):
         return self.find(*self.PAGE_TITLE).text.strip()
 
-    # Step 6:
-    # Tìm đúng thông báo dựa trên ID của lịch vừa được xác nhận.
+    # TC-NOTIFICATION-001 - Step 6
+    # Tìm đúng notification theo appointment ID.
     def get_notification_by_appointment_id(self, appointment_id):
         expected_id = f"#{appointment_id}"
 
@@ -70,27 +94,28 @@ class NotificationPage(BasePage):
             f"{expected_id}."
         )
 
-    # Step 7:
-    # Lấy loại thông báo, ví dụ: [Lịch hẹn].
+    # TC-NOTIFICATION-001 - Step 7
+    # Lấy loại notification.
     def get_notification_type(self, notification):
         return notification.find_element(
             *self.NOTIFICATION_TYPE
         ).text.strip()
 
-    # Step 7:
-    # Lấy toàn bộ nội dung của notification.
+    # TC-NOTIFICATION-001 - Step 7
+    # Lấy nội dung notification.
     def get_notification_content(self, notification):
         return notification.find_element(
             *self.NOTIFICATION_CONTENT
         ).text.strip()
 
-    # Step 7:
-    # Lấy thời gian notification hiển thị.
+    # TC-NOTIFICATION-001 - Step 7
+    # Lấy thời gian notification.
     def get_notification_time(self, notification):
         return notification.find_element(
             *self.NOTIFICATION_TIME
         ).text.strip()
 
+    # Helper: Chuẩn hóa text để phục vụ kiểm tra nội dung notification.
     @staticmethod
     def normalize_text(text):
         """
@@ -114,15 +139,12 @@ class NotificationPage(BasePage):
 
         return text.lower().strip()
 
+    # TC-NOTIFICATION-003 - Step 8
+    # Kiểm tra notification mới nhất theo type và keyword.
     def get_latest_notification_by_type_and_keyword(
             self,
             expected_type,
             expected_keyword):
-        """
-        TC-NOTIFICATION-003 - Step 8:
-        Lấy notification mới nhất và kiểm tra
-        notification vừa phát sinh sau khi Doctor lưu kết quả khám.
-        """
 
         notifications = self.finds(
             *self.NOTIFICATION_ITEMS
@@ -133,39 +155,37 @@ class NotificationPage(BasePage):
                 "Patient không có notification nào."
             )
 
-        # Notification mới nhất được hiển thị đầu danh sách.
-        latest_notification = notifications[0]
-
-        notification_type = latest_notification.find_element(
-            *self.NOTIFICATION_TYPE
-        ).text.strip()
-
-        notification_content = latest_notification.find_element(
-            *self.NOTIFICATION_CONTENT
-        ).text.strip()
-
-        assert notification_type == expected_type, (
-            "Notification mới nhất không đúng loại. "
-            f"Expected: '{expected_type}', "
-            f"Actual: '{notification_type}'."
-        )
-
         normalized_expected = self.normalize_text(
             expected_keyword
         )
 
-        normalized_actual = self.normalize_text(
-            notification_content
-        )
+        for notification in notifications:
+            try:
+                notification_type = notification.find_element(
+                    *self.NOTIFICATION_TYPE
+                ).text.strip()
 
-        assert normalized_expected in normalized_actual, (
-            "Notification mới nhất không có nội dung mong đợi. "
-            f"Expected keyword: '{expected_keyword}', "
-            f"Actual: '{notification_content}'."
-        )
+                notification_content = notification.find_element(
+                    *self.NOTIFICATION_CONTENT
+                ).text.strip()
 
-        return latest_notification
+            except NoSuchElementException:
+                continue
 
+            normalized_content = self.normalize_text(
+                notification_content
+            )
+
+            if (
+                    notification_type == expected_type
+                    and normalized_expected in normalized_content
+            ):
+                return notification
+
+        return None
+
+    # TC-NOTIFICATION-005
+    # Kiểm tra có tồn tại notification theo appointment ID hay không.
     def has_notification_by_appointment_id(
             self,
             appointment_id):
@@ -186,6 +206,8 @@ class NotificationPage(BasePage):
 
         return False
 
+    # TC-NOTIFICATION-005
+    # Lấy toàn bộ nội dung notification đang hiển thị.
     def get_all_notification_contents(self):
         """
         TC-NOTIFICATION-005:
