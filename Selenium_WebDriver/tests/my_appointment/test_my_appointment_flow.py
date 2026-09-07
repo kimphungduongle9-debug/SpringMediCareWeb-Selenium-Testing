@@ -32,13 +32,13 @@ def report_test_case_start(test_case_id, description):
 # ============================================================
 
 def test_tc_myappointment_004(driver):
-    test_case_id = "TC-MYAPPOINTMENT-004"
-    description = (
-        "Kiểm tra lịch hẹn được cập nhật đúng xuyên suốt từ khi Patient đặt lịch, "
-        "Admin xác nhận đến khi Doctor hoàn thành khám."
-    )
+    """
+    TC-MYAPPOINTMENT-004:
+    Kiểm tra lịch hẹn được cập nhật đúng xuyên suốt từ khi Patient đặt lịch,
+    Admin xác nhận đến khi Doctor hoàn thành khám.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-MYAPPOINTMENT-004"
 
     test_data = get_test_data_csv(MY_APPOINTMENT_TEST_DATA_CSV, test_case_id)
 
@@ -324,14 +324,13 @@ def test_tc_myappointment_004(driver):
 # ============================================================
 
 def test_tc_myappointment_005(driver):
+    """
+    TC-MYAPPOINTMENT-005:
+    Kiểm tra khung giờ của một lịch hẹn đã bị hủy
+    có thể được sử dụng để tạo lịch hẹn mới.
+    """
+
     test_case_id = "TC-MYAPPOINTMENT-005"
-    description = (
-        "Kiểm tra khung giờ của một lịch hẹn đã bị hủy "
-        "có thể được sử dụng để tạo lịch hẹn mới."
-    )
-
-    report_test_case_start(test_case_id, description)
-
     test_data = get_test_data_csv(MY_APPOINTMENT_TEST_DATA_CSV, test_case_id)
 
     doctor_id = int(test_data["doctor_id"])

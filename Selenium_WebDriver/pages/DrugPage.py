@@ -8,6 +8,184 @@ from selenium.webdriver.common.keys import Keys
 
 class DrugPage(BasePage):
 
+    """
+    Page Object cho chức năng Quản lý kho dược phẩm của Admin.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-DRUG-CATEGORY-001
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 3: Mở trang Quản lý kho dược phẩm
+      + open_list()
+    - Step 4-7: Kiểm tra các danh mục thuốc
+      + get_category_names()
+
+    TC-DRUG-CATEGORY-002
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 2: Mở danh sách thuốc
+      + open_list()
+    - Step 3: Chọn danh mục
+      + select_category()
+    - Step 4-7: Kiểm tra thuốc thuộc đúng danh mục
+      + get_table_data()
+
+    TC-DRUG-CATEGORY-003
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 2: Mở danh sách thuốc
+      + open_list()
+    - Step 3: Tìm thuốc cần cập nhật
+      + search_drug()
+      + get_drug()
+    - Step 4: Mở form cập nhật
+      + click_edit_drug()
+    - Step 5: Kiểm tra dữ liệu hiện tại
+      + get_field_value()
+    - Step 6: Thay đổi giá thuốc
+      + set_price()
+      + get_field_value()
+    - Step 7: Lưu cập nhật
+      + submit_form()
+    - Step 9-10: Tìm lại và kiểm tra dữ liệu mới
+      + search_drug()
+      + get_drug()
+
+    TC-DRUG-CATEGORY-004
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 2: Mở danh sách thuốc
+      + open_list()
+    - Step 3: Chọn danh mục Tất cả
+      + select_category()
+    - Step 4: Tìm thuốc
+      + search_drug()
+    - Step 5-6: Kiểm tra kết quả tìm kiếm
+      + get_table_data()
+
+    TC-DRUG-CATEGORY-005
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 2: Mở danh sách thuốc
+      + open_list()
+    - Step 3: Chọn danh mục không chứa thuốc cần tìm
+      + select_category()
+    - Step 4: Kiểm tra dữ liệu sau lọc
+      + get_table_data()
+    - Step 5: Tìm kiếm thuốc
+      + search_drug()
+    - Step 6-8: Kiểm tra kết quả không chứa thuốc sai danh mục
+      + get_table_data()
+
+    TC-DRUG-CATEGORY-006
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 2: Mở danh sách thuốc
+      + open_list()
+    - Step 3: Chọn đúng danh mục
+      + select_category()
+    - Step 4: Kiểm tra dữ liệu sau lọc
+      + get_table_data()
+    - Step 5: Tìm kiếm thuốc
+      + search_drug()
+    - Step 6-8: Kiểm tra thuốc xuất hiện đúng danh mục
+      + get_table_data()
+      + get_drug()
+
+    TC-DRUG-CATEGORY-007
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 3: Mở danh sách thuốc
+      + open_list()
+    - Step 4: Mở form Thêm thuốc
+      + click_add_button()
+    - Step 5: Nhập dữ liệu thuốc hợp lệ
+      + fill_form()
+    - Step 6: Lưu thuốc
+      + submit_form()
+    - Step 7: Kiểm tra kết quả xử lý form
+      + get_form_validation_errors()
+      + get_alert_text()
+    - Step 8: Mở lại danh sách
+      + open_list()
+    - Step 9-10: Tìm và kiểm tra thuốc vừa thêm
+      + search_drug()
+      + get_drug()
+
+    TC-DRUG-CATEGORY-008
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 3: Mở danh sách thuốc
+      + open_list()
+    - Step 4: Mở form Thêm thuốc
+      + click_add_button()
+    - Step 5: Nhập dữ liệu nhưng bỏ trống Tên thuốc
+      + fill_form()
+    - Step 6: Thực hiện lưu
+      + submit_form()
+    - Step 8: Kiểm tra validation trường Tên thuốc
+      + get_validation_message()
+
+    TC-DRUG-CATEGORY-009
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 3: Mở danh sách thuốc
+      + open_list()
+    - Step 4: Mở form Thêm thuốc
+      + click_add_button()
+    - Step 5: Nhập dữ liệu hợp lệ
+      + fill_form()
+    - Step 6-8: Nhập các giá trị âm
+      + typing()
+      + get_field_value()
+    - Step 9: Lưu thuốc
+      + submit_form()
+    - Step 10: Kiểm tra validation số âm
+      + get_validation_message()
+
+    TC-DRUG-CATEGORY-010
+    - Step 1: Đăng nhập Admin
+      + login_admin()
+    - Step 3: Mở danh sách thuốc
+      + open_list()
+    - Step 4: Mở form Thêm thuốc
+      + click_add_button()
+    - Step 5: Nhập dữ liệu có HSD trước NSX
+      + fill_form()
+    - Step 6-7: Kiểm tra dữ liệu ngày đã nhập
+      + get_field_value()
+    - Step 8: Lưu thuốc
+      + submit_form()
+    - Cleanup khi hệ thống tạo thuốc sai:
+      + open_list()
+      + search_drug()
+      + is_drug_present()
+      + click_delete_drug()
+      + confirm_delete()
+
+    TC-DRUG-CATEGORY-011
+    - Setup: Tạo thuốc riêng phục vụ testcase
+      + login_admin()
+      + open_add()
+      + fill_form()
+      + submit_form()
+    - Step 3: Mở danh sách thuốc
+      + open_list()
+    - Step 4: Tìm thuốc cần xóa
+      + search_drug()
+      + get_drug()
+    - Step 5: Nhấn Xóa
+      + click_delete_drug()
+    - Step 6: Xác nhận xóa
+      + confirm_delete()
+    - Step 7: Chờ danh sách cập nhật
+      + wait_loading_finished()
+    - Step 8-9: Tìm lại và kiểm tra thuốc không còn tồn tại
+      + search_drug()
+      + get_drug()
+    """
+
     BASE_URL = "http://localhost:3000"
     LIST_URL = "http://localhost:3000/admin-drugs"
     ADD_URL = "http://localhost:3000/drugs/add"
@@ -141,10 +319,10 @@ class DrugPage(BasePage):
         login_page = LoginPage(self.driver)
 
         login_page.open_page()
+
         login_page.login(
             username,
-            password,
-            delay=0
+            password
         )
 
         self.wait.until(

@@ -5,6 +5,77 @@ from pages.BasePage import BasePage
 
 
 class SpecialtyPage(BasePage):
+    """
+    Page Object cho chức năng xem và tìm kiếm Chuyên khoa.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-SPECIALTY-001
+    - Step 1: Mở trang Chuyên khoa
+      + open_page()
+      + wait_until_specialties_loaded()
+    - Step 2: Kiểm tra tiêu đề và số lượng chuyên khoa
+      + get_title()
+      + get_displayed_count()
+    - Step 3: Kiểm tra danh sách card chuyên khoa
+      + get_specialty_cards()
+    - Step 4: Kiểm tra thông tin từng chuyên khoa
+      + get_specialty_card_information()
+
+    TC-SPECIALTY-002
+    - Step 1: Mở trang Chuyên khoa
+      + open_page()
+    - Step 2: Nhập từ khóa tìm kiếm
+      + enter_search_keyword()
+    - Step 3: Thực hiện tìm kiếm
+      + click_search()
+      + wait_for_search_results()
+    - Step 4: Kiểm tra kết quả phù hợp
+      + get_specialty_cards()
+      + get_displayed_count()
+      + get_specialty_card_information()
+
+    TC-SPECIALTY-003
+    - Step 1: Mở trang Chuyên khoa
+      + open_page()
+    - Step 2: Nhập chuyên khoa không tồn tại
+      + enter_search_keyword()
+    - Step 3: Thực hiện tìm kiếm
+      + click_search()
+      + wait_for_no_results()
+    - Step 4: Kiểm tra không có kết quả
+      + get_displayed_count()
+      + get_card_count()
+      + get_no_result_message()
+
+    TC-SPECIALTY-004
+    - Step 1: Mở trang Chuyên khoa
+      + open_page()
+      + wait_until_specialties_loaded()
+    - Step 2: Chọn chuyên khoa
+      + get_specialty_card_by_name()
+    - Step 3: Xem bác sĩ thuộc khoa
+      + click_view_doctors()
+    - Step 4: Kiểm tra trang danh sách bác sĩ của chuyên khoa
+      + get_doctor_specialty_title()
+    - Step 5: Kiểm tra danh sách bác sĩ
+      + get_doctor_names()
+
+    TC-SPECIALTY-005
+    - Step 1: Mở trang Chuyên khoa
+      + open_page()
+      + wait_until_specialties_loaded()
+    - Step 2: Chọn chuyên khoa
+      + get_specialty_card_by_name()
+    - Step 3: Xem chi tiết khoa
+      + click_view_details()
+    - Step 4: Kiểm tra tiêu đề chi tiết
+      + get_detail_title()
+    - Step 5: Kiểm tra thông tin chi tiết chuyên khoa
+      + get_detail_doctor_count()
+      + is_intro_displayed()
+      + is_doctor_team_displayed()
+    """
 
     URL = "http://localhost:3000/specialty"
 

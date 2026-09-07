@@ -21,13 +21,13 @@ def report_test_case_start(test_case_id, description):
 # ============================================================
 
 def test_tc_workschedule_004(driver):
-    test_case_id = "TC-WORKSCHEDULE-004"
-    description = (
-        "Kiểm tra thông tin lịch làm việc trong bảng Lịch làm việc theo tuần "
-        "khớp với dữ liệu trong Danh sách lịch làm việc của Doctor."
-    )
+    """
+    TC-WORKSCHEDULE-004:
+    Kiểm tra thông tin lịch làm việc trong bảng Lịch làm việc theo tuần
+    khớp với dữ liệu trong Danh sách lịch làm việc của Doctor.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-WORKSCHEDULE-004"
 
     test_data = get_test_data_csv(
         WORK_SCHEDULE_TEST_DATA_CSV,
@@ -163,13 +163,13 @@ def test_tc_workschedule_004(driver):
 # ============================================================
 
 def test_tc_workschedule_005(driver):
-    test_case_id = "TC-WORKSCHEDULE-005"
-    description = (
-        "Kiểm tra mỗi Doctor chỉ xem được lịch làm việc thuộc tài khoản của mình "
-        "và không bị hiển thị lịch của Doctor khác."
-    )
+    """
+    TC-WORKSCHEDULE-005:
+    Kiểm tra mỗi Doctor chỉ xem được lịch làm việc thuộc tài khoản của mình
+    và không bị hiển thị lịch của Doctor khác.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-WORKSCHEDULE-005"
 
     test_data = get_test_data_csv(
         WORK_SCHEDULE_TEST_DATA_CSV,

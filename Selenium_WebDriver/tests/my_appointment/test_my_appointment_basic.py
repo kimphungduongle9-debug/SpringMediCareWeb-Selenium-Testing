@@ -25,13 +25,13 @@ def report_test_case_start(test_case_id, description):
 # ============================================================
 
 def test_tc_myappointment_001(driver):
-    test_case_id = "TC-MYAPPOINTMENT-001"
-    description = (
-        "Kiểm tra lịch hẹn sau khi Patient đặt thành công được hiển thị "
-        "trong trang Lịch hẹn của tôi với trạng thái ban đầu là Chờ xác nhận."
-    )
+    """
+    TC-MYAPPOINTMENT-001:
+    Kiểm tra lịch hẹn sau khi Patient đặt thành công được hiển thị
+    trong trang Lịch hẹn của tôi với trạng thái ban đầu là Chờ xác nhận.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-MYAPPOINTMENT-001"
 
     test_data = get_test_data_csv(MY_APPOINTMENT_TEST_DATA_CSV, test_case_id)
     doctor_id = int(test_data["doctor_id"])
@@ -192,15 +192,14 @@ def test_tc_myappointment_001(driver):
 # ============================================================
 # TC-MYAPPOINTMENT-002
 # ============================================================
-
 def test_tc_myappointment_002(driver):
-    test_case_id = "TC-MYAPPOINTMENT-002"
-    description = (
-        "Kiểm tra trạng thái lịch hẹn của Patient được cập nhật "
-        "sau khi Admin xác nhận lịch."
-    )
+    """
+    TC-MYAPPOINTMENT-002:
+    Kiểm tra trạng thái lịch hẹn của Patient được cập nhật
+    sau khi Admin xác nhận lịch.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-MYAPPOINTMENT-002"
 
     test_data = get_test_data_csv(MY_APPOINTMENT_TEST_DATA_CSV, test_case_id)
     doctor_id = int(test_data["doctor_id"])
@@ -409,13 +408,13 @@ def test_tc_myappointment_002(driver):
 # ============================================================
 
 def test_tc_myappointment_003(driver):
-    test_case_id = "TC-MYAPPOINTMENT-003"
-    description = (
-        "Kiểm tra trạng thái lịch hẹn của Patient "
-        "sau khi Admin thực hiện hủy lịch."
-    )
+    """
+    TC-MYAPPOINTMENT-003:
+    Kiểm tra trạng thái lịch hẹn của Patient
+    sau khi Admin thực hiện hủy lịch.
+    """
 
-    report_test_case_start(test_case_id, description)
+    test_case_id = "TC-MYAPPOINTMENT-003"
 
     test_data = get_test_data_csv(MY_APPOINTMENT_TEST_DATA_CSV, test_case_id)
     doctor_id = int(test_data["doctor_id"])

@@ -1,0 +1,1381 @@
+{
+  "test_cases": {
+    "TC-STAT-001": {
+      "feature": "THỐNG KÊ",
+      "description": "Kiểm tra hệ thống hiển thị đúng thống kê số lượng thuốc\ntheo từng danh mục dưới dạng biểu đồ và bảng dữ liệu."
+    },
+    "TC-STAT-002": {
+      "feature": "THỐNG KÊ",
+      "description": "Kiểm tra thống kê bệnh nhân theo giới tính,\nnhóm tuổi và chuyên khoa; số liệu biểu đồ\ntương ứng với bảng chi tiết."
+    },
+    "TC-STAT-003": {
+      "feature": "THỐNG KÊ",
+      "description": "Kiểm tra hệ thống hiển thị đúng doanh thu đã thanh toán\ntheo các tháng của năm được Admin lựa chọn."
+    },
+    "TC-STAT-004": {
+      "feature": "THỐNG KÊ",
+      "description": "Kiểm tra danh sách các chẩn đoán và số lượng bệnh nhân\ntại khu vực Bệnh phổ biến trong cộng đồng."
+    },
+    "TC-LOGIN-001": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra đăng nhập thành công bằng tên đăng nhập hợp lệ."
+    },
+    "TC-APPOINTMENT-001": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra lịch hẹn bệnh nhân vừa đặt\nđược hiển thị đúng trên trang Quản lý lịch hẹn của Admin."
+    },
+    "TC-APPOINTMENT-002": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra Admin xác nhận thành công\nlịch hẹn đang ở trạng thái Chờ xác nhận."
+    },
+    "TC-APPOINTMENT-003": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra Admin hủy thành công\nlịch hẹn đang ở trạng thái Chờ xác nhận."
+    },
+    "TC-APPOINTMENT-009": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra bác sĩ lưu hồ sơ bệnh án thành công\nvà hoàn thành lịch hẹn đã được xác nhận."
+    },
+    "TC-APPOINTMENT-004": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra quyền xem hồ sơ bệnh nhân của bác sĩ\nkhi lịch đang ở trạng thái Chờ xác nhận."
+    },
+    "TC-APPOINTMENT-005": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra bác sĩ không thể truy cập trực tiếp\ntrang khám của lịch chưa được Admin xác nhận."
+    },
+    "TC-APPOINTMENT-006": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra đúng bác sĩ được phép khám bệnh\nkhi lịch hẹn đã được Admin xác nhận."
+    },
+    "TC-APPOINTMENT-007": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra bác sĩ khác không thể khám\nlịch hẹn đã xác nhận nhưng không thuộc mình."
+    },
+    "TC-APPOINTMENT-008": {
+      "feature": "QUẢN LÝ LỊCH HẸN",
+      "description": "Kiểm tra bác sĩ không thể khám bệnh\nđối với lịch hẹn đã bị Admin hủy."
+    },
+    "TC-BOOKING-001": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Đặt lịch thành công với ngày và giờ hợp lệ."
+    },
+    "TC-BOOKING-002": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Kiểm tra Patient không thể đặt lịch\nkhi chưa chọn ngày khám."
+    },
+    "TC-BOOKING-003": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Không thể đặt lịch khi chưa chọn giờ khám."
+    },
+    "TC-BOOKING-004": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Kiểm tra Patient vẫn đặt lịch thành công\nkhi không nhập ghi chú."
+    },
+    "TC-BOOKING-005": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Kiểm tra Patient không thể đặt lịch\nvào ngày bác sĩ không có lịch làm việc."
+    },
+    "TC-BOOKING-006": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Kiểm tra Patient không thể đặt lịch\nvào giờ nằm ngoài ca làm việc của bác sĩ."
+    },
+    "TC-BOOKING-007": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Kiểm tra Patient không thể đặt lịch\ntrùng đúng thời gian đã có người đặt."
+    },
+    "TC-BOOKING-008": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Kiểm tra Patient không thể đặt lịch\ncách lịch đã tồn tại dưới 30 phút."
+    },
+    "TC-BOOKING-009": {
+      "feature": "ĐẶT LỊCH",
+      "description": "Kiểm tra Guest chưa đăng nhập không được\ntruy cập chức năng Đặt lịch hẹn."
+    },
+    "TC-DOCTOR-001": {
+      "feature": "BÁC SĨ",
+      "description": "Kiểm tra danh sách bác sĩ và thông tin bác sĩ\nđược hiển thị đầy đủ khi mở trang."
+    },
+    "TC-DOCTOR-002": {
+      "feature": "BÁC SĨ",
+      "description": "Kiểm tra tìm kiếm bác sĩ với từ khóa hợp lệ."
+    },
+    "TC-DOCTOR-003": {
+      "feature": "BÁC SĨ",
+      "description": "Kiểm tra tìm kiếm bác sĩ với từ khóa không tồn tại."
+    },
+    "TC-DOCTOR-004": {
+      "feature": "BÁC SĨ",
+      "description": "Kiểm tra nút Đặt lịch hẹn điều hướng đúng\nđến bác sĩ được chọn."
+    },
+    "TC-DS-ADMIN-001": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra form Thêm lịch làm việc hiển thị đầy đủ\nthông tin cần thiết."
+    },
+    "TC-DS-ADMIN-002": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin thêm lịch làm việc cho bác sĩ\nvới dữ liệu hợp lệ."
+    },
+    "TC-DS-ADMIN-003": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin thêm lịch cho bác sĩ\nvới trạng thái Không làm việc."
+    },
+    "TC-DS-ADMIN-004": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin có thể thêm lịch\nkhi để trống trường Ghi chú."
+    },
+    "TC-DS-ADMIN-005": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra hệ thống xử lý khi Admin không chọn bác sĩ."
+    },
+    "TC-DS-ADMIN-006": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra hệ thống xử lý khi Admin\nkhông chọn ngày làm việc."
+    },
+    "TC-DS-ADMIN-007": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra hệ thống không cho phép Admin\ntạo lịch làm việc cho ngày đã qua."
+    },
+    "TC-DS-ADMIN-008": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra hệ thống không cho phép tạo lịch trùng\ncho cùng bác sĩ, ngày và ca."
+    },
+    "TC-DS-ADMIN-009": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra một bác sĩ có thể được xếp\nnhiều ca khác nhau trong cùng ngày."
+    },
+    "TC-DS-ADMIN-010": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra nhiều bác sĩ có thể được xếp\ncùng ngày và cùng ca."
+    },
+    "TC-DS-ADMIN-011": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra không cho phép tạo hai lịch có trạng thái\nkhác nhau cho cùng bác sĩ, ngày và ca."
+    },
+    "TC-DS-ADMIN-012": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra hệ thống không tạo nhiều lịch\nkhi Admin nhấn nút Thêm lịch liên tục."
+    },
+    "TC-DS-ADMIN-013": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra form trở về trạng thái mặc định\nsau khi thêm lịch thành công."
+    },
+    "TC-DS-ADMIN-014": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin lọc lịch làm việc theo bác sĩ."
+    },
+    "TC-DS-ADMIN-015": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin hiển thị lại lịch của tất cả bác sĩ\nsau khi bỏ điều kiện lọc."
+    },
+    "TC-DS-ADMIN-016": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin chuyển sang tuần trước\nđể xem lịch làm việc."
+    },
+    "TC-DS-ADMIN-017": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin chuyển sang tuần sau\nđể xem lịch làm việc."
+    },
+    "TC-DS-ADMIN-018": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin cập nhật thông tin\ncủa một lịch làm việc đã tồn tại."
+    },
+    "TC-DS-ADMIN-019": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra chức năng Hủy sửa không làm thay đổi\ndữ liệu lịch làm việc đã tồn tại."
+    },
+    "TC-DS-ADMIN-020": {
+      "feature": "QUẢN LÝ LỊCH LÀM VIỆC BÁC SĨ - ADMIN",
+      "description": "Kiểm tra Admin xóa một lịch làm việc\nđã tồn tại của bác sĩ."
+    },
+    "TC-DRUG-CATEGORY-001": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra các danh mục thuốc được hiển thị đầy đủ\ntrên trang Quản lý kho dược phẩm."
+    },
+    "TC-DRUG-CATEGORY-002": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra hệ thống chỉ hiển thị các thuốc\nthuộc danh mục được Admin lựa chọn."
+    },
+    "TC-DRUG-CATEGORY-003": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra Admin có thể cập nhật thông tin\ncủa một thuốc đang tồn tại trong hệ thống."
+    },
+    "TC-DRUG-CATEGORY-004": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra hệ thống tìm kiếm và hiển thị đúng thuốc\ntheo tên được Admin nhập."
+    },
+    "TC-DRUG-CATEGORY-005": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra hệ thống xử lý đúng khi Admin tìm một thuốc\nkhông thuộc danh mục đang được chọn."
+    },
+    "TC-DRUG-CATEGORY-006": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra hệ thống xử lý đúng khi Admin tìm một thuốc\nthuộc danh mục đang được chọn."
+    },
+    "TC-DRUG-CATEGORY-007": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra Admin có thể thêm thuốc mới khi nhập\nđầy đủ các thông tin hợp lệ."
+    },
+    "TC-DRUG-CATEGORY-008": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra hệ thống không cho phép Admin thêm thuốc\nkhi bỏ trống trường Tên thuốc bắt buộc."
+    },
+    "TC-DRUG-CATEGORY-009": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra hệ thống không cho phép thêm thuốc\nkhi các trường số chứa giá trị âm."
+    },
+    "TC-DRUG-CATEGORY-010": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra hệ thống không cho phép thêm thuốc khi\nNgày hết hạn nhỏ hơn Ngày sản xuất.\n\nKnown bug:\nHệ thống hiện tại có thể vẫn cho phép tạo thuốc\nvới dữ liệu ngày không hợp lệ."
+    },
+    "TC-DRUG-CATEGORY-011": {
+      "feature": "QUẢN LÝ KHO DƯỢC PHẨM",
+      "description": "Kiểm tra Admin có thể xóa thuốc và thuốc đã xóa\nkhông còn xuất hiện trong danh sách."
+    },
+    "TC-LOGIN-002": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra đăng nhập thành công bằng email hợp lệ."
+    },
+    "TC-LOGIN-003": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra không thể đăng nhập khi bỏ trống tên đăng nhập."
+    },
+    "TC-LOGIN-004": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra không thể đăng nhập khi bỏ trống mật khẩu."
+    },
+    "TC-LOGIN-005": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra không thể đăng nhập khi bỏ trống tên đăng nhập và mật khẩu."
+    },
+    "TC-LOGIN-006": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra không thể đăng nhập khi nhập sai mật khẩu."
+    },
+    "TC-LOGIN-007": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra không thể đăng nhập với tài khoản không tồn tại."
+    },
+    "TC-LOGIN-008": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra đăng xuất thành công sau khi đã đăng nhập."
+    },
+    "TC-LOGIN-009": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra không thể truy cập trang yêu cầu xác thực khi chưa đăng nhập."
+    },
+    "TC-LOGIN-010": {
+      "feature": "ĐĂNG NHẬP",
+      "description": "Kiểm tra trạng thái đăng nhập sau khi đăng xuất và quay lại trang trước."
+    },
+    "TC-MEDICAL-001": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra bác sĩ có thể tạo hồ sơ bệnh án thành công\ncho lịch hẹn đã được xác nhận."
+    },
+    "TC-MEDICAL-002": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra hệ thống không cho phép\ntạo hồ sơ bệnh án khi bỏ trống Chẩn đoán."
+    },
+    "TC-MEDICAL-003": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra hệ thống không cho phép\ntạo hồ sơ bệnh án khi bỏ trống Hướng điều trị."
+    },
+    "TC-MEDICAL-004": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra hệ thống không cho phép bác sĩ tạo thêm\nhồ sơ bệnh án cho lịch hẹn đã hoàn thành\nvà đã có hồ sơ bệnh án."
+    },
+    "TC-MEDICAL-005": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra bác sĩ có thể xem đúng hồ sơ bệnh án\ncủa lịch hẹn đã hoàn thành."
+    },
+    "TC-MEDICAL-006": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra bác sĩ có thể cập nhật thành công\nhồ sơ bệnh án thuộc lịch hẹn của mình."
+    },
+    "TC-MEDICAL-007": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra bác sĩ khác không thể xem hồ sơ bệnh án\nkhông thuộc lịch hẹn của mình."
+    },
+    "TC-MEDICAL-008": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra bác sĩ khác không thể cập nhật hồ sơ bệnh án\nkhông thuộc lịch hẹn của mình."
+    },
+    "TC-MEDICAL-009": {
+      "feature": "HỒ SƠ BỆNH ÁN",
+      "description": "Kiểm tra thao tác Hủy cập nhật không làm thay đổi\ndữ liệu hồ sơ bệnh án đã lưu."
+    },
+    "TC-MEDICALHISTORY-001": {
+      "feature": "LỊCH SỬ KHÁM BỆNH",
+      "description": "Kiểm tra lịch hẹn chưa được Doctor khám\nkhông phát sinh Lịch sử khám bệnh."
+    },
+    "TC-MEDICALHISTORY-002": {
+      "feature": "LỊCH SỬ KHÁM BỆNH",
+      "description": "Kiểm tra lịch hẹn đã được Admin xác nhận nhưng chưa được Doctor khám\nkhông phát sinh Lịch sử khám bệnh."
+    },
+    "TC-MEDICALHISTORY-003": {
+      "feature": "LỊCH SỬ KHÁM BỆNH",
+      "description": "Kiểm tra Lịch sử khám bệnh được tạo sau khi Doctor\nhoàn thành khám và lưu hồ sơ bệnh án."
+    },
+    "TC-MEDICALHISTORY-004": {
+      "feature": "LỊCH SỬ KHÁM BỆNH",
+      "description": "Kiểm tra thông tin chi tiết của một bản ghi\nLịch sử khám bệnh."
+    },
+    "TC-MEDICALHISTORY-005": {
+      "feature": "LỊCH SỬ KHÁM BỆNH",
+      "description": "Kiểm tra Lịch sử khám bệnh được phân tách\ntheo từng Patient."
+    },
+    "TC-MEDICALHISTORY-006": {
+      "feature": "LỊCH SỬ KHÁM BỆNH",
+      "description": "Kiểm tra Lịch sử khám bệnh được cập nhật\nsau khi Doctor chỉnh sửa hồ sơ bệnh án."
+    },
+    "TC-MYAPPOINTMENT-001": {
+      "feature": "LỊCH HẸN CỦA TÔI",
+      "description": "Kiểm tra lịch hẹn sau khi Patient đặt thành công được hiển thị\ntrong trang Lịch hẹn của tôi với trạng thái ban đầu là Chờ xác nhận."
+    },
+    "TC-MYAPPOINTMENT-002": {
+      "feature": "LỊCH HẸN CỦA TÔI",
+      "description": "Kiểm tra trạng thái lịch hẹn của Patient được cập nhật\nsau khi Admin xác nhận lịch."
+    },
+    "TC-MYAPPOINTMENT-003": {
+      "feature": "LỊCH HẸN CỦA TÔI",
+      "description": "Kiểm tra trạng thái lịch hẹn của Patient\nsau khi Admin thực hiện hủy lịch."
+    },
+    "TC-MYAPPOINTMENT-004": {
+      "feature": "LỊCH HẸN CỦA TÔI",
+      "description": "Kiểm tra lịch hẹn được cập nhật đúng xuyên suốt từ khi Patient đặt lịch,\nAdmin xác nhận đến khi Doctor hoàn thành khám."
+    },
+    "TC-MYAPPOINTMENT-005": {
+      "feature": "LỊCH HẸN CỦA TÔI",
+      "description": "Kiểm tra khung giờ của một lịch hẹn đã bị hủy\ncó thể được sử dụng để tạo lịch hẹn mới."
+    },
+    "TC-NOTIFICATION-001": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra Patient nhận được thông báo đúng\nsau khi Admin xác nhận lịch hẹn mà Patient đã đặt."
+    },
+    "TC-NOTIFICATION-002": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra Patient nhận được thông báo phù hợp\nkhi Admin hủy lịch hẹn của Patient."
+    },
+    "TC-NOTIFICATION-003": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra Patient nhận được thông báo\nsau khi Doctor cập nhật kết quả khám."
+    },
+    "TC-NOTIFICATION-004": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra nhiều notification của Patient được lưu riêng biệt\nvà không ghi đè lẫn nhau."
+    },
+    "TC-NOTIFICATION-005": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra danh sách notification được phân tách\ngiữa hai tài khoản Patient."
+    },
+    "TC-NOTIFICATION-006": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra Patient nhận được thông báo đúng\nsau khi Doctor tạo và lưu đơn thuốc mới."
+    },
+    "TC-NOTIFICATION-007": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra Patient nhận được thông báo đúng\nsau khi Doctor thêm và lưu kết quả xét nghiệm\nvào hồ sơ bệnh án của Patient."
+    },
+    "TC-NOTIFICATION-008": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra Patient nhận được notification Đơn thuốc mới\nkhi Doctor kê thêm một đơn thuốc cho Patient\nđã có đơn thuốc trước đó."
+    },
+    "TC-NOTIFICATION-009": {
+      "feature": "THÔNG BÁO",
+      "description": "Kiểm tra Patient nhận được notification mới\nsau khi Doctor chỉnh sửa Chẩn đoán và Hướng điều trị\ncủa một hồ sơ bệnh án đã tồn tại."
+    },
+    "TC-REGISTER-001": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký tài khoản với thông tin hợp lệ."
+    },
+    "TC-REGISTER-002": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi không chọn ảnh đại diện."
+    },
+    "TC-REGISTER-003": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi bỏ trống Họ."
+    },
+    "TC-REGISTER-004": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi bỏ trống Tên."
+    },
+    "TC-REGISTER-005": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi bỏ trống Email."
+    },
+    "TC-REGISTER-006": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi bỏ trống Số điện thoại."
+    },
+    "TC-REGISTER-007": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi bỏ trống Tên đăng nhập."
+    },
+    "TC-REGISTER-008": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi bỏ trống Mật khẩu."
+    },
+    "TC-REGISTER-009": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi bỏ trống Xác nhận mật khẩu."
+    },
+    "TC-REGISTER-010": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Email sai định dạng."
+    },
+    "TC-REGISTER-011": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Số điện thoại sai định dạng."
+    },
+    "TC-REGISTER-012": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký khi Xác nhận mật khẩu không khớp."
+    },
+    "TC-REGISTER-013": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Mật khẩu ngắn hơn 7 ký tự."
+    },
+    "TC-REGISTER-014": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Mật khẩu không có chữ in hoa."
+    },
+    "TC-REGISTER-015": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Mật khẩu không có chữ thường."
+    },
+    "TC-REGISTER-016": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Mật khẩu không có chữ số."
+    },
+    "TC-REGISTER-017": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Mật khẩu không có ký tự đặc biệt."
+    },
+    "TC-REGISTER-018": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Tên đăng nhập đã tồn tại."
+    },
+    "TC-REGISTER-019": {
+      "feature": "ĐĂNG KÝ",
+      "description": "Kiểm tra đăng ký với Email đã tồn tại."
+    },
+    "TC-SPECIALTY-001": {
+      "feature": "CHUYÊN KHOA",
+      "description": "Kiểm tra danh sách chuyên khoa và thông tin chuyên khoa\nđược hiển thị đầy đủ khi mở trang."
+    },
+    "TC-SPECIALTY-002": {
+      "feature": "CHUYÊN KHOA",
+      "description": "Kiểm tra tìm kiếm chuyên khoa với từ khóa hợp lệ."
+    },
+    "TC-SPECIALTY-003": {
+      "feature": "CHUYÊN KHOA",
+      "description": "Kiểm tra tìm kiếm chuyên khoa với từ khóa không tồn tại."
+    },
+    "TC-SPECIALTY-004": {
+      "feature": "CHUYÊN KHOA",
+      "description": "Kiểm tra nút Xem bác sĩ thuộc khoa hiển thị đúng\nbác sĩ của chuyên khoa được chọn."
+    },
+    "TC-SPECIALTY-005": {
+      "feature": "CHUYÊN KHOA",
+      "description": "Kiểm tra nút Xem chi tiết khoa hiển thị đúng\nthông tin chuyên khoa được chọn."
+    },
+    "TC-WORKSCHEDULE-001": {
+      "feature": "LỊCH LÀM VIỆC CỦA BÁC SĨ",
+      "description": "Kiểm tra Doctor xem được đúng thông tin cá nhân\nvà lịch làm việc của mình trong tuần được hiển thị."
+    },
+    "TC-WORKSCHEDULE-002": {
+      "feature": "LỊCH LÀM VIỆC CỦA BÁC SĨ",
+      "description": "Kiểm tra chức năng Tuần trước hiển thị đúng\nlịch làm việc của Doctor trong tuần liền trước."
+    },
+    "TC-WORKSCHEDULE-003": {
+      "feature": "LỊCH LÀM VIỆC CỦA BÁC SĨ",
+      "description": "Kiểm tra chức năng Tuần sau hiển thị đúng\nlịch làm việc của Doctor trong tuần kế tiếp."
+    },
+    "TC-WORKSCHEDULE-004": {
+      "feature": "LỊCH LÀM VIỆC CỦA BÁC SĨ",
+      "description": "Kiểm tra thông tin lịch làm việc trong bảng Lịch làm việc theo tuần\nkhớp với dữ liệu trong Danh sách lịch làm việc của Doctor."
+    },
+    "TC-WORKSCHEDULE-005": {
+      "feature": "LỊCH LÀM VIỆC CỦA BÁC SĨ",
+      "description": "Kiểm tra mỗi Doctor chỉ xem được lịch làm việc thuộc tài khoản của mình\nvà không bị hiển thị lịch của Doctor khác."
+    }
+  },
+  "test_results": {
+    "TC-STAT-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.183121399953961,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:59"
+    },
+    "TC-STAT-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.335032000031788,
+      "screenshot": "",
+      "time": "07/09/2026 19:11:11"
+    },
+    "TC-STAT-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.478525400045328,
+      "screenshot": "",
+      "time": "07/09/2026 19:11:22"
+    },
+    "TC-STAT-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.235010400007013,
+      "screenshot": "",
+      "time": "07/09/2026 19:11:34"
+    },
+    "TC-LOGIN-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.4845410999841988,
+      "screenshot": "",
+      "time": "07/09/2026 19:01:49"
+    },
+    "TC-APPOINTMENT-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 7.73454530001618,
+      "screenshot": "",
+      "time": "07/09/2026 18:52:46"
+    },
+    "TC-APPOINTMENT-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.475506499991752,
+      "screenshot": "",
+      "time": "07/09/2026 18:52:58"
+    },
+    "TC-APPOINTMENT-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.506021299981512,
+      "screenshot": "",
+      "time": "07/09/2026 18:53:10"
+    },
+    "TC-APPOINTMENT-009": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.704313599970192,
+      "screenshot": "",
+      "time": "07/09/2026 18:53:19"
+    },
+    "TC-APPOINTMENT-004": {
+      "status": "XFAILED",
+      "detail": "Known bug: bác sĩ chưa thể xem hồ sơ bệnh nhân khi lịch đang chờ xác nhận.",
+      "duration": 7.917149100045208,
+      "screenshot": "",
+      "time": "07/09/2026 18:53:30"
+    },
+    "TC-APPOINTMENT-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.176280899962876,
+      "screenshot": "",
+      "time": "07/09/2026 18:53:42"
+    },
+    "TC-APPOINTMENT-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.8954733000136912,
+      "screenshot": "",
+      "time": "07/09/2026 18:53:47"
+    },
+    "TC-APPOINTMENT-007": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 10.981662400008645,
+      "screenshot": "",
+      "time": "07/09/2026 18:54:01"
+    },
+    "TC-APPOINTMENT-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 11.155521500040777,
+      "screenshot": "",
+      "time": "07/09/2026 18:54:15"
+    },
+    "TC-BOOKING-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.397132400015835,
+      "screenshot": "",
+      "time": "07/09/2026 18:54:24"
+    },
+    "TC-BOOKING-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.7891381999943405,
+      "screenshot": "",
+      "time": "07/09/2026 18:54:32"
+    },
+    "TC-BOOKING-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.1296298999805,
+      "screenshot": "",
+      "time": "07/09/2026 18:54:40"
+    },
+    "TC-BOOKING-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.265568399976473,
+      "screenshot": "",
+      "time": "07/09/2026 18:54:49"
+    },
+    "TC-BOOKING-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.121373999980278,
+      "screenshot": "",
+      "time": "07/09/2026 18:54:57"
+    },
+    "TC-BOOKING-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.168556199991144,
+      "screenshot": "",
+      "time": "07/09/2026 18:55:06"
+    },
+    "TC-BOOKING-007": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.320869899995159,
+      "screenshot": "",
+      "time": "07/09/2026 18:55:14"
+    },
+    "TC-BOOKING-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.2005532999755815,
+      "screenshot": "",
+      "time": "07/09/2026 18:55:23"
+    },
+    "TC-BOOKING-009": {
+      "status": "XFAILED",
+      "detail": "KNOWN BUG - TC-BOOKING-009 | STEP 5 | Guest chưa đăng nhập vẫn truy cập được trang Đặt lịch. Actual URL: http://localhost:3000/booking?doctorId=1",
+      "duration": 4.102531299984548,
+      "screenshot": "",
+      "time": "07/09/2026 18:55:31"
+    },
+    "TC-DOCTOR-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.009420799964573,
+      "screenshot": "",
+      "time": "07/09/2026 18:55:38"
+    },
+    "TC-DOCTOR-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.078049600007944,
+      "screenshot": "",
+      "time": "07/09/2026 18:55:45"
+    },
+    "TC-DOCTOR-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 7.005460500018671,
+      "screenshot": "",
+      "time": "07/09/2026 18:55:55"
+    },
+    "TC-DOCTOR-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 3.8877017000340857,
+      "screenshot": "",
+      "time": "07/09/2026 18:56:03"
+    },
+    "TC-DS-ADMIN-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 2.3950309000210837,
+      "screenshot": "",
+      "time": "07/09/2026 18:56:08"
+    },
+    "TC-DS-ADMIN-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.327814700023737,
+      "screenshot": "",
+      "time": "07/09/2026 18:56:18"
+    },
+    "TC-DS-ADMIN-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.17836860002717,
+      "screenshot": "",
+      "time": "07/09/2026 18:56:27"
+    },
+    "TC-DS-ADMIN-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.693930200010072,
+      "screenshot": "",
+      "time": "07/09/2026 18:56:36"
+    },
+    "TC-DS-ADMIN-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 10.169559900008608,
+      "screenshot": "",
+      "time": "07/09/2026 18:56:49"
+    },
+    "TC-DS-ADMIN-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.216480000002775,
+      "screenshot": "",
+      "time": "07/09/2026 18:56:58"
+    },
+    "TC-DS-ADMIN-007": {
+      "status": "XFAILED",
+      "detail": "KNOWN BUG - TC-DS-ADMIN-007 | STEP 7 | Expected: Không tạo lịch cho ngày đã qua | Actual: Message='Thêm lịch làm việc thành công!' | ScheduleCreated=True",
+      "duration": 5.689596000011079,
+      "screenshot": "",
+      "time": "07/09/2026 18:57:07"
+    },
+    "TC-DS-ADMIN-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 10.651962600008119,
+      "screenshot": "",
+      "time": "07/09/2026 18:57:21"
+    },
+    "TC-DS-ADMIN-009": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.4107755000004545,
+      "screenshot": "",
+      "time": "07/09/2026 18:57:30"
+    },
+    "TC-DS-ADMIN-010": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 10.535702699969988,
+      "screenshot": "",
+      "time": "07/09/2026 18:57:44"
+    },
+    "TC-DS-ADMIN-011": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 10.507327200029977,
+      "screenshot": "",
+      "time": "07/09/2026 18:57:58"
+    },
+    "TC-DS-ADMIN-012": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 3.4219219000078738,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:04"
+    },
+    "TC-DS-ADMIN-013": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.623835199978203,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:14"
+    },
+    "TC-DS-ADMIN-014": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 2.0507044999976642,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:19"
+    },
+    "TC-DS-ADMIN-015": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 2.160708999959752,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:25"
+    },
+    "TC-DS-ADMIN-016": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.8636414999491535,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:30"
+    },
+    "TC-DS-ADMIN-017": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.8838180999737233,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:35"
+    },
+    "TC-DS-ADMIN-018": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.404782300000079,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:45"
+    },
+    "TC-DS-ADMIN-019": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 2.9523990000016056,
+      "screenshot": "",
+      "time": "07/09/2026 18:58:51"
+    },
+    "TC-DS-ADMIN-020": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.9521623000036925,
+      "screenshot": "",
+      "time": "07/09/2026 18:59:00"
+    },
+    "TC-DRUG-CATEGORY-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.987399599980563,
+      "screenshot": "",
+      "time": "07/09/2026 18:59:08"
+    },
+    "TC-DRUG-CATEGORY-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 7.842271999979857,
+      "screenshot": "",
+      "time": "07/09/2026 18:59:19"
+    },
+    "TC-DRUG-CATEGORY-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 14.994471899990458,
+      "screenshot": "",
+      "time": "07/09/2026 18:59:38"
+    },
+    "TC-DRUG-CATEGORY-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 11.251561200013384,
+      "screenshot": "",
+      "time": "07/09/2026 18:59:52"
+    },
+    "TC-DRUG-CATEGORY-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 14.025555300002452,
+      "screenshot": "",
+      "time": "07/09/2026 19:00:09"
+    },
+    "TC-DRUG-CATEGORY-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 11.119239999970887,
+      "screenshot": "",
+      "time": "07/09/2026 19:00:24"
+    },
+    "TC-DRUG-CATEGORY-007": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 12.596698000037577,
+      "screenshot": "",
+      "time": "07/09/2026 19:00:40"
+    },
+    "TC-DRUG-CATEGORY-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.482496300013736,
+      "screenshot": "",
+      "time": "07/09/2026 19:00:48"
+    },
+    "TC-DRUG-CATEGORY-009": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.65921980002895,
+      "screenshot": "",
+      "time": "07/09/2026 19:00:57"
+    },
+    "TC-DRUG-CATEGORY-010": {
+      "status": "XFAILED",
+      "detail": "TC-DRUG-CATEGORY-010 | STEP 10 | KNOWN BUG | Hệ thống vẫn cho phép tạo thuốc khi Ngày hết hạn trước Ngày sản xuất | NSX: 2025-08-20 | HSD: 2025-08-19",
+      "duration": 15.791375600034371,
+      "screenshot": "",
+      "time": "07/09/2026 19:01:16"
+    },
+    "TC-DRUG-CATEGORY-011": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 24.598447200027294,
+      "screenshot": "",
+      "time": "07/09/2026 19:01:44"
+    },
+    "TC-LOGIN-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.4765457000466995,
+      "screenshot": "",
+      "time": "07/09/2026 19:01:54"
+    },
+    "TC-LOGIN-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 3.964314499986358,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:01"
+    },
+    "TC-LOGIN-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 3.971463499998208,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:08"
+    },
+    "TC-LOGIN-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 3.9491275000036694,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:15"
+    },
+    "TC-LOGIN-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 3.9789469999959692,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:22"
+    },
+    "TC-LOGIN-007": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.096654099994339,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:30"
+    },
+    "TC-LOGIN-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.505536500015296,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:37"
+    },
+    "TC-LOGIN-009": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 3.93935820000479,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:45"
+    },
+    "TC-LOGIN-010": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 7.540111100010108,
+      "screenshot": "",
+      "time": "07/09/2026 19:02:55"
+    },
+    "TC-MEDICAL-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.893454999953974,
+      "screenshot": "",
+      "time": "07/09/2026 19:03:03"
+    },
+    "TC-MEDICAL-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.363956400018651,
+      "screenshot": "",
+      "time": "07/09/2026 19:03:11"
+    },
+    "TC-MEDICAL-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.428945899999235,
+      "screenshot": "",
+      "time": "07/09/2026 19:03:20"
+    },
+    "TC-MEDICAL-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.758261699986178,
+      "screenshot": "",
+      "time": "07/09/2026 19:03:32"
+    },
+    "TC-MEDICAL-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 2.2325870000058785,
+      "screenshot": "",
+      "time": "07/09/2026 19:03:37"
+    },
+    "TC-MEDICAL-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.196255299961194,
+      "screenshot": "",
+      "time": "07/09/2026 19:03:47"
+    },
+    "TC-MEDICAL-007": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 20.193072399997618,
+      "screenshot": "",
+      "time": "07/09/2026 19:04:10"
+    },
+    "TC-MEDICAL-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 9.795495899976231,
+      "screenshot": "",
+      "time": "07/09/2026 19:04:23"
+    },
+    "TC-MEDICAL-009": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.686770099971909,
+      "screenshot": "",
+      "time": "07/09/2026 19:04:32"
+    },
+    "TC-MEDICALHISTORY-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 11.138364000013098,
+      "screenshot": "",
+      "time": "07/09/2026 19:04:46"
+    },
+    "TC-MEDICALHISTORY-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 13.678441299998667,
+      "screenshot": "",
+      "time": "07/09/2026 19:05:03"
+    },
+    "TC-MEDICALHISTORY-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 15.13383479998447,
+      "screenshot": "",
+      "time": "07/09/2026 19:05:22"
+    },
+    "TC-MEDICALHISTORY-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.867636599985417,
+      "screenshot": "",
+      "time": "07/09/2026 19:05:31"
+    },
+    "TC-MEDICALHISTORY-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.788763899996411,
+      "screenshot": "",
+      "time": "07/09/2026 19:05:41"
+    },
+    "TC-MEDICALHISTORY-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 17.5015538999578,
+      "screenshot": "",
+      "time": "07/09/2026 19:06:02"
+    },
+    "TC-MYAPPOINTMENT-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 2.554147400020156,
+      "screenshot": "",
+      "time": "07/09/2026 19:06:07"
+    },
+    "TC-MYAPPOINTMENT-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.3992683999822475,
+      "screenshot": "",
+      "time": "07/09/2026 19:06:16"
+    },
+    "TC-MYAPPOINTMENT-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.381862199981697,
+      "screenshot": "",
+      "time": "07/09/2026 19:06:25"
+    },
+    "TC-MYAPPOINTMENT-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.996245899994392,
+      "screenshot": "",
+      "time": "07/09/2026 19:06:35"
+    },
+    "TC-MYAPPOINTMENT-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.074648400011938,
+      "screenshot": "",
+      "time": "07/09/2026 19:06:44"
+    },
+    "TC-NOTIFICATION-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.138045599975158,
+      "screenshot": "",
+      "time": "07/09/2026 19:06:56"
+    },
+    "TC-NOTIFICATION-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 8.675068799988367,
+      "screenshot": "",
+      "time": "07/09/2026 19:07:08"
+    },
+    "TC-NOTIFICATION-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 9.921389100025408,
+      "screenshot": "",
+      "time": "07/09/2026 19:07:21"
+    },
+    "TC-NOTIFICATION-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 14.779065400012769,
+      "screenshot": "",
+      "time": "07/09/2026 19:07:39"
+    },
+    "TC-NOTIFICATION-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.817804099991918,
+      "screenshot": "",
+      "time": "07/09/2026 19:07:49"
+    },
+    "TC-NOTIFICATION-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 10.236893000022974,
+      "screenshot": "",
+      "time": "07/09/2026 19:08:02"
+    },
+    "TC-NOTIFICATION-007": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 10.610797699948307,
+      "screenshot": "",
+      "time": "07/09/2026 19:08:16"
+    },
+    "TC-NOTIFICATION-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 13.493740700010676,
+      "screenshot": "",
+      "time": "07/09/2026 19:08:33"
+    },
+    "TC-NOTIFICATION-009": {
+      "status": "XFAILED",
+      "detail": "Known bug: Không phát sinh notification mới sau khi Doctor cập nhật hồ sơ bệnh án.",
+      "duration": 1.8629081000108272,
+      "screenshot": "",
+      "time": "07/09/2026 19:08:38"
+    },
+    "TC-REGISTER-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 5.37677979998989,
+      "screenshot": "",
+      "time": "07/09/2026 19:08:47"
+    },
+    "TC-REGISTER-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3413895000121556,
+      "screenshot": "",
+      "time": "07/09/2026 19:08:51"
+    },
+    "TC-REGISTER-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.2880053000408225,
+      "screenshot": "",
+      "time": "07/09/2026 19:08:56"
+    },
+    "TC-REGISTER-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3050534999929368,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:00"
+    },
+    "TC-REGISTER-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.244183000002522,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:05"
+    },
+    "TC-REGISTER-006": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.305735400004778,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:09"
+    },
+    "TC-REGISTER-007": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.2734465000103228,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:14"
+    },
+    "TC-REGISTER-008": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.2806123999762349,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:18"
+    },
+    "TC-REGISTER-009": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.295095500012394,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:23"
+    },
+    "TC-REGISTER-010": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3334572999738157,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:27"
+    },
+    "TC-REGISTER-011": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3451329999952577,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:32"
+    },
+    "TC-REGISTER-012": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3255385999800637,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:36"
+    },
+    "TC-REGISTER-013": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3491578999673948,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:41"
+    },
+    "TC-REGISTER-014": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3856296999729238,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:45"
+    },
+    "TC-REGISTER-015": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.381729299959261,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:50"
+    },
+    "TC-REGISTER-016": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3668031999841332,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:54"
+    },
+    "TC-REGISTER-017": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3428107000072487,
+      "screenshot": "",
+      "time": "07/09/2026 19:09:59"
+    },
+    "TC-REGISTER-018": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.4053942000027746,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:04"
+    },
+    "TC-REGISTER-019": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.3869991999818012,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:08"
+    },
+    "TC-SPECIALTY-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.162045600009151,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:16"
+    },
+    "TC-SPECIALTY-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.022274299990386,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:23"
+    },
+    "TC-SPECIALTY-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 7.13882209995063,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:33"
+    },
+    "TC-SPECIALTY-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.942287900019437,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:43"
+    },
+    "TC-SPECIALTY-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.052755599957891,
+      "screenshot": "",
+      "time": "07/09/2026 19:10:51"
+    },
+    "TC-WORKSCHEDULE-001": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 4.808435799961444,
+      "screenshot": "",
+      "time": "07/09/2026 19:11:42"
+    },
+    "TC-WORKSCHEDULE-002": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.9347130000242032,
+      "screenshot": "",
+      "time": "07/09/2026 19:11:47"
+    },
+    "TC-WORKSCHEDULE-003": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 1.9719955999753438,
+      "screenshot": "",
+      "time": "07/09/2026 19:11:52"
+    },
+    "TC-WORKSCHEDULE-004": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 11.255445100017823,
+      "screenshot": "",
+      "time": "07/09/2026 19:12:07"
+    },
+    "TC-WORKSCHEDULE-005": {
+      "status": "PASSED",
+      "detail": "",
+      "duration": 6.260508800041862,
+      "screenshot": "",
+      "time": "07/09/2026 19:12:16"
+    }
+  }
+}

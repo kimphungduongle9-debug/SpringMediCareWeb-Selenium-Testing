@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 
 from api.MedicalRecordApi import MedicalRecordApi
 from api.DoctorScheduleApi import DoctorScheduleApi
+from selenium.webdriver.support.ui import WebDriverWait
 
 HOME_URL = "http://localhost:3000/"
 LOGIN_URL = "http://localhost:3000/login"
@@ -34,13 +35,18 @@ def login_account(driver, username, password):
     login_page.open_page()
     login_page.login(username, password)
 
-    time.sleep(2)
+    WebDriverWait(
+        driver,
+        10
+    ).until(
+        lambda d:
+        d.current_url == HOME_URL
+    )
 
     assert driver.current_url == HOME_URL, (
         f"Đăng nhập thất bại | "
         f"Actual URL: {driver.current_url}"
     )
-
 
 def login_admin(driver):
     login_account(
@@ -78,19 +84,19 @@ def logout_current_user(driver):
     login_page = LoginPage(driver)
     login_page.logout()
 
-    time.sleep(2)
+    WebDriverWait(driver,10).until(
+        lambda d:
+        d.current_url == LOGIN_URL
+    )
 
     assert driver.current_url == LOGIN_URL, (
         f"Đăng xuất thất bại | "
         f"Actual URL: {driver.current_url}"
     )
 
-
 def open_tran_binh_booking_page(driver):
     doctor_page = DoctorPage(driver)
     doctor_page.open_page()
-
-    time.sleep(2)
 
     doctor_page.book_tran_binh()
 

@@ -4,7 +4,69 @@ from pages.BasePage import BasePage
 
 
 class PatientMedicalHistoryPage(BasePage):
+    """
+    Page Object cho chức năng Lịch sử khám bệnh của Patient.
 
+    Mapping Test Case -> Step -> Method:
+
+    TC-MEDICALHISTORY-001
+    - Step 3: Mở trang Lịch sử khám bệnh
+      + open_page()
+      + get_page_title()
+    - Step 4: Kiểm tra không phát sinh Medical Record mới
+      + get_record_ids()
+
+    TC-MEDICALHISTORY-002
+    - Step 6: Mở trang Lịch sử khám bệnh
+      + open_page()
+      + get_page_title()
+    - Step 7: Kiểm tra lịch đã xác nhận nhưng chưa khám
+      không phát sinh Medical Record
+      + get_record_ids()
+
+    TC-MEDICALHISTORY-003
+    - Step 9: Mở trang Lịch sử khám bệnh
+      + open_page()
+      + get_page_title()
+    - Step 10: Kiểm tra Medical Record mới được tạo
+      sau khi Doctor hoàn thành khám
+      + get_record_ids()
+
+    TC-MEDICALHISTORY-004
+    - Step 2: Mở trang Lịch sử khám bệnh
+      + open_page()
+      + get_page_title()
+    - Step 3: Chọn một bản ghi trong lịch sử
+      + get_first_record_id()
+    - Step 4: Mở chi tiết bản ghi
+      + click_view_detail_by_record_id()
+
+    TC-MEDICALHISTORY-005
+    - Step 2: Mở lịch sử của Patient A
+      và ghi nhận danh sách Medical Record
+      + open_page()
+      + get_page_title()
+      + get_record_ids()
+    - Step 5: Mở lịch sử của Patient B
+      + open_page()
+      + get_page_title()
+      + get_record_ids()
+    - Step 6: So sánh lịch sử giữa hai Patient
+      + get_record_ids()
+
+    TC-MEDICALHISTORY-006
+    - Step 2: Mở lịch sử và ghi nhận Medical Record hiện tại
+      + open_page()
+      + get_page_title()
+      + get_record_ids()
+    - Step 7: Mở lại Lịch sử khám bệnh sau cập nhật
+      + open_page()
+      + get_page_title()
+    - Step 8: Kiểm tra record giữ nguyên ID
+      và vẫn xuất hiện trong lịch sử
+      + get_record_ids()
+      + click_view_detail_by_record_id()
+    """
     URL = "http://localhost:3000/patient-medical-history"
 
     PAGE_TITLE = (

@@ -4,6 +4,20 @@ from pages.BasePage import BasePage
 
 
 class PatientMedicalRecordDetailPage(BasePage):
+    """
+    Page Object cho trang Chi tiết hồ sơ bệnh án của Patient.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-MEDICALHISTORY-004
+    - Step 5: Kiểm tra thông tin chi tiết của Medical Record
+      + get_page_title()
+      + get_record_id()
+      + get_patient_name()
+      + get_doctor_information()
+      + get_diagnosis_information()
+      + get_treatment_information()
+    """
 
     PAGE_TITLE = (
         By.XPATH,

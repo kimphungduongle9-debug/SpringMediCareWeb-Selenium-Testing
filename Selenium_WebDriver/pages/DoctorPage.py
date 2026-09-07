@@ -5,6 +5,59 @@ from pages.BasePage import BasePage
 
 
 class DoctorPage(BasePage):
+    """
+    Page Object cho chức năng xem và tìm kiếm Bác sĩ.
+
+    Mapping Test Case -> Step -> Method:
+
+    TC-DOCTOR-001
+    - Step 1: Mở trang Bác sĩ
+      + open_page()
+      + wait_until_doctors_loaded()
+    - Step 2: Kiểm tra tiêu đề và số lượng bác sĩ
+      + get_title()
+      + get_displayed_count()
+    - Step 3: Kiểm tra danh sách card bác sĩ
+      + get_doctor_cards()
+    - Step 4: Kiểm tra thông tin từng bác sĩ
+      + get_doctor_card_information()
+
+    TC-DOCTOR-002
+    - Step 1: Mở trang Bác sĩ
+      + open_page()
+    - Step 2: Nhập từ khóa tìm kiếm
+      + enter_search_keyword()
+    - Step 3: Thực hiện tìm kiếm
+      + click_search()
+      + wait_for_search_results()
+    - Step 4: Kiểm tra kết quả tìm kiếm
+      + get_doctor_cards()
+      + get_displayed_count()
+      + get_doctor_card_information()
+
+    TC-DOCTOR-003
+    - Step 1: Mở trang Bác sĩ
+      + open_page()
+    - Step 2: Nhập tên bác sĩ không tồn tại
+      + enter_search_keyword()
+    - Step 3: Thực hiện tìm kiếm
+      + click_search()
+      + wait_for_no_results()
+    - Step 4: Kiểm tra trạng thái không có kết quả
+      + get_displayed_count()
+      + get_card_count()
+      + get_no_result_message()
+
+    TC-DOCTOR-004
+    - Step 1: Mở trang Bác sĩ
+      + open_page()
+    - Step 2: Chọn bác sĩ
+      + get_doctor_card_by_name()
+    - Step 3: Nhấn Đặt lịch hẹn
+      + click_booking_of_doctor()
+    - Step 5: Kiểm tra đúng bác sĩ trên trang Đặt lịch
+      + get_booking_doctor_name()
+    """
 
     URL = "http://localhost:3000/doctor"
 

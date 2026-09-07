@@ -4,3 +4,6 @@ __pycache__/
 venv/
 .idea/
 Selenium_WebDriver/reports/screenshots/*.png
+# Selenium generated runtime files
+Selenium_WebDriver/reports/screenshots/
+Selenium_WebDriver/tests/**/reports/
