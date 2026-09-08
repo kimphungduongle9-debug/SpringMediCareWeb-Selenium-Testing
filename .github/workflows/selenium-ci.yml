@@ -114,6 +114,10 @@ jobs:
           pip --version
           pytest --version
 
+      - name: Debug doctor schedules
+        run: |
+          curl -s http://localhost:8080/SpringMediCareApp/api/doctor-schedules
+          
       - name: Run Booking Selenium tests
         working-directory: Selenium_WebDriver
         env:
