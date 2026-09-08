@@ -40,6 +40,16 @@ jobs:
         run: |
           mysql -h 127.0.0.1 -P 3306 -u root -proot -D medicare_db -e "SHOW TABLES;"
           
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Build backend
+        working-directory: SpringMediCareWeb/SpringMediCareApp
+        run: mvn clean package -DskipTests
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
