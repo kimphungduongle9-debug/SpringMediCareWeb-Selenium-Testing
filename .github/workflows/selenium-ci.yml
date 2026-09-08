@@ -135,6 +135,15 @@ jobs:
         run: |
           pytest tests/register -s
 
+      - name: Show backend error log
+        if: always()
+        run: |
+          echo "===== TOMCAT CATALINA LOG ====="
+          cat tomcat/logs/catalina.out || true
+
+          echo "===== TOMCAT LOCALHOST LOG ====="
+          cat tomcat/logs/localhost*.log || true
+          
       - name: Upload Selenium reports
         if: always()
         uses: actions/upload-artifact@v4
