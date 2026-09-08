@@ -114,12 +114,12 @@ jobs:
           pip --version
           pytest --version
 
-      - name: Run Selenium smoke test
+      - name: Run Login Selenium tests
         working-directory: Selenium_WebDriver
         env:
           CI: "true"
         run: |
-          pytest tests/login/test_login.py::test_tc_login_001_valid_username -s
+          pytest tests/login/test_login.py -s
 
       - name: Upload Selenium reports
         if: always()
