@@ -114,6 +114,13 @@ jobs:
           pip --version
           pytest --version
 
+      - name: Run Selenium smoke test
+        working-directory: Selenium_WebDriver
+        env:
+          CI: "true"
+        run: |
+          pytest tests/login/test_login.py::test_tc_login_001_valid_username -s
+
 
 
 
