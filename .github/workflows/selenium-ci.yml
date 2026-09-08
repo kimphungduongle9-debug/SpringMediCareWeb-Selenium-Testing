@@ -116,8 +116,8 @@ jobs:
 
       - name: Debug doctor schedules
         run: |
-          curl -s http://localhost:8080/SpringMediCareApp/api/doctor-schedules
-          
+          mysql -h 127.0.0.1 -P 3306 -u root -proot -D medicare_db -e "SELECT * FROM doctor_schedule;"
+
       - name: Run Booking Selenium tests
         working-directory: Selenium_WebDriver
         env:
