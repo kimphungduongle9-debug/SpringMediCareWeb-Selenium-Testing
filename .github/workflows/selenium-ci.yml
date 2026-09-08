@@ -124,26 +124,13 @@ jobs:
           date
           echo "TZ=$TZ"
           
-      - name: Debug doctor schedules
-        run: |
-          mysql -h 127.0.0.1 -P 3306 -u root -proot -D medicare_db -e "SELECT * FROM doctor_schedule;"
-
-      - name: Run Register Selenium tests
+      - name: Run Full Selenium Test Suite
         working-directory: Selenium_WebDriver
         env:
           CI: "true"
         run: |
-          pytest tests/register -s
-
-      - name: Show backend error log
-        if: always()
-        run: |
-          echo "===== TOMCAT CATALINA LOG ====="
-          cat tomcat/logs/catalina.out || true
-
-          echo "===== TOMCAT LOCALHOST LOG ====="
-          cat tomcat/logs/localhost*.log || true
-          
+          pytest -s
+ 
       - name: Upload Selenium reports
         if: always()
         uses: actions/upload-artifact@v4
