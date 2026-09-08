@@ -34,7 +34,7 @@ jobs:
 
       - name: Import database
         run: |
-          mysql -h 127.0.0.1 -P 3306 -u root -proot medicare_db < SpringMediCareWeb/medicare_db_ci.sql
+          mysql -h 127.0.0.1 -P 3306 -u root -proot medicare_db < SpringMediCareWeb/medicare_db.sql
 
       - name: Verify database tables
         run: |
