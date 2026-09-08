@@ -32,6 +32,14 @@ jobs:
         run: |
           mysql -h 127.0.0.1 -P 3306 -u root -proot -e "SHOW DATABASES;"
 
+      - name: Import database
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -proot medicare_db < SpringMediCareWeb/medicare_db_ci.sql
+
+      - name: Verify database tables
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -proot -D medicare_db -e "SHOW TABLES;"
+          
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -49,6 +57,8 @@ jobs:
           python --version
           pip --version
           pytest --version
+
+
 
 
       
