@@ -39,7 +39,7 @@ jobs:
       - name: Verify database tables
         run: |
           mysql -h 127.0.0.1 -P 3306 -u root -proot -D medicare_db -e "SHOW TABLES;"
-          
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -50,6 +50,23 @@ jobs:
         working-directory: SpringMediCareWeb/SpringMediCareApp
         run: mvn clean package -DskipTests
 
+      - name: Setup Tomcat
+        run: |
+          wget https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz
+          tar -xzf apache-tomcat-10.1.34.tar.gz
+          mv apache-tomcat-10.1.34 tomcat
+
+      - name: Deploy backend to Tomcat
+        run: |
+          cp SpringMediCareWeb/SpringMediCareApp/target/SpringMediCareApp-1.0-SNAPSHOT.war tomcat/webapps/SpringMediCareApp.war
+          chmod +x tomcat/bin/*.sh
+          tomcat/bin/startup.sh
+
+      - name: Verify backend
+        run: |
+          sleep 15
+          curl -I http://localhost:8080/SpringMediCareApp/
+          
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
