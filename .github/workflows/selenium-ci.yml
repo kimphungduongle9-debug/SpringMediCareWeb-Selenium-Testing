@@ -10,12 +10,17 @@ jobs:
   selenium-test:
     runs-on: ubuntu-latest
 
+    env:
+      TZ: Asia/Ho_Chi_Minh
+      JAVA_TOOL_OPTIONS: -Duser.timezone=Asia/Ho_Chi_Minh
+
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: medicare_db
+          TZ: Asia/Ho_Chi_Minh
         ports:
           - 3306:3306
         options: >-
@@ -114,6 +119,11 @@ jobs:
           pip --version
           pytest --version
 
+      - name: Verify timezone
+        run: |
+          date
+          echo "TZ=$TZ"
+          
       - name: Debug doctor schedules
         run: |
           mysql -h 127.0.0.1 -P 3306 -u root -proot -D medicare_db -e "SELECT * FROM doctor_schedule;"
