@@ -66,6 +66,35 @@ jobs:
         run: |
           sleep 15
           curl -I http://localhost:8080/SpringMediCareApp/
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install frontend dependencies
+        working-directory: SpringMediCareWeb/medicareweb
+        run: npm ci
+
+      - name: Start frontend
+        working-directory: SpringMediCareWeb/medicareweb
+        run: |
+          CI=false nohup npm start > frontend.log 2>&1 &
+
+      - name: Verify frontend
+        run: |
+          for i in {1..30}; do
+            if curl -f http://localhost:3000/; then
+              echo "Frontend is ready"
+              exit 0
+            fi
+            echo "Waiting for frontend..."
+            sleep 5
+          done
+
+          echo "Frontend failed to start"
+          cat SpringMediCareWeb/medicareweb/frontend.log
+          exit 1
           
       - name: Setup Python
         uses: actions/setup-python@v5
