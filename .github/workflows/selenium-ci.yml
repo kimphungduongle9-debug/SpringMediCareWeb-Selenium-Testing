@@ -10,9 +10,27 @@ jobs:
   selenium-test:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: medicare_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
+
+      - name: Verify MySQL
+        run: |
+          mysql -h 127.0.0.1 -P 3306 -u root -proot -e "SHOW DATABASES;"
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -31,3 +49,6 @@ jobs:
           python --version
           pip --version
           pytest --version
+
+
+      
