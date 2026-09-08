@@ -114,12 +114,12 @@ jobs:
           pip --version
           pytest --version
 
-      - name: Run Login Selenium tests
+      - name: Run Booking Selenium tests
         working-directory: Selenium_WebDriver
         env:
           CI: "true"
         run: |
-          pytest tests/login/test_login.py -s
+          pytest tests/booking -s
 
       - name: Upload Selenium reports
         if: always()
