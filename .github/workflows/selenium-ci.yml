@@ -121,6 +121,16 @@ jobs:
         run: |
           pytest tests/login/test_login.py::test_tc_login_001_valid_username -s
 
+      - name: Upload Selenium reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selenium-test-reports
+          path: |
+            Selenium_WebDriver/reports/*.docx
+            Selenium_WebDriver/reports/screenshots/
+          if-no-files-found: warn
+
 
 
 
