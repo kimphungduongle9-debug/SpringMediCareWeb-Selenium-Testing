@@ -70,7 +70,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Install frontend dependencies
         working-directory: SpringMediCareWeb/medicareweb
@@ -95,7 +95,7 @@ jobs:
           echo "Frontend failed to start"
           cat SpringMediCareWeb/medicareweb/frontend.log
           exit 1
-          
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
