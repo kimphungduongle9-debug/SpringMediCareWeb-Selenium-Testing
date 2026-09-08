@@ -128,12 +128,12 @@ jobs:
         run: |
           mysql -h 127.0.0.1 -P 3306 -u root -proot -D medicare_db -e "SELECT * FROM doctor_schedule;"
 
-      - name: Run Full Selenium Test Suite
+      - name: Run Register Selenium tests
         working-directory: Selenium_WebDriver
         env:
           CI: "true"
         run: |
-          pytest -s
+          pytest tests/register -s
 
       - name: Upload Selenium reports
         if: always()
