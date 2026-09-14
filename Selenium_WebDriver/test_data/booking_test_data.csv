@@ -8,3 +8,4 @@ TC-BOOKING-006,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-006-,,,,,Giờ khám k
 TC-BOOKING-007,patient_chi,Abc@123,patient_an,Abc@123,1,SELENIUM-TC-BOOKING-007-,,,,,,Khung giờ này đã có người đặt,,admin_system,Abc@123
 TC-BOOKING-008,patient_chi,Abc@123,patient_an,Abc@123,1,SELENIUM-TC-BOOKING-008-,,,,,,,30 phút,admin_system,Abc@123
 TC-BOOKING-009,,,,,1,SELENIUM-TC-BOOKING-009-,,,,,,,,admin_system,Abc@123
+TC-BOOKING-010,patient_an,Abc@123,,,1,SELENIUM-TC-BOOKING-010-,Đặt lịch thành công,,,,,,,admin_system,Abc@123

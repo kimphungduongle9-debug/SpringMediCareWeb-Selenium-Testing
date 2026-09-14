@@ -291,10 +291,16 @@ class SpecialtyPage(BasePage):
         )
 
     def get_doctor_specialty_title(self):
-        return self.wait.until(
-            EC.visibility_of_element_located(
-                self.DOCTOR_SPECIALTY_TITLE
-            )
+        self.wait.until(
+            lambda driver:
+            driver.find_element(
+                *self.DOCTOR_SPECIALTY_TITLE
+            ).text.strip()
+            != "Bác sĩ thuộc chuyên khoa"
+        )
+
+        return self.find(
+            *self.DOCTOR_SPECIALTY_TITLE
         ).text.strip()
 
     def get_doctor_cards(self):
