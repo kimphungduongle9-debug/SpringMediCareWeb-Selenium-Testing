@@ -299,7 +299,7 @@ def test_tc_booking_009_guest_cannot_access_booking(driver):
     )
 
     # Step 4 - Nhấn Đặt lịch hẹn
-    doctor_page.book_tran_binh()
+    doctor_page.click_booking_button_only("Tran Binh")
 
     report_step(
         test_case_id, 4,

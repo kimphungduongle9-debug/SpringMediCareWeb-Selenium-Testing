@@ -254,6 +254,26 @@ class DoctorPage(BasePage):
             "/booking?doctorId=" in driver.current_url
         )
 
+    def click_booking_button_only(self, doctor_name):
+        card = self.get_doctor_card_by_name(
+            doctor_name
+        )
+
+        button = card.find_element(
+            By.XPATH,
+            ".//button[normalize-space()='Đặt lịch hẹn']"
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});",
+            button
+        )
+
+        self.driver.execute_script(
+            "arguments[0].click();",
+            button
+        )
+
     def get_booking_doctor_name(self):
         return self.wait.until(
             EC.visibility_of_element_located(
