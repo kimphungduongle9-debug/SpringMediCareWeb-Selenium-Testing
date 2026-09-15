@@ -3,6 +3,7 @@ name: Selenium CI
 on:
   push:
     branches:
+      - main
       - ci/selenium-github-actions
   pull_request:
 
