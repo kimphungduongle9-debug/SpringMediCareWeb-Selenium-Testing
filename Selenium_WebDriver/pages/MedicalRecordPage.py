@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 
 from pages.BasePage import BasePage
 
-
+from selenium.webdriver.common.keys import Keys
 class MedicalRecordPage(BasePage):
     """
     Page Object cho chức năng Hồ sơ bệnh án.
@@ -321,7 +321,8 @@ class MedicalRecordPage(BasePage):
             *self.DIAGNOSIS_TEXTAREA
         )
 
-        textarea.clear()
+        textarea.send_keys(Keys.CONTROL, "a")
+        textarea.send_keys(Keys.BACKSPACE)
         textarea.send_keys(diagnosis)
 
     def enter_treatment(self, treatment):
@@ -329,7 +330,8 @@ class MedicalRecordPage(BasePage):
             *self.TREATMENT_TEXTAREA
         )
 
-        textarea.clear()
+        textarea.send_keys(Keys.CONTROL, "a")
+        textarea.send_keys(Keys.BACKSPACE)
         textarea.send_keys(treatment)
 
     def click_save_changes(self):

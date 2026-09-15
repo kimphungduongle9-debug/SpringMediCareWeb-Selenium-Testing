@@ -9,6 +9,7 @@ from utils.data_reader import (
     get_test_data_csv,
     APPOINTMENT_TEST_DATA_CSV,
 )
+from selenium.common.exceptions import WebDriverException
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 if str(PROJECT_ROOT) not in sys.path:
@@ -33,7 +34,10 @@ def driver():
     browser = webdriver.Chrome(options=options)
 
     if os.getenv("CI") != "true":
-        browser.maximize_window()
+        try:
+            browser.maximize_window()
+        except WebDriverException:
+            browser.set_window_size(1920, 1080)
 
     browser.implicitly_wait(3)
 

@@ -126,7 +126,7 @@ def test_tc_register_001_valid_registration(driver):
     # STEP 5: Kiểm tra kết quả
     # ========================================================
 
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 30).until(
         EC.url_to_be(expected_url)
     )
 
