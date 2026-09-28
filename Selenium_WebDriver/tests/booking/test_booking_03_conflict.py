@@ -2,6 +2,8 @@ from utils.data_reader import (
     get_test_data_csv,
     BOOKING_TEST_DATA_CSV,
 )
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from utils.test_reporter import report_step
 import pytest
 from pages.DoctorPage import DoctorPage
@@ -285,7 +287,19 @@ def test_tc_booking_009_guest_cannot_access_booking(driver):
 
     # Step 2 - Mở trang Bác sĩ
     doctor_page = DoctorPage(driver)
-    doctor_page.open_page()
+
+    driver.execute_script(
+        "window.location.href = 'http://localhost:3000/doctor';"
+    )
+
+    doctor_page.wait.until(
+        EC.visibility_of_element_located(
+            (
+                By.XPATH,
+                "//h2[normalize-space()='Danh sách bác sĩ']"
+            )
+        )
+    )
 
     report_step(
         test_case_id, 2,
