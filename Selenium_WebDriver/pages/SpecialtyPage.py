@@ -1,8 +1,11 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+)
 
 from pages.BasePage import BasePage
-
 
 class SpecialtyPage(BasePage):
     """
@@ -248,14 +251,33 @@ class SpecialtyPage(BasePage):
         )
 
     def wait_for_search_results(self):
-        self.wait.until(
-            lambda driver:
-            len(
-                driver.find_elements(
+        def search_results_ready(driver):
+            try:
+                cards = driver.find_elements(
                     *self.SPECIALTY_CARDS
                 )
-            ) > 0
-        )
+
+                if len(cards) == 0:
+                    return False
+
+                for card in cards:
+                    name = card.find_element(
+                        By.CSS_SELECTOR,
+                        "h3.card-title-shared"
+                    ).text.strip()
+
+                    if not name:
+                        return False
+
+                return True
+
+            except (
+                    StaleElementReferenceException,
+                    NoSuchElementException
+            ):
+                return False
+
+        self.wait.until(search_results_ready)
 
     def wait_for_no_results(self):
         self.wait.until(
@@ -291,24 +313,32 @@ class SpecialtyPage(BasePage):
         )
 
     def get_doctor_specialty_title(self):
-        return self.wait.until(
-            EC.visibility_of_element_located(
-                self.DOCTOR_SPECIALTY_TITLE
-            )
-        ).text.strip()
+        def specialty_title_loaded(driver):
+            try:
+                element = driver.find_element(*self.DOCTOR_SPECIALTY_TITLE)
+
+                text = element.text.strip()
+
+                if (
+                        element.is_displayed()
+                        and text != "Bác sĩ thuộc chuyên khoa"
+                ):
+                    return text
+                return False
+
+            except (StaleElementReferenceException,NoSuchElementException):
+                return False
+
+        return self.wait.until(specialty_title_loaded)
 
     def get_doctor_cards(self):
-        self.wait.until(
-            lambda driver:
-            not driver.find_elements(
+        self.wait.until(lambda driver: not driver.find_elements(
                 By.CSS_SELECTOR,
                 ".spinner-border"
             )
         )
 
-        return self.driver.find_elements(
-            *self.SPECIALTY_CARDS
-        )
+        return self.driver.find_elements(*self.SPECIALTY_CARDS)
 
     def get_doctor_names(self):
         cards = self.get_doctor_cards()

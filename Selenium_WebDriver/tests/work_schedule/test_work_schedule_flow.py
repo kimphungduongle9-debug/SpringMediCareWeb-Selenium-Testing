@@ -6,8 +6,9 @@ from utils.test_reporter import report_step
 from tests.helpers.work_schedule_helpers import (
     login_doctor,
     logout_current_user,
+    ensure_current_week_schedule,
+    cleanup_created_schedule,
 )
-
 
 def report_test_case_start(test_case_id, description):
     print()
@@ -20,7 +21,7 @@ def report_test_case_start(test_case_id, description):
 # TC-WORKSCHEDULE-004
 # ============================================================
 
-def test_tc_workschedule_004(driver):
+def test_tc_workschedule_004(driver, request):
     """
     TC-WORKSCHEDULE-004:
     Kiểm tra thông tin lịch làm việc trong bảng Lịch làm việc theo tuần
@@ -32,6 +33,16 @@ def test_tc_workschedule_004(driver):
     test_data = get_test_data_csv(
         WORK_SCHEDULE_TEST_DATA_CSV,
         test_case_id
+    )
+
+    schedule_setup = ensure_current_week_schedule(
+        doctor_name="Pham Dung",
+        admin_username="admin_system",
+        admin_password="Abc@123"
+    )
+
+    request.addfinalizer(
+        lambda: cleanup_created_schedule(schedule_setup)
     )
 
     # Step 1: Đăng nhập bằng Doctor có lịch làm việc
@@ -65,20 +76,11 @@ def test_tc_workschedule_004(driver):
         "Mở trang Lịch làm việc của tôi thành công"
     )
 
-    # Step 3: Ghi nhận các lịch trong một tuần có dữ liệu
-    week_range = schedule_page.get_week_range()
-
-    if not schedule_page.has_schedule_in_week():
-        for _ in range(4):
-            schedule_page.click_previous_week()
-
-            if schedule_page.has_schedule_in_week():
-                break
-
+    # Step 3: Ghi nhận lịch trong tuần hiện tại
     assert schedule_page.has_schedule_in_week(), (
         f"{test_case_id} | STEP 3 FAILED | "
-        "Expected: Tìm thấy ít nhất một tuần có lịch làm việc | "
-        "Actual: Không có lịch trong tuần hiện tại và 4 tuần trước"
+        "Expected: Tuần hiện tại có ít nhất một lịch làm việc | "
+        "Actual: Không tìm thấy lịch trong tuần hiện tại"
     )
 
     week_range = schedule_page.get_week_range()
