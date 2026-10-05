@@ -69,6 +69,13 @@ Các trường hợp còn tồn tại lỗi chức năng đã biết được gi
 
 ## Công nghệ sử dụng
 
+### Continuous Integration
+
+- Git
+- GitHub
+- GitHub Actions
+- Headless Chrome
+
 ### Kiểm thử tự động
 
 - Python
@@ -80,6 +87,11 @@ Các trường hợp còn tồn tại lỗi chức năng đã biết được gi
 - python-docx
 - OpenPyXL
 
+### Performance Testing (phần mở rộng)
+
+- Locust
+- Python
+
 ### Hệ thống được kiểm thử
 
 - React
@@ -88,13 +100,6 @@ Các trường hợp còn tồn tại lỗi chức năng đã biết được gi
 - Hibernate
 - MySQL
 - Tomcat
-
-### Continuous Integration
-
-- Git
-- GitHub
-- GitHub Actions
-- Headless Chrome
 
 ---
 
@@ -150,6 +155,9 @@ SpringMediCareWeb-Selenium-Testing/
 ├── docs/
 │   └── WeeklyReports/
 │
+├── performance_tests/
+│   └── locustfile.py
+
 └── README.md
 ```
 
@@ -164,6 +172,7 @@ SpringMediCareWeb-Selenium-Testing/
 - **`TestCases/`**: chứa các bộ test case và kết quả kiểm thử.
 - **`SpringMediCareWeb/`**: chứa mã nguồn của hệ thống được sử dụng làm đối tượng kiểm thử.
 - **`docs/WeeklyReports/`**: chứa báo cáo tiến độ đồ án theo tuần.
+- **`performance_tests/`**: chứa kịch bản kiểm thử hiệu năng bằng Locust, được bổ sung sau khi hoàn thành phần Selenium Automation Testing chính.
 
 ---
 
@@ -249,6 +258,49 @@ Quy trình CI gồm:
 7. Lưu báo cáo kiểm thử dưới dạng workflow artifacts.
 
 Bộ kiểm thử được chạy trên cả môi trường local và GitHub Actions để đối chiếu kết quả và kiểm tra tính ổn định của test suite.
+
+---
+
+## Phần mở rộng: Performance Testing với Locust
+
+Sau khi hoàn thành và nộp phần đồ án chính, project được bổ sung thêm một phần kiểm thử hiệu năng nhằm tìm hiểu khả năng phản hồi của hệ thống khi số lượng người dùng đồng thời tăng lên.
+
+Phần mở rộng này sử dụng **Locust** để mô phỏng nhiều người dùng ảo gửi request đến backend SpringMediCareWeb. Kịch bản hiện tại tập trung vào API:
+
+```text
+GET /api/doctors
+```
+
+Các mức tải được thử nghiệm gồm:
+
+- 5 users
+- 10 users
+- 25 users
+- 50 users
+- 100 users
+
+Các chỉ số được theo dõi gồm:
+
+- Average response time
+- Median (P50)
+- P95
+- P99
+- RPS
+- Failures
+
+Kịch bản kiểm thử được lưu tại:
+
+```text
+performance_tests/locustfile.py
+```
+
+Phần kiểm thử này được thực hiện sau khi hoàn thành phần Selenium Automation Testing chính và được quản lý riêng trên branch:
+
+```text
+performance-testing
+```
+
+Kết quả hiện tại chỉ phản ánh môi trường chạy local và được sử dụng để quan sát xu hướng thay đổi hiệu năng khi tải tăng. Phần thử nghiệm này không dùng để khẳng định giới hạn chịu tải tối đa của hệ thống.
 
 ---
 
